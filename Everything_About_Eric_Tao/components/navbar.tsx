@@ -26,7 +26,7 @@ export default function Navbar() {
           />
         </Link>
         <nav className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             <Link href="/about" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 About
