@@ -1,0 +1,40 @@
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+
+export default function Hero() {
+  return (
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8">
+        <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl font-saffron">
+          Hello, my name is <span className="text-[#E77421] ">Eric Tao</span>
+        </h1>
+        <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
+          Software Engineer
+        </p>
+        <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-2xl font-inter">
+          I build clean, interactive web applications using React, Firebase, Node, and modern UI frameworks.
+        </p>
+        <Link href="/portfolio" passHref>
+          <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-white">
+            View My Work
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
+      </div>
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2819-%E7%BD%91%E6%A0%BC%E8%B5%84%E6%BA%90%205@4x-X4kxbmh56PGsiiRaUXDlN8PMObdrYl.png"
+          alt="Technical grid background"
+          layout="fill"
+          objectFit="cover"
+          className="opacity-60"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/70"></div>
+      </div>
+    </section>
+  )
+}
+
