@@ -12,15 +12,15 @@ const projects = [
     id: 1,
     title: "Sustainable Marketplace Platform",
     description: "A modern e-commerce web app where users can upload, browse, and exchange products.",
-    category: "Frontend Develop",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/house.4white-gxoEvJ7aKPNSFBAIgN0Q42uxhAfelr.png",
+    category: "Frontend",
+    image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/WechatIMG416.jpg",
   },
   {
     id: 2,
     title: "Real-Time Chatbox",
     description: "A Socket.io chat application with rooms, handshake logic, and Firebase user storage.",
     category: "Full-Stack",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLATES-rVTHgVnTltSIQgQsMfLfKyYkD7vJUI.png",
+    image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Chatbox/WechatIMG427.jpg",
   },
   {
     id: 3,
@@ -35,7 +35,14 @@ const projects = [
     title: "Local LLM + Tauri Toolkit",
     description: "A desktop tool that captures screen, processes training images, and integrates local LLM models.",
     category: "Full-Stack",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard3-M94QOTwML0TPEyYcAS495G912XdD5f.png",
+    image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/RustLLm/ui-screenshot-1764960498.png",
+  },
+  {
+    id: 5,
+    title: "iFoodie Food Exchange App",
+    description: "A desktop tool that captures screen, processes training images, and integrates local LLM models.",
+    category: "UI/UX",
+    image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/WX20251208-070645.png",
   }
 ]
 

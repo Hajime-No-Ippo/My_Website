@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import {
@@ -20,12 +20,12 @@ const galleryItems = [
   {
     src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLATES-rVTHgVnTltSIQgQsMfLfKyYkD7vJUI.png",
     alt: "Mobile App Framework Design",
-    className: "w-[400px] h-[250px] top-[40%] ml-[700px]",
+    className: "w-[400px] h-[250px]",
     title: "Mobile UI Framework",
-    description: "User interface architecture for service-based application",
+    description: "User interface architecture for food exchange application",
     detailedDescription:
       "This mobile UI framework was designed to provide a seamless and intuitive user experience for a service-based application. It focuses on simplicity, accessibility, and scalability to accommodate various features and user needs.",
-    technologies: "Figma, Adobe XD, Sketch",
+    technologies: "Figma",
     duration: "4 weeks",
     features: [
       "Modular component design",
@@ -34,15 +34,14 @@ const galleryItems = [
       "Accessibility-first approach",
     ],
     additionalImages: [
-      "/placeholder.svg?height=250&width=400",
-      "/placeholder.svg?height=250&width=400",
+      "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/Menu%20Page.png",
       "/placeholder.svg?height=250&width=400",
     ],
   },
   {
     src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-lab_%E7%94%BB%E6%9D%BF%201-qp1NuwprNlFGNRPlLvgsPp8WOpSI2R.png",
     alt: "Design Lab Logo - Original",
-    className: "w-[350px] h-[220px] top-[15%] ml-[1200px]",
+    className: "w-[350px] h-[220px]",
     title: "Design Lab Branding",
     description: "Logo design for creative studio",
     detailedDescription:
@@ -62,20 +61,20 @@ const galleryItems = [
     ],
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard3-M94QOTwML0TPEyYcAS495G912XdD5f.png",
-    alt: "Smart Home IoT Dashboard - Main Interface",
-    className: "w-[500px] h-[300px] top-[50%] ml-[1600px]",
-    title: "Smart Home IoT Dashboard",
-    description: "User interface for controlling smart home devices",
+    src: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/WechatIMG416.jpg",
+    alt: "Sustainable Marketplace Platform",
+    className: "w-[500px] h-[300px]",
+    title: "Sustainable Marketplace Platform",
+    description: "Frontend development with firebase backend project with user authentication",
     detailedDescription:
-      "This dashboard provides an intuitive interface for users to control and monitor various smart home devices. The design features a futuristic dark theme with neon accents and real-time data visualization.",
+      "A modern e-commerce web app where users can upload, browse, and exchange products. Includes real-time chat, product gallery with zoom, authentication, and Firestore integration.",
     technologies: "React, D3.js, WebSocket, Three.js",
     duration: "6 weeks",
     features: [
-      "Real-time device status updates",
-      "Interactive 3D visualization",
-      "Energy consumption tracking",
-      "Voice control integration",
+      "Real-time new-released product status updates",
+      "Real-time comment list function",
+      "Navigator to seller's email",
+      "Product searching and sorting",
     ],
     additionalImages: [
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard-qeRWpfF3gcrWLP8W8ZTtW26FPocCvI.png",
@@ -85,7 +84,7 @@ const galleryItems = [
   {
     src: "/placeholder.svg?height=400&width=600",
     alt: "Eco-Friendly Product Packaging",
-    className: "w-[450px] h-[350px] top-[30%] ml-[2200px]",
+    className: "w-[450px] h-[350px]",
     title: "Eco-Friendly Product Packaging",
     description: "Sustainable packaging design for consumer goods",
     detailedDescription:
@@ -194,13 +193,13 @@ function Gallery() {
         </div>
 
         <ScrollArea className="w-full h-[600px] rounded-lg" scrollHideDelay={400}>
-          <div className="relative w-[2800px] h-full" ref={scrollRef}>
+          <div className="relative flex h-full gap-10 px-2" ref={scrollRef}>
             {galleryItems.map((item, index) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
                   <div
                     className={cn(
-                      "absolute transition-all duration-500 cursor-pointer",
+                      "relative shrink-0 transition-all duration-500 cursor-pointer",
                       item.className,
                       isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10",
                     )}
@@ -366,4 +365,3 @@ function ImageGallery({
 }
 
 export default Gallery
-

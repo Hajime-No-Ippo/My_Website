@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import { motion } from "framer-motion"
 
 export default function About() {
@@ -38,26 +38,33 @@ export default function About() {
             <div className="w-full md:w-1/2">
               <Card className="h-full flex flex-col">
                 <CardHeader>
-                  <CardTitle className="text-3xl font-bold font-saffron">Hi, I am Chenming Tao</CardTitle>
+                  <CardTitle className="text-3xl font-bold font-saffron">Hi, I am Eric Tao</CardTitle>
                   <CardDescription className="text-lg font-inter">
-                    Why don't we make things easier and reliable?
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-semibold font-saffron">Not only developer but also designer</h3>
                     <p className="text-muted-foreground">
                       I am a Software Development student at Maynooth University.
                       I combine my background in Art & Design with software engineering to create applications with
                       both strong technical foundation and excellent user experience.
 
                     </p>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-semibold font-saffron">Not only developer but also designer</h3>
+                    
                     <p className="text-muted-foreground">
-                      My unique background in both development and design allows me to bridge the gap between aesthetics
-                      and functionality. I believe in creating software that not only works flawlessly but also provides
-                      an intuitive and enjoyable user experience. Whether it's crafting responsive web applications,
-                      designing user interfaces, or developing innovative software solutions, I approach each project
-                      with creativity, technical expertise, and a user-centric mindset.
+                      I have a dual background in Art & Design and Computer Science.
+                      This allows me to bridge the gap between user experience and engineering.
+                      <br/><br/>
+                      I build full-stack applications and also design the interfaces people
+                      interact with. My work combines system thinking, UX reasoning, and
+                      modern web development.
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-semibold font-saffron">My Further Study</h3>
+                    <p className="text-muted-foreground">
+                      I'm further studying on CNN / RNN artificial Intelligience and fine-turning on local large-language model.
                     </p>
                   </div>
                   <div className="mt-4">

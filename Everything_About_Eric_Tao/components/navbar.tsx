@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
-import Image from "next/image"
+import Image from "next/legacy/image"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 export default function Navbar() {
@@ -12,52 +15,56 @@ export default function Navbar() {
     }
   }
 
+  const pathname = usePathname()
+  const isHome = pathname === "/"
+  const isAbout = pathname === "/about"
+  const isSkills = pathname === "/skills"
+  const isPortfolio = pathname === "/portfolio"
+  const isContact = pathname === "/contact"
+
+  const underlineClass =
+    "absolute left-0 bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100"
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-black text-white backdrop-blur supports-[backdrop-filter]:bg-black/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-6 flex items-center">
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-lab_%E7%94%BB%E6%9D%BF%201-qp1NuwprNlFGNRPlLvgsPp8WOpSI2R.png"
-            alt="Design Lab Logo"
-            width={120}
-            height={30}
-            className="w-auto h-6 dark:invert"
-            priority
-          />
+          <p className="relative inline-block py-2 text-lg font-bold">
+            Eric Tao
+          </p>
         </Link>
         <nav className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-10">
             <Link href="/about" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 About
-                <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+                <span className={`${underlineClass} ${isAbout ? "scale-x-100" : ""}`} />
               </span>
             </Link>
 
             <Link href="/skills" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 Experience
-                <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+                <span className={`${underlineClass} ${isSkills ? "scale-x-100" : ""}`} />
               </span>
             </Link>
 
-            <a href="#gallery" className="group">
+            <Link href="/portfolio" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 Gallery
-                <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+                <span className={`${underlineClass} ${isPortfolio  ? "scale-x-100" : ""}`} />
               </span>
-            </a>
+            </Link>
 
-            <a href="#contact" className="group">
+            <Link href="/contact" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 Contact
-                <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+                <span className={`${underlineClass} ${isContact ? "scale-x-100" : ""}`} />
               </span>
-            </a>
+            </Link>
           </div>
         </nav>
       </div>
     </header>
   )
 }
-

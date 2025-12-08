@@ -1,19 +1,23 @@
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Image from "next/legacy/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
       <div className="relative z-10 px-4 sm:px-6 lg:px-8">
         <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl font-saffron">
-          Hello, my name is <span className="text-[#E77421] ">Eric Tao</span>
+          Hello, my name is{" "}
+          <span className="group relative inline-block py-2 font-bold italic text-[#E77421]">
+            Eric Tao
+            <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+          </span>
         </h1>
         <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
           Software Engineer
         </p>
-        <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-2xl font-inter">
+        <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
           I build clean, interactive web applications using React, Firebase, Node, and modern UI frameworks.
         </p>
         <Link href="/portfolio" passHref>
@@ -35,6 +39,5 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/70"></div>
       </div>
     </section>
-  )
+  );
 }
-
