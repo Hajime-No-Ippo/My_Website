@@ -10,7 +10,9 @@ export default function Hero() {
         <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl font-saffron">
           Hello, my name is{" "}
           <span className="group relative inline-block py-2 font-bold italic text-[#E77421]">
+            <a href="/about">
             Eric Tao
+            </a>
             <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
           </span>
         </h1>

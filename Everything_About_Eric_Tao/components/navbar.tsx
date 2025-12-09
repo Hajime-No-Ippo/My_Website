@@ -30,7 +30,7 @@ export default function Navbar() {
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-6 flex items-center">
           <p className="relative inline-block py-2 text-lg font-bold">
-            Eric Tao
+            std::Eric::<span className="text-[#E77421]">TAO</span>
           </p>
         </Link>
         <nav className="flex flex-1 items-center justify-between space-x-2 md:justify-end">

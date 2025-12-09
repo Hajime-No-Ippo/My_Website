@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState } from "react"
 import Image from "next/legacy/image"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -112,18 +111,6 @@ function Gallery() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (scrollRef.current) {
-        e.preventDefault()
-        scrollRef.current.scrollLeft += e.deltaY
-      }
-    }
-
-    const currentScrollRef = scrollRef.current
-    if (currentScrollRef) {
-      currentScrollRef.addEventListener("wheel", handleWheel, { passive: false })
-    }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -141,9 +128,6 @@ function Gallery() {
     }
 
     return () => {
-      if (currentScrollRef) {
-        currentScrollRef.removeEventListener("wheel", handleWheel)
-      }
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current)
       }
@@ -186,14 +170,22 @@ function Gallery() {
           <h2 className="text-3xl font-bold mb-4 md:mb-0 font-saffron">Project Gallery</h2>
           <nav className="flex gap-8 text-sm">
             <button className="hover:text-[#E77421] transition-colors">ALL WORKS</button>
-            <button className="hover:text-[#E77421] transition-colors">3D DESIGN</button>
+            <button className="hover:text-[#E77421] transition-colors">Frontend</button>
             <button className="hover:text-[#E77421] transition-colors">UI/UX</button>
-            <button className="hover:text-[#E77421] transition-colors">INDUSTRIAL DESIGN</button>
+            <button className="hover:text-[#E77421] transition-colors">Full-Stack</button>
           </nav>
         </div>
 
-        <ScrollArea className="w-full h-[600px] rounded-lg" scrollHideDelay={400}>
-          <div className="relative flex h-full gap-10 px-2" ref={scrollRef}>
+        <div
+          ref={scrollRef}
+          onWheel={(e) => {
+            if (!scrollRef.current) return
+            scrollRef.current.scrollLeft += e.deltaY
+            e.preventDefault()
+          }}
+          className="w-full h-[600px] rounded-lg overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <div className="relative flex h-full gap-10 px-2 w-max">
             {galleryItems.map((item, index) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
@@ -258,7 +250,7 @@ function Gallery() {
               </Dialog>
             ))}
           </div>
-        </ScrollArea>
+        </div>
 
         <div className="flex justify-center gap-2 mt-8">
           {galleryItems.map((_, index) => (
