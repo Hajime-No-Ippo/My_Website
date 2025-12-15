@@ -1,9 +1,21 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/legacy/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Hero() {
+  const [blur, setBlur] = useState(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      const ratio = Math.min(window.scrollY / 200, 1);
+      setBlur(ratio * 8);
+    };
+    handleScroll();
+    window.addEventListener("scroll",handleScroll,{passive: true});
+    return () => window.removeEventListener("scroll", handleScroll);
+  },[]);
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
       <div className="relative z-10 px-4 sm:px-6 lg:px-8">
@@ -35,7 +47,8 @@ export default function Hero() {
           alt="Technical grid background"
           layout="fill"
           objectFit="cover"
-          className="opacity-60"
+          className="opacity-90"
+          style={{ filter: `blur(${blur}px)`, transition: "filter 600ms ease-out" }}
           priority
         />
         <div className="absolute inset-0 bg-black/70"></div>

@@ -22,9 +22,10 @@ const galleryItems = [
     className: "w-[400px] h-[250px]",
     title: "Mobile UI Framework",
     description: "User interface architecture for food exchange application",
+    category: "Frontend",
     detailedDescription:
       "This mobile UI framework was designed to provide a seamless and intuitive user experience for a service-based application. It focuses on simplicity, accessibility, and scalability to accommodate various features and user needs.",
-    technologies: "Figma",
+    technologies: "Figma, TailwindCSS",
     duration: "4 weeks",
     features: [
       "Modular component design",
@@ -34,15 +35,16 @@ const galleryItems = [
     ],
     additionalImages: [
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/Menu%20Page.png",
-      "/placeholder.svg?height=250&width=400",
+      "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/WX20251212-203605.png",
     ],
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-lab_%E7%94%BB%E6%9D%BF%201-qp1NuwprNlFGNRPlLvgsPp8WOpSI2R.png",
+    src: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/WX20251212-203632.png",
     alt: "Design Lab Logo - Original",
     className: "w-[350px] h-[220px]",
     title: "Design Lab Branding",
     description: "Logo design for creative studio",
+    category: "UI/UX",
     detailedDescription:
       "The Design Lab logo was created to represent a creative studio that combines innovation with precision. The logo embodies the studio's core values of creativity, technology, and collaboration.",
     technologies: "Adobe Illustrator, Adobe InDesign",
@@ -65,6 +67,7 @@ const galleryItems = [
     className: "w-[500px] h-[300px]",
     title: "Sustainable Marketplace Platform",
     description: "Frontend development with firebase backend project with user authentication",
+    category: "Full-Stack",
     detailedDescription:
       "A modern e-commerce web app where users can upload, browse, and exchange products. Includes real-time chat, product gallery with zoom, authentication, and Firestore integration.",
     technologies: "React, D3.js, WebSocket, Three.js",
@@ -76,16 +79,17 @@ const galleryItems = [
       "Product searching and sorting",
     ],
     additionalImages: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard-qeRWpfF3gcrWLP8W8ZTtW26FPocCvI.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard2-K3i3ATBJhup7rovvPkbq2SiUzCmqzm.png",
+      "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/SustainableMarket/WechatIMG418.jpg",
+      "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/SustainableMarket/WechatIMG423.jpg",
     ],
   },
   {
     src: "/placeholder.svg?height=400&width=600",
     alt: "Eco-Friendly Product Packaging",
     className: "w-[450px] h-[350px]",
-    title: "Eco-Friendly Product Packaging",
+    title: "Real-time chatbox",
     description: "Sustainable packaging design for consumer goods",
+    category: "UI/UX",
     detailedDescription:
       "This project focuses on creating environmentally friendly packaging solutions for everyday consumer products. The designs prioritize recyclability, biodegradability, and minimal material usage.",
     technologies: "Sustainable materials, 3D printing, CAD software",
@@ -109,6 +113,17 @@ function Gallery() {
   const sectionRef = useRef<HTMLElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
+  const [filter, setFilter] = useState<"All" | "Frontend" | "UI/UX" | "Full-Stack">("All")
+  const filteredItems =
+    filter === "All" ? galleryItems : galleryItems.filter((item) => item.category === filter)
+
+  // Reset position when filter changes
+  useEffect(() => {
+    setCurrentSlide(0)
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: 0, behavior: "smooth" })
+    }
+  }, [filter])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -138,7 +153,7 @@ function Gallery() {
     const handleScroll = () => {
       if (scrollRef.current) {
         const scrollPosition = scrollRef.current.scrollLeft
-        const itemWidth = scrollRef.current.scrollWidth / galleryItems.length
+        const itemWidth = scrollRef.current.scrollWidth / Math.max(filteredItems.length, 1)
         const newSlide = Math.round(scrollPosition / itemWidth)
         setCurrentSlide(newSlide)
       }
@@ -154,7 +169,7 @@ function Gallery() {
         currentScrollRef.removeEventListener("scroll", handleScroll)
       }
     }
-  }, []) // Removed unnecessary dependency: galleryItems.length
+  }, [filteredItems.length])
 
   return (
     <section
@@ -169,10 +184,18 @@ function Gallery() {
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <h2 className="text-3xl font-bold mb-4 md:mb-0 font-saffron">Project Gallery</h2>
           <nav className="flex gap-8 text-sm">
-            <button className="hover:text-[#E77421] transition-colors">ALL WORKS</button>
-            <button className="hover:text-[#E77421] transition-colors">Frontend</button>
-            <button className="hover:text-[#E77421] transition-colors">UI/UX</button>
-            <button className="hover:text-[#E77421] transition-colors">Full-Stack</button>
+            {["All", "Frontend", "UI/UX", "Full-Stack"].map((category) => (
+              <button
+                key={category}
+                className={cn(
+                  "hover:text-[#E77421] transition-colors",
+                  filter === category ? "text-[#E77421]" : "",
+                )}
+                onClick={() => setFilter(category as typeof filter)}
+              >
+                {category === "All" ? "ALL WORKS" : category}
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -186,7 +209,7 @@ function Gallery() {
           className="w-full h-[600px] rounded-lg overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           <div className="relative flex h-full gap-10 px-2 w-max">
-            {galleryItems.map((item, index) => (
+            {filteredItems.map((item, index) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
                   <div
@@ -253,7 +276,7 @@ function Gallery() {
         </div>
 
         <div className="flex justify-center gap-2 mt-8">
-          {galleryItems.map((_, index) => (
+          {filteredItems.map((_, index) => (
             <button
               key={index}
               className={cn(

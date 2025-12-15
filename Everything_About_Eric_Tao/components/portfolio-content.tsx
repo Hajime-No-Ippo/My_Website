@@ -89,7 +89,7 @@ export default function PortfolioContent() {
                   className={
                     activeCategory === category
                       ? "bg-[#E77421] text-white hover:bg-[#E77421]/90"
-                      : "border-border text-foreground hover:border-[#E77421]/60 hover:text-[#E77421]"
+                      : "border-border text-foreground hover:border-[#E77421]/60 hover:text-white"
                   }
                   onClick={() => setActiveCategory(category)}
                   aria-pressed={activeCategory === category}
