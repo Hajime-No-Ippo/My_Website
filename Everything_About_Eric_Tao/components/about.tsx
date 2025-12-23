@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { motion } from "framer-motion"
 
 export default function About() {
@@ -28,9 +28,9 @@ export default function About() {
                 <Image
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f204798ad48d24e7e654dfac781e642.jpg-M1JKYWrM6B7VVLpIIM8IBZM9xq6dMV.jpeg"
                   alt="Chenming Tao in a green hoodie"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
                   className="transition-all duration-500 ease-in-out grayscale group-hover:grayscale-0"
+                  style={{ objectFit: "cover" }}
                 />
                 <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-500 group-hover:opacity-10"></div>
               </div>
@@ -55,7 +55,7 @@ export default function About() {
                     <p className="text-muted-foreground">
                       I have a dual background in Art & Design and Computer Science.
                       This allows me to bridge the gap between user experience and engineering.
-                      <br/><br/>
+                    
                       I build full-stack applications and also design the interfaces people
                       interact with. My work combines system thinking, UX reasoning, and
                       modern web development.
@@ -87,4 +87,3 @@ export default function About() {
     </section>
   )
 }
-

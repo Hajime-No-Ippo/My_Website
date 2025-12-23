@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -34,7 +34,7 @@ export default function Hero() {
         <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
           I build clean, interactive web applications using React, Firebase, Node, and modern UI frameworks.
         </p>
-        <Link href="/portfolio" passHref>
+        <Link href="/projects" passHref>
           <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-white">
             View My Work
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -45,10 +45,9 @@ export default function Hero() {
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2819-%E7%BD%91%E6%A0%BC%E8%B5%84%E6%BA%90%205@4x-X4kxbmh56PGsiiRaUXDlN8PMObdrYl.png"
           alt="Technical grid background"
-          layout="fill"
-          objectFit="cover"
+          fill
           className="opacity-90"
-          style={{ filter: `blur(${blur}px)`, transition: "filter 600ms ease-out" }}
+          style={{ objectFit: "cover", filter: `blur(${blur}px)`, transition: "filter 600ms ease-out" }}
           priority
         />
         <div className="absolute inset-0 bg-black/70"></div>

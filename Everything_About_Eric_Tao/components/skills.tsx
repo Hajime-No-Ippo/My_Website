@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import Image from "next/legacy/image"
+import Image from "next/image"
 import { motion } from "framer-motion"
 
 const skills = [
@@ -25,9 +25,9 @@ export default function Skills() {
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/05c67409242633d69fb4a3c20b0ad20.jpg-JBbs7LmOKOsn9yYNlE9eRZEK8MN5uH.jpeg"
           alt="Skills background"
-          layout="fill"
-          objectFit="cover"
+          fill
           className="absolute inset-0 z-0 transition-all duration-700 ease-in-out group-hover:blur-md"
+          style={{ objectFit: "cover" }}
           priority
         />
         <div className="absolute inset-0 bg-black/40 transition-all duration-700 ease-in-out z-10 group-hover:bg-black/60"></div>
@@ -38,7 +38,7 @@ export default function Skills() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            My Skills
+            I make my idea come true by ......
           </motion.h2>
           <motion.div
             className="flex flex-wrap justify-center gap-4"

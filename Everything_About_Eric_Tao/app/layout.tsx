@@ -18,9 +18,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Chenming Tao - Creative Software Developer",
+  title: "Eric Tao - Between Innovative & Realistic",
   description: "Personal website of a creative software developer showcasing skills and projects",
     generator: 'v0.app'
+}
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -38,4 +43,3 @@ export default function RootLayout({
     </html>
   )
 }
-

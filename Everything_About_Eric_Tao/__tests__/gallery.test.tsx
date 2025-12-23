@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 // Simplify Next legacy Image and framer-motion for tests
-jest.mock("next/legacy/image", () => (props: any) => {
-  const { src, alt, objectFit, layout, ...rest } = props
+jest.mock("next/image", () => (props: any) => {
+  const { src, alt, fill, ...rest } = props
   return <img src={typeof src === "string" ? src : src?.src ?? ""} alt={alt || ""} {...rest} />
 })
 

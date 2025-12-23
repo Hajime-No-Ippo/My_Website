@@ -1,40 +1,28 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/legacy/image"
 import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
 
 export default function Navbar() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-      })
-    }
-  }
-
   const pathname = usePathname()
-  const isHome = pathname === "/"
   const isAbout = pathname === "/about"
   const isSkills = pathname === "/skills"
-  const isPortfolio = pathname === "/portfolio"
   const isContact = pathname === "/contact"
+  const isProjects = pathname === "/projects"
 
   const underlineClass =
     "absolute left-0 bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100"
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-black text-white backdrop-blur supports-[backdrop-filter]:bg-black/60">
-      <div className="container flex h-14 items-center">
-        <Link href="/" className="mr-6 flex items-center">
+      <div className="container flex flex-col items-center gap-2 py-3 md:h-14 md:flex-row md:items-center">
+        <Link href="/" className="flex items-center md:mr-6">
           <p className="relative inline-block py-2 text-lg font-bold">
-            std::Eric::<span className="text-[#E77421]">TAO</span>
+            use::std::Eric::<span className="text-[#E77421]">TAO</span>
           </p>
         </Link>
-        <nav className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="flex items-center space-x-10">
+        <nav className="flex w-full flex-1 items-center justify-center md:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm md:justify-end md:gap-10">
             <Link href="/about" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
                 About
@@ -49,10 +37,10 @@ export default function Navbar() {
               </span>
             </Link>
 
-            <Link href="/portfolio" className="group">
+            <Link href="/projects" className="group">
               <span className="relative inline-block py-2 text-sm font-medium">
-                Gallery
-                <span className={`${underlineClass} ${isPortfolio  ? "scale-x-100" : ""}`} />
+                Projects
+                <span className={`${underlineClass} ${isProjects ? "scale-x-100" : ""}`} />
               </span>
             </Link>
 
