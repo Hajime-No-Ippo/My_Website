@@ -49,7 +49,7 @@ export default function Contact() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Collaborate with me
+          Feel free to reach out to me!
         </motion.h2>
         <motion.form
           className="space-y-4"
@@ -59,20 +59,20 @@ export default function Contact() {
           onSubmit={handleSubmit}
         >
           <Input
-            placeholder="Your Name"
+            placeholder="I can call you ..."
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
           />
           <Input
             type="email"
-            placeholder="Your Email"
+            placeholder="I can reach you at..."
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
           <Textarea
-            placeholder="Your Message"
+            placeholder="What you want to say..."
             rows={4}
             value={message}
             onChange={(event) => setMessage(event.target.value)}

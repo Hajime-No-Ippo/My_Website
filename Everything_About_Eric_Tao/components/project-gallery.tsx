@@ -89,9 +89,9 @@ function ProjectGallery() {
 
         <div
           ref={scrollRef}
-          className="w-full h-[380px] rounded-lg overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="w-full h-[300px] rounded-lg overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div className="relative flex h-full gap-10 px-2 w-max items-center">
+          <div className="relative flex h-full gap-10 px-2 w-max items-start pt-2">
             {filteredItems.map((item, index) => (
               <Dialog key={item.id}>
                 <DialogTrigger asChild>
