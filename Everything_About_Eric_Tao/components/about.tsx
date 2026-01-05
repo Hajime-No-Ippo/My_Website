@@ -68,13 +68,12 @@ export default function About() {
                     </p>
                   </div>
                   <div className="mt-4">
-                    <h3 className="text-2xl font-semibold font-saffron">Honor & License</h3>
+                    <h3 className="text-2xl font-semibold font-saffron">If you're curious about my BLOG</h3>
                     <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                       <li>
-                        Oracle Artificial Intelligience Associate Certificate
-                      </li>
-                      <li>
-                        National Design Awards in China
+                        <a href="https://design6003.wordpress.com/" className="hover:underline italic">
+                          https://design6003.wordpress.com/
+                        </a>
                       </li>
                     </ul>
                   </div>

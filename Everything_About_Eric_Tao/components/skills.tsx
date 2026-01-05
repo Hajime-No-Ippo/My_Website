@@ -68,22 +68,22 @@ export default function Skills() {
       {/* Clean section truly below the skills background; edit freely */}
       <section className="py-16 md:py-24 bg-background text-foreground">
         <div className="container max-w-5xl">
-          <h3 className="text-3xl font-bold font-saffron mb-6">Add your next section here</h3>
+          <h3 className="text-3xl font-bold font-saffron mb-6">Researching field: </h3>
           <p className="text-muted-foreground max-w-3xl">
-            This block sits below the skills hero and has no background image. Replace this text with your own content.
+            I am currently focusing on several key areas in technology and development to enhance my skills and contribute effectively to projects:
           </p>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             <div className="rounded-xl border border-border p-5 bg-card">
-              <div className="font-semibold mb-2">Block A</div>
-              <p className="text-sm text-muted-foreground">Swap this content with your own.</p>
+              <div className="font-semibold mb-2">DevOps / MLOps</div>
+              <p className="text-sm text-muted-foreground">I am learning the duty of DevOps / MLOps.</p>
             </div>
             <div className="rounded-xl border border-border p-5 bg-card">
-              <div className="font-semibold mb-2">Block B</div>
-              <p className="text-sm text-muted-foreground">Use cards, lists, or anything else.</p>
+              <div className="font-semibold mb-2">Frontend Framework</div>
+              <p className="text-sm text-muted-foreground">I had learnt the different Frontend Framework.</p>
             </div>
             <div className="rounded-xl border border-border p-5 bg-card">
-              <div className="font-semibold mb-2">Block C</div>
-              <p className="text-sm text-muted-foreground">Drop in your real content here.</p>
+              <div className="font-semibold mb-2">Computer Vision</div>
+              <p className="text-sm text-muted-foreground">I am focusing on Computer Vision and Cloud Programming.</p>
             </div>
           </div>
         </div>
