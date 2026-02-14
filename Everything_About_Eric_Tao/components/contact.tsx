@@ -59,20 +59,20 @@ export default function Contact() {
           onSubmit={handleSubmit}
         >
           <Input
-            placeholder="I can call you ..."
+            placeholder="Name"
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
           />
           <Input
             type="email"
-            placeholder="I can reach you at..."
+            placeholder="Email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
           <Textarea
-            placeholder="What you want to say..."
+            placeholder="Message"
             rows={4}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
