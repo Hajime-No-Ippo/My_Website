@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import { projects } from "@/data/projects"
 import { cn } from "@/lib/utils"
 import {
@@ -106,11 +107,12 @@ function ProjectGallery() {
                     style={{ transitionDelay: `${index * 80}ms` }}
                   >
                     <div className="relative w-full h-full overflow-hidden rounded-lg group">
-                      <img
+                      <Image
                         src={item.image || "/placeholder.svg"}
                         alt={item.title}
-                        className="absolute inset-0 h-full w-full object-cover transition-all duration-300 group-hover:scale-110"
-                        loading="lazy"
+                        fill
+                        sizes="(max-width: 768px) 320px, 380px"
+                        className="object-cover transition-all duration-300 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <div className="text-white text-center p-4">
@@ -194,11 +196,12 @@ function ImageGallery({
           height: "100%",
         }}
       >
-        <img
+        <Image
           src={allImages[currentImageIndex] || "/placeholder.svg"}
           alt={`${alt} - Image ${currentImageIndex + 1}`}
-          className="absolute inset-0 h-full w-full rounded-lg object-cover"
-          loading="lazy"
+          fill
+          sizes="50vw"
+          className="rounded-lg object-cover"
         />
       </motion.div>
       <div className="absolute inset-y-0 left-0 flex items-center">
@@ -231,7 +234,7 @@ function ImageGallery({
               currentImageIndex === index ? "border-[#E77421]" : "border-transparent",
             )}
           >
-            <img src={image || "/placeholder.svg"} alt={`Thumbnail ${index + 1}`} className="h-16 w-16 object-cover" />
+            <Image src={image || "/placeholder.svg"} alt={`Thumbnail ${index + 1}`} width={64} height={64} sizes="64px" className="h-16 w-16 object-cover" />
           </button>
         ))}
       </div>

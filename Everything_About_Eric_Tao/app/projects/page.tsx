@@ -1,4 +1,5 @@
 import React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { projects } from "@/data/projects"
 
@@ -26,11 +27,12 @@ const page = () => {
             className="group overflow-hidden rounded-xl border border-border/70 bg-card shadow-lg transition-transform duration-200 hover:-translate-y-1"
           >
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img
+              <Image
                 src={project.image || "/placeholder.svg"}
                 alt={project.title}
-                className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-                loading="lazy"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition duration-500 ease-out group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <span className="absolute left-4 top-4 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">

@@ -4,7 +4,12 @@ import { notFound } from "next/navigation"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { projects } from "@/data/projects"
+
+export function generateStaticParams() {
+  return projects.map((project) => ({ slug: project.slug }))
+}
 
 async function loadProjectContent(contentPath: string) {
   const normalized = contentPath.replace(/^\/+/, "")
@@ -43,6 +48,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             src={project.image || "/placeholder.svg"}
             alt={project.title}
             fill
+            sizes="100vw"
             className="absolute inset-0 object-cover"
             priority
           />
@@ -58,28 +64,45 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       </div>
 
       <div className="container mt-8 sm:mt-10">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="order-2 space-y-6 lg:order-1">
+        <div className="grid gap-10 lg:gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="order-2 space-y-6 lg:order-1 lg:pr-4">
             {project.additionalImages.length > 0 && (
               <div className="grid gap-4 sm:grid-cols-2">
                 {project.additionalImages.map((image, index) => (
-                  <div
-                    key={image + index}
-                    className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/70"
-                  >
-                    <Image
-                      src={image || "/placeholder.svg"}
-                      alt={`${project.title} preview ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                  <Dialog key={image + index}>
+                    <DialogTrigger asChild>
+                      <button
+                        type="button"
+                        className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/70 text-left"
+                        aria-label={`Open ${project.title} preview ${index + 1}`}
+                      >
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`${project.title} preview ${index + 1}`}
+                          fill
+                          sizes="(max-width: 1024px) 50vw, 25vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl w-full p-0 overflow-hidden">
+                      <div className="relative aspect-[4/3] w-full">
+                        <Image
+                          src={image || "/placeholder.svg"}
+                          alt={`${project.title} preview ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="order-1 space-y-6 lg:order-2">
+          <div className="order-1 space-y-6 lg:order-2 lg:border-l lg:border-border/60 lg:pl-8">
             <div className="rounded-xl border border-border/70 bg-muted/30 p-4 sm:p-5">
               <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                 <div>
