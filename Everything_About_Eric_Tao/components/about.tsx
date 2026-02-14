@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
 import { motion } from "framer-motion"
 
 export default function About() {
@@ -18,27 +17,15 @@ export default function About() {
         </motion.h2>
         <div className="flex justify-center">
           <motion.div
-            className="flex flex-col md:flex-row gap-6 items-stretch max-w-6xl w-full"
+            className="max-w-3xl w-full"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="w-full md:w-1/2 flex justify-center">
-              <div className="relative w-full max-w-[380px] sm:max-w-[420px] md:max-w-[500px] aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-lg group">
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f204798ad48d24e7e654dfac781e642.jpg-M1JKYWrM6B7VVLpIIM8IBZM9xq6dMV.jpeg"
-                  alt="Chenming Tao in a green hoodie"
-                  fill
-                  className="transition-all duration-500 ease-in-out grayscale group-hover:grayscale-0"
-                  style={{ objectFit: "cover" }}
-                />
-                <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-500 group-hover:opacity-10"></div>
-              </div>
-            </div>
-            <div className="w-full md:w-1/2">
-              <Card className="h-full flex flex-col">
+            <div>
+              <Card className="h-full flex flex-col border-none shadow-none">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold font-saffron sm:text-3xl">Hi, I am Eric Tao</CardTitle>
+                  <CardTitle className="text-2xl font-bold font-saffron sm:text-2xl">Hi, I am Eric Tao</CardTitle>
                   <CardDescription className="text-base font-inter sm:text-lg">
                     <p className="text-muted-foreground">
                       I am a Software Development student at Maynooth University.

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { projects } from "@/data/projects"
 
 export function generateStaticParams() {
@@ -87,6 +87,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                       </button>
                     </DialogTrigger>
                     <DialogContent className="max-w-4xl w-full p-0 overflow-hidden">
+                      <DialogTitle className="sr-only">{`${project.title} preview ${index + 1}`}</DialogTitle>
                       <div className="relative aspect-[4/3] w-full">
                         <Image
                           src={image || "/placeholder.svg"}

@@ -1,21 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import Image from "next/image";
 
 export default function Hero() {
-  const [blur, setBlur] = useState(0);
-  useEffect(() => {
-    const handleScroll = () => {
-      const ratio = Math.min(window.scrollY / 200, 1);
-      setBlur(ratio * 8);
-    };
-    handleScroll();
-    window.addEventListener("scroll",handleScroll,{passive: true});
-    return () => window.removeEventListener("scroll", handleScroll);
-  },[]);
+  const blurRef = useRef<HTMLDivElement>(null);
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
       <div className="relative z-10 px-4 sm:px-6 lg:px-8">
@@ -41,16 +33,18 @@ export default function Hero() {
           </Button>
         </Link>
       </div>
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2819-%E7%BD%91%E6%A0%BC%E8%B5%84%E6%BA%90%205@4x-X4kxbmh56PGsiiRaUXDlN8PMObdrYl.png"
-          alt="Technical grid background"
-          fill
-          className="opacity-90"
-          style={{ objectFit: "cover", filter: `blur(${blur}px)`, transition: "filter 600ms ease-out" }}
-          priority
+      
+
+      <div className="absolute inset-0 z-0 bg-black">
+        
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255, 255, 255, 0.29) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
         />
-        <div className="absolute inset-0 bg-black/70"></div>
       </div>
     </section>
   );

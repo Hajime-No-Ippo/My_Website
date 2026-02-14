@@ -1,7 +1,9 @@
+import dynamic from "next/dynamic"
 import Hero from "@/components/hero"
-import ProjectGallery from "@/components/project-gallery"
-import Gallery from "@/components/gallery"
-import Contact from "@/components/contact"
+
+const ProjectGallery = dynamic(() => import("@/components/project-gallery"))
+const Gallery = dynamic(() => import("@/components/gallery"))
+const Contact = dynamic(() => import("@/components/contact"))
 
 export default function Home() {
   return (
