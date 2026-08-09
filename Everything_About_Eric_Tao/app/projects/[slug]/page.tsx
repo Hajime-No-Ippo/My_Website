@@ -4,8 +4,10 @@ import { notFound } from "next/navigation"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
+import { ArrowUpRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { projects } from "@/data/projects"
+import { cn } from "@/lib/utils"
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }))
@@ -32,6 +34,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   const mdxSource = await loadProjectContent(project.contentPath).catch(() => null)
 
+  // Placeholder art is not worth a grid slot — drop it so the layout collapses
+  // to a single column instead of rendering empty grey boxes.
+  const galleryImages = project.additionalImages.filter((image) => !image.startsWith("/placeholder"))
+  const hasGallery = galleryImages.length > 0
+
   return (
     <div className="pb-12">
       <div className="container pt-8 sm:pt-12">
@@ -42,8 +49,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </div>
 
-      <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden">
-        <div className="relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-[75vh]">
+      <div className="relative overflow-hidden">
+        <div className="relative flex min-h-[60vh] sm:min-h-[70vh] lg:min-h-[75vh]">
           <Image
             src={project.image || "/placeholder.svg"}
             alt={project.title}
@@ -53,22 +60,33 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             priority
           />
           <div className="absolute inset-0 bg-black/45" />
-          <div className="relative z-10 flex h-full items-end p-6 sm:p-10 text-white">
+          <div className="relative z-10 flex w-full items-end p-6 sm:p-10 text-white">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-white/70">{project.category}</p>
               <h1 className="mt-3 text-3xl sm:text-4xl font-bold font-saffron">{project.title}</h1>
               <p className="mt-3 text-sm sm:text-base text-white/80">{project.description}</p>
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#E77421] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#E77421]/90"
+                >
+                  Visit live site
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mt-8 sm:mt-10">
-        <div className="grid gap-10 lg:gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className={cn("grid gap-10 lg:gap-14", hasGallery && "lg:grid-cols-[0.9fr_1.1fr]")}>
           <div className="order-2 space-y-6 lg:order-1 lg:pr-4">
-            {project.additionalImages.length > 0 && (
+            {hasGallery && (
               <div className="grid gap-4 sm:grid-cols-2">
-                {project.additionalImages.map((image, index) => (
+                {galleryImages.map((image, index) => (
                   <Dialog key={image + index}>
                     <DialogTrigger asChild>
                       <button
@@ -103,7 +121,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             )}
           </div>
 
-          <div className="order-1 space-y-6 lg:order-2 lg:border-l lg:border-border/60 lg:pl-8">
+          <div className={cn("order-1 space-y-6 lg:order-2", hasGallery && "lg:border-l lg:border-border/60 lg:pl-8")}>
             <div className="rounded-xl border border-border/70 bg-muted/30 p-4 sm:p-5">
               <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                 <div>

@@ -38,11 +38,11 @@ export default function About() {
                 <CardContent className="flex-grow flex flex-col justify-between">
                   <div className="space-y-3">
                     <h3 className="text-xl font-semibold font-saffron sm:text-2xl">Not only developer but also designer</h3>
-                    
+
                     <p className="text-sm text-muted-foreground sm:text-base">
                       I have a dual background in Art & Design and Computer Science.
                       This allows me to bridge the gap between user experience and engineering.
-                    
+
                       I build full-stack applications and also design the interfaces people
                       interact with. My work combines system thinking, UX reasoning, and
                       modern web development.
@@ -51,15 +51,15 @@ export default function About() {
                   <div className="space-y-3">
                     <h3 className="text-xl font-semibold font-saffron sm:text-2xl">My Further Study</h3>
                     <p className="text-sm text-muted-foreground sm:text-base">
-                      I'm further studying on CNN / RNN artificial Intelligience and fine-turning on local large-language model.
+                      I&apos;m further studying on CNN / RNN artificial Intelligience and fine-turning on local large-language model.
                     </p>
                   </div>
                   <div className="mt-4">
-                    <h3 className="text-xl font-semibold font-saffron sm:text-2xl">If you're curious about my BLOG</h3>
+                    <h3 className="text-xl font-semibold font-saffron sm:text-2xl">If you&apos;re curious about my Research</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground sm:text-base">
                       <li>
-                        <a href="https://design6003.wordpress.com/" className="hover:underline italic">
-                          https://design6003.wordpress.com/
+                        <a href="https://research.ericdesign.com/" className="hover:underline italic">
+                          https://research.ericdesign.com/
                         </a>
                       </li>
                     </ul>

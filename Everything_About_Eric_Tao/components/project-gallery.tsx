@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { projects } from "@/data/projects"
+import { projects, type ProjectCategory } from "@/data/projects"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -16,10 +16,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 
+type Filter = "All" | ProjectCategory
+
+// Derived from the data so a new category can never go missing from the nav.
+const CATEGORIES: Filter[] = ["All", ...Array.from(new Set(projects.map((item) => item.category)))]
+
 function ProjectGallery() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
-  const [filter, setFilter] = useState<"All" | "Frontend" | "UI/UX" | "Full-Stack">("All")
+  const [filter, setFilter] = useState<Filter>("All")
   const [isVisible, setIsVisible] = useState(false)
   const [prevIds, setPrevIds] = useState<Set<number>>(new Set(projects.map((item) => item.id)))
   const filteredItems = filter === "All" ? projects : projects.filter((item) => item.category === filter)
@@ -73,14 +78,14 @@ function ProjectGallery() {
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <h2 className="text-3xl font-bold mb-4 md:mb-0 font-saffron">Project Gallery</h2>
           <nav className="flex gap-8 text-sm">
-            {["All", "Frontend", "UI/UX", "Full-Stack"].map((category) => (
+            {CATEGORIES.map((category) => (
               <button
                 key={category}
                 className={cn(
                   "hover:text-[#E77421] transition-colors",
                   filter === category ? "text-[#E77421]" : "",
                 )}
-                onClick={() => setFilter(category as typeof filter)}
+                onClick={() => setFilter(category)}
               >
                 {category === "All" ? "ALL WORKS" : category}
               </button>

@@ -23,10 +23,10 @@ export async function POST(request: Request) {
     const port = Number(process.env.SMTP_PORT || 0)
     const user = process.env.SMTP_USER
     const pass = process.env.SMTP_PASS
-    const to = process.env.CONTACT_TO || "shuaibtcm@gmail.com"
-    const from = process.env.CONTACT_FROM || user || "no-reply@example.com"
+    const to = process.env.CONTACT_TO
+    const from = process.env.CONTACT_FROM || user
 
-    if (!host || !port || !user || !pass) {
+    if (!host || !port || !user || !pass || !to || !from) {
       return Response.json({ ok: false, error: "Email not configured" }, { status: 500 })
     }
 

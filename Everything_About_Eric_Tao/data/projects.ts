@@ -14,6 +14,8 @@ export type Project = {
   features: string[]
   additionalImages: string[]
   contentPath: string
+  /** Public URL of the deployed project, when there is one. */
+  liveUrl?: string
 }
 
 export const projects: Project[] = [
@@ -124,13 +126,13 @@ export const projects: Project[] = [
     duration: "4 weeks",
     features: [
       "Real-time calculator on resource transactions and consumption",
-      "Agent availability and presence status updates",
-      "Message delivery/read states with lightweight acknowledgements",
+      "Goal setting against target resource requirements",
+      "Optimized farming plans generated from current inventory",
       "Responsive layout with accessible contrast and keyboard navigation",
     ],
     additionalImages: ["https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Calculator/clips.jpg",
-       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Calculator/Result.jpg",
-       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Chatbox/Handshake.jpg"],
-    contentPath: "/content/projects/real-time-chatbox.mdx",
+       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Calculator/Result.jpg"],
+    contentPath: "/content/projects/arknights-resource-planner.mdx",
+    liveUrl: "https://arknights.ericdesign.uk/",
   },
 ]

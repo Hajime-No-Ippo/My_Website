@@ -7,19 +7,16 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <p className="text-center text-sm leading-loose md:text-left">
             Built by{"  "}
-            <Link href="/" className=" hover:underline hover:underline-offset-4 text-[#E77421] hover:text-[#E77421]/90">
-              
-            </Link>
-            <a href="/" className="group">
+            <Link href="/" className="group">
               <span className="relative inline-block py-2 text-sm font-medium text-[#E77421]">
-               @Eric Tao
+                @Eric Tao
                 <span className="absolute left-0 -bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
               </span>
-            </a>
+            </Link>
           </p>
         </div>
         <p className="text-center text-sm md:text-left">
-          &copy; {new Date().getFullYear()} Chenming Tao. All rights reserved.
+          &copy; {new Date().getFullYear()} Eric Tao. All rights reserved.
         </p>
       </div>
     </footer>
