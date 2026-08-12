@@ -15,16 +15,16 @@ export default function Hero() {
           Hello, my name is{" "}
           <span className="group relative inline-block py-2 font-bold italic text-[#E77421]">
             <a href="/about">
-            Eric Tao
+              Eric Tao
             </a>
             <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
           </span>
         </h1>
         <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
-          Software Engineer
+          New Grad Software Engineer & UX Designer
         </p>
         <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
-          I build clean, interactive web applications using React, Firebase, Node, and modern UI frameworks.
+          Experience Life, Seek the adventure.
         </p>
         <Link href="/projects" passHref>
           <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-white">
@@ -33,10 +33,10 @@ export default function Hero() {
           </Button>
         </Link>
       </div>
-      
+
 
       <div className="absolute inset-0 z-0 bg-black">
-        
+
         <div
           className="absolute inset-0 opacity-40"
           style={{

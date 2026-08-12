@@ -21,16 +21,19 @@ type Filter = "All" | ProjectCategory
 // Derived from the data so a new category can never go missing from the nav.
 const CATEGORIES: Filter[] = ["All", ...Array.from(new Set(projects.map((item) => item.category)))]
 
+// Entry stagger. Capped so the row's total animation stays constant no matter
+// how many projects the gallery grows to.
+const STAGGER_MS = 60
+const MAX_STAGGERED_CARDS = 6
+
 function ProjectGallery() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const [filter, setFilter] = useState<Filter>("All")
   const [isVisible, setIsVisible] = useState(false)
-  const [prevIds, setPrevIds] = useState<Set<number>>(new Set(projects.map((item) => item.id)))
   const filteredItems = filter === "All" ? projects : projects.filter((item) => item.category === filter)
 
   useEffect(() => {
-    setPrevIds(new Set(filteredItems.map((item) => item.id)))
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ left: 0, behavior: "smooth" })
     }
@@ -52,13 +55,15 @@ function ProjectGallery() {
       { threshold: 0.15 },
     )
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+    // Captured now: by cleanup time the ref may already point elsewhere.
+    const section = sectionRef.current
+    if (section) {
+      observer.observe(section)
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current)
+      if (section) {
+        observer.unobserve(section)
       }
     }
   }, [])
@@ -97,19 +102,18 @@ function ProjectGallery() {
           ref={scrollRef}
           className="w-full h-[300px] rounded-lg overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div className="relative flex h-full gap-10 px-2 w-max items-start pt-2">
+          {/* Keyed on the filter so React remounts the list and the entry
+              animation replays every time — in both directions, and without
+              tracking which ids were on screen a moment ago. */}
+          <div key={filter} className="relative flex h-full gap-10 px-2 w-max items-start pt-2">
             {filteredItems.map((item, index) => (
               <Dialog key={item.id}>
                 <DialogTrigger asChild>
-                  {(() => {
-                    const isNew = !prevIds.has(item.id)
-                    return (
                   <div
-                    className={cn(
-                      "relative shrink-0 transition-all duration-300 cursor-pointer w-[320px] h-[210px] md:w-[380px] md:h-[250px]",
-                      isNew ? "opacity-0 translate-y-3" : "opacity-100 translate-y-0",
-                    )}
-                    style={{ transitionDelay: `${index * 80}ms` }}
+                    className="relative shrink-0 cursor-pointer w-[320px] h-[210px] md:w-[380px] md:h-[250px] animate-fade-in-up motion-reduce:animate-none"
+                    // Clamped: an unbounded index * delay makes the tail of the
+                    // row lag further behind with every project added.
+                    style={{ animationDelay: `${Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}ms` }}
                   >
                     <div className="relative w-full h-full overflow-hidden rounded-lg group">
                       <Image
@@ -127,8 +131,6 @@ function ProjectGallery() {
                       </div>
                     </div>
                   </div>
-                    )
-                  })()}
                 </DialogTrigger>
                 <DialogContent className="max-w-5xl w-full p-0 overflow-hidden">
                   <div className="flex flex-col md:flex-row h-[80vh]">

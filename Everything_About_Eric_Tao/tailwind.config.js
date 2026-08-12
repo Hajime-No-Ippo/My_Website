@@ -53,10 +53,19 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      // Swiss style: every corner is square. Pinning the whole scale here
+      // squares all 115 `rounded-*` usages at once — revert this block (and
+      // --radius in app/globals.css) to bring the curves back.
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        none: "0",
+        sm: "0",
+        DEFAULT: "0",
+        md: "0",
+        lg: "0",
+        xl: "0",
+        "2xl": "0",
+        "3xl": "0",
+        full: "0",
       },
       fontFamily: {
         saffron: ["var(--font-saffron)", "Times New Roman", "Times", "serif"],
@@ -72,10 +81,17 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        "fade-in-up": {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        // `both` holds the start frame through the stagger delay, so a card
+        // stays hidden until its turn instead of flashing in first.
+        "fade-in-up": "fade-in-up 0.3s ease-out both",
       },
     },
   },

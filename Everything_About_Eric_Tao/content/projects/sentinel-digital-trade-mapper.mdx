@@ -1,0 +1,56 @@
+---
+title: SENTINEL
+summary: An AI pipeline that turns national trade legislation into mapped, citable evidence against the UN ESCAP RDTII methodology.
+---
+
+## Overview
+SENTINEL was built by a Maynooth University team for the UN Global Hackathon on AI for
+Digital Trade Regulatory Analysis, where it placed in the **Top 20**. It takes an economy
+and a regulatory topic, finds the governing legislation on official government portals, and
+maps individual provisions to RDTII 2.1 indicators — each with an article-level citation and
+a verbatim quote.
+
+## The constraint that shaped the design
+The output is legal evidence, so a plausible-sounding paraphrase is worse than no answer.
+That ruled out handing the whole task to a language model. The engine is a deterministic
+and probabilistic hybrid instead:
+
+- Regex slices the statute into provisions.
+- A keyword classifier routes each chunk to candidate indicators.
+- The LLM extracts the feature and selects a quote.
+- The quote is verified character-for-character against the source text.
+- A deterministic Python scorer — not the model — assigns the indicator score.
+
+Any mapping whose quote cannot be located verbatim in the source is rejected rather than
+displayed. Verification gates sit on top: a blind cross-model checker reviews positive
+scores before anything ships, and scope guards can only ever lower an out-of-scope score,
+never raise one.
+
+## Discovery
+Evidence collection has to survive real government websites. The crawler works in layers to
+handle session-gated portals, retrieves scanned legislation through OCR, and localises its
+query terms per language — six of the seven Round 2 economies are non-English, so retrieval
+and query localisation, rather than fetching, are where accuracy is actually won or lost.
+
+## The audit view
+A reviewer should not have to take a score on trust, so the workbench shows the whole
+derivation on one panel: the indicator, the law and its amendment date, the raw statutory
+text, the model's stated reason, the resulting score against its allowed range, and the
+individual scoring inputs that produced it. Token usage and cost sit at the top of the same
+card. A retrieval-backed chat runs alongside it for interrogating the underlying corpus.
+
+## Reproducibility
+The graded artifact is not a folder of curated rows — it is a tool a reviewer runs to
+produce those rows. Runs are reproducible from an integrity-verified offline corpus guarded
+by checksums, character counts, and a statute-quality classifier, so a truncated or
+substituted law cannot quietly poison a submission. A full run emits a 1,246-row evidence
+submission covering 61 indicators across 12 pillars for 7 economies, with 96.2% of quotes
+located verbatim in their source. The key-free local-model path means a reviewer needs no
+API credentials to reproduce it — a whole submission costs about $13 on a hosted model, or
+nothing on the open-weight path.
+
+## Notes
+- Honest negative results are recorded rather than buried; one escalation was measured,
+  found not to help, and reverted.
+- Coverage tiers are stated plainly — economies where live crawling is verified are
+  distinguished from those verified against a local corpus.

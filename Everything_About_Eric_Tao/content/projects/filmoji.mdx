@@ -1,0 +1,42 @@
+---
+title: Filmoji
+summary: Emoji-driven movie recommendations built on a shared embedding space, with a taste profile that learns from every swipe.
+---
+
+## Overview
+Filmoji answers one question — *what should I watch, given how I feel right now?* — by
+putting emojis and movies into the same vector space. Choosing 😱 or 🥹 is not matched
+against a rules table; it is embedded and resolved as a nearest-neighbour search over
+movie vectors. A team project built across four containerised services.
+
+## How the recommendation works
+1. The chosen emojis are resolved to emotion text through a catalogue of 50+ mappings.
+2. That text is embedded by a `sentence-transformers` MiniLM model into a 384-dim vector.
+3. If the user is signed in, their stored profile vector is blended in at 80/20 and the
+   result is renormalised.
+4. pgvector runs an `ivfflat` cosine search over movie embeddings, optionally filtered by
+   the genres associated with the emoji.
+5. Results are deduplicated, enriched with TMDB posters and trailers, and returned with a
+   plain-language reason for the pick.
+
+## Learning a taste profile
+Onboarding does double duty as training data. A short personality quiz maps categorical
+answers to weighted genre scores, which are turned into text and embedded as the initial
+profile vector. A swipe deck of curated films then refines it incrementally — a like moves
+the profile a small step toward the film's vector, a dislike nudges it away, and the result
+is renormalised to the unit sphere each time. Every later interaction can keep applying the
+same update, so the profile drifts toward the user rather than being fixed at signup.
+
+## Architecture
+Four services behind one Docker Compose file: a React 19 + Vite frontend served by nginx,
+a Spring Boot backend owning auth, watchlists and TMDB lookups, a FastAPI service owning
+embeddings and similarity search, and Postgres with pgvector holding both movie and profile
+vectors.
+
+## Notes
+- Keeping emojis and movies in one embedding space is what removes the rules engine — the
+  "closest movie to this emoji" question becomes ordinary vector math.
+- The `ivfflat` index needed recall tuning; a naive configuration returned confidently
+  wrong neighbours.
+- The AI service stays in Docker because the model downloads are large enough to make
+  local setup the slow path for a team.

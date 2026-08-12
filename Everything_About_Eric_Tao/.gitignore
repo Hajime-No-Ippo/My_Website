@@ -29,3 +29,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated deck assets — rebuild with `node scripts/build-deck.mjs <pdf> <slug>`,
+# and serve from Blob in production. The manifests in data/decks/ stay committed.
+/public/decks/

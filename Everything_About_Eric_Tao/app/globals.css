@@ -32,7 +32,9 @@
     --input: 0 0% 89%;
     --ring: 28 84% 52%;
 
-    --radius: 0.5rem;
+    /* Swiss style: square corners throughout. The Tailwind borderRadius scale
+       is pinned to 0 as well, so `rounded-*` utilities stay square too. */
+    --radius: 0rem;
   }
 
   .dark {

@@ -59,7 +59,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             className="absolute inset-0 object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/45" />
+          {/* Heavy enough to keep the overlaid title legible over hero art that
+              carries its own large type. */}
+          <div className="absolute inset-0 bg-black/60" />
           <div className="relative z-10 flex w-full items-end p-6 sm:p-10 text-white">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-white/70">{project.category}</p>

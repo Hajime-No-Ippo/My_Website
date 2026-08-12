@@ -58,8 +58,8 @@ export default function About() {
                     <h3 className="text-xl font-semibold font-saffron sm:text-2xl">If you&apos;re curious about my Research</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground sm:text-base">
                       <li>
-                        <a href="https://research.ericdesign.com/" className="hover:underline italic">
-                          https://research.ericdesign.com/
+                        <a href="https://blog.ericdesign.uk/" className="hover:underline italic">
+                          https://blog.ericdesign.uk/
                         </a>
                       </li>
                     </ul>
