@@ -14,8 +14,11 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const
 
-const underlineClass =
-  "absolute left-0 bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100"
+// Sheet row cascade. The panel itself slides for 500ms, so the rows start
+// slightly into that slide and run head-to-tail while it is still arriving.
+const ROW_LEAD_IN_MS = 120
+// Tune this one to taste — it is the gap between consecutive rows landing.
+const ROW_STAGGER_MS = 150
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -31,55 +34,64 @@ export default function Navbar() {
       <div className="container flex h-14 items-center justify-between gap-4">
         <Link href="/" className="flex items-center md:mr-6">
           <p className="relative inline-block text-base font-bold sm:text-lg">
-            use::std::Eric::<span className="text-[#E77421]">TAO</span>
+            ERIC  <span className="text-[#E77421]">TAO</span>
           </p>
         </Link>
 
-        {/* Desktop: inline links. */}
-        <nav className="hidden flex-1 items-center justify-end md:flex">
-          <div className="flex items-center justify-end gap-10 text-sm">
-            {NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="group">
-                <span className="relative inline-block py-2 text-sm font-medium">
-                  {link.label}
-                  <span className={cn(underlineClass, pathname === link.href && "scale-x-100")} />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </nav>
-
-        {/* Mobile: a sheet, so the header stays one row tall instead of
-            wrapping the links onto a second line. */}
+        {/* One nav at every width — the sheet is the navigation, not just the
+            small-screen fallback. */}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             aria-label="Open menu"
-            className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-white transition-colors hover:text-[#E77421] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E77421] md:hidden"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-white transition-colors hover:text-[#E77421] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E77421]"
           >
             <Menu className="h-6 w-6" />
           </SheetTrigger>
 
+          {/* The panel carries no surface of its own — no background, border or
+              shadow — and its slide is zeroed out. Otherwise the container and
+              the rows would both translate and the movement would compound. */}
           <SheetContent
             side="right"
-            className="w-[min(20rem,85vw)] border-l border-white/15 bg-black p-0 text-white"
+            className="w-[min(20rem,85vw)] border-0 bg-transparent p-0 text-white shadow-none focus:outline-none data-[state=open]:duration-0 data-[state=closed]:duration-0"
           >
             <SheetTitle className="sr-only">Site navigation</SheetTitle>
 
-            <nav className="flex flex-col pt-16">
-              {NAV_LINKS.map((link) => {
+            <nav className="flex flex-col gap-2 pr-3 pt-16">
+              {NAV_LINKS.map((link, index) => {
                 const isActive = pathname === link.href
+                // Row and wipe share one delay so they stay locked together.
+                const delay = ROW_LEAD_IN_MS + index * ROW_STAGGER_MS
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      // Tall rows so every target clears the 44px touch minimum.
-                      "flex min-h-[56px] items-center border-b border-white/10 px-6 text-lg font-medium transition-colors",
-                      isActive ? "text-[#E77421]" : "text-white hover:text-[#E77421]",
+                      // Each option is its own slab: own surface, own edge, with
+                      // the overlay showing through the gaps between them.
+                      "relative overflow-hidden border-l-2 bg-black",
+                      "flex min-h-[56px] items-center px-6 text-lg font-medium",
+                      "transition-colors",
+                      // Radix unmounts the sheet on close, so each open remounts
+                      // these rows and the cascade replays without any state.
+                      "animate-nav-row-in motion-reduce:animate-none",
+                      "text-white",
+                      isActive
+                        ? "border-l-[#E77421]"
+                        : "border-l-white/20 hover:border-l-[#E77421] hover:text-[#E77421]",
                     )}
+                    style={{ animationDelay: `${delay}ms` }}
                   >
-                    {link.label}
+                    {/* Absolutely positioned, so it paints above bare text no
+                        matter the DOM order — the label needs its own positioned
+                        layer below to stay legible against the orange. */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 bg-[#E77421] animate-nav-row-wipe motion-reduce:hidden"
+                      style={{ animationDelay: `${delay}ms` }}
+                    />
+                    <span className="relative z-10">{link.label}</span>
                   </Link>
                 )
               })}

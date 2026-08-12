@@ -2,19 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { projects, type ProjectCategory } from "@/data/projects"
+import Link from "next/link"
+import { projects, type Project, type ProjectCategory } from "@/data/projects"
+import { CurtainLink } from "@/components/route-curtain"
 import { cn } from "@/lib/utils"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
 
 type Filter = "All" | ProjectCategory
 
@@ -107,65 +98,11 @@ function ProjectGallery() {
               tracking which ids were on screen a moment ago. */}
           <div key={filter} className="relative flex h-full gap-10 px-2 w-max items-start pt-2">
             {filteredItems.map((item, index) => (
-              <Dialog key={item.id}>
-                <DialogTrigger asChild>
-                  <div
-                    className="relative shrink-0 cursor-pointer w-[320px] h-[210px] md:w-[380px] md:h-[250px] animate-fade-in-up motion-reduce:animate-none"
-                    // Clamped: an unbounded index * delay makes the tail of the
-                    // row lag further behind with every project added.
-                    style={{ animationDelay: `${Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}ms` }}
-                  >
-                    <div className="relative w-full h-full overflow-hidden rounded-lg group">
-                      <Image
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.title}
-                        fill
-                        sizes="(max-width: 768px) 320px, 380px"
-                        className="object-cover transition-all duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="text-white text-center p-4">
-                          <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                          <p className="text-sm">{item.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </DialogTrigger>
-                <DialogContent className="max-w-5xl w-full p-0 overflow-hidden">
-                  <div className="flex flex-col md:flex-row h-[80vh]">
-                    <ImageGallery mainImage={item.image} additionalImages={item.additionalImages} alt={item.title} />
-                    <div className="md:w-1/2 h-full flex flex-col p-6 overflow-y-auto">
-                      <DialogHeader className="mb-4">
-                        <DialogTitle className="text-2xl font-bold font-saffron">{item.title}</DialogTitle>
-                        <DialogDescription className="text-lg">{item.description}</DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="text-lg font-semibold font-saffron">Project Details</h4>
-                          <p className="text-muted-foreground">{item.detailedDescription}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold font-saffron">Technologies Used</h4>
-                          <p className="text-muted-foreground">{item.technologies}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold font-saffron">Project Duration</h4>
-                          <p className="text-muted-foreground">{item.duration}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold font-saffron">Key Features</h4>
-                          <ul className="list-disc list-inside text-muted-foreground">
-                            {item.features.map((feature, featureIndex) => (
-                              <li key={`${item.id}-feature-${featureIndex}`}>{feature}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <ProjectCard
+                key={item.id}
+                item={item}
+                delayMs={Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}
+              />
             ))}
           </div>
         </div>
@@ -174,78 +111,57 @@ function ProjectGallery() {
   )
 }
 
-function ImageGallery({
-  mainImage,
-  additionalImages,
-  alt,
-}: { mainImage: string; additionalImages: string[]; alt: string }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const allImages = [mainImage, ...additionalImages]
-
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % allImages.length)
+/**
+ * Projects carrying their own accent get the branded route curtain; the rest
+ * navigate normally. Same markup either way — only the link component differs.
+ */
+function ProjectCard({ item, delayMs }: { item: Project; delayMs: number }) {
+  const href = `/projects/${item.slug}`
+  const shared = {
+    "aria-label": `${item.title} — ${item.description}`,
+    className:
+      "relative shrink-0 block w-[320px] h-[210px] md:w-[380px] md:h-[250px] animate-fade-in-up motion-reduce:animate-none focus-visible:outline-none focus-visible:ring-2",
+    // Clamped: an unbounded index * delay makes the tail of the row lag
+    // further behind with every project added.
+    style: { animationDelay: `${delayMs}ms` },
   }
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + allImages.length) % allImages.length)
+  const body = (
+    <div className="relative w-full h-full overflow-hidden group">
+      <Image
+        src={item.image || "/placeholder.svg"}
+        alt={item.title}
+        fill
+        sizes="(max-width: 768px) 320px, 380px"
+        className="object-cover transition-all duration-300 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        <div className="text-white text-center p-4">
+          <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+          <p className="text-sm">{item.description}</p>
+        </div>
+      </div>
+      {/* Site accent, not the project's own — a project's colour belongs to
+          its page, not to how it is listed elsewhere. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-[#E77421] transition-transform duration-300 group-hover:scale-x-100"
+      />
+    </div>
+  )
+
+  if (item.accent) {
+    return (
+      <CurtainLink href={href} accent={item.accent} word={item.title} {...shared}>
+        {body}
+      </CurtainLink>
+    )
   }
 
   return (
-    <div className="md:w-1/2 h-full relative overflow-hidden">
-      <motion.div
-        key={currentImageIndex}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Image
-          src={allImages[currentImageIndex] || "/placeholder.svg"}
-          alt={`${alt} - Image ${currentImageIndex + 1}`}
-          fill
-          sizes="50vw"
-          className="rounded-lg object-cover"
-        />
-      </motion.div>
-      <div className="absolute inset-y-0 left-0 flex items-center">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={prevImage}
-          className="rounded-full bg-background/80 backdrop-blur-sm ml-2 opacity-20 hover:opacity-70 transition-opacity"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="absolute inset-y-0 right-0 flex items-center">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={nextImage}
-          className="rounded-full bg-background/80 backdrop-blur-sm mr-2 opacity-20 hover:opacity-70 transition-opacity"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {allImages.slice(0, 3).map((image, index) => (
-          <button
-            key={`${alt}-thumb-${index}`}
-            onClick={() => setCurrentImageIndex(index)}
-            className={cn(
-              "w-16 h-16 rounded-md overflow-hidden border-2",
-              currentImageIndex === index ? "border-[#E77421]" : "border-transparent",
-            )}
-          >
-            <Image src={image || "/placeholder.svg"} alt={`Thumbnail ${index + 1}`} width={64} height={64} sizes="64px" className="h-16 w-16 object-cover" />
-          </button>
-        ))}
-      </div>
-    </div>
+    <Link href={href} {...shared}>
+      {body}
+    </Link>
   )
 }
 

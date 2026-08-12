@@ -2,11 +2,73 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRef, useEffect } from "react";
-import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+/** Matches the grid background's `backgroundSize`, so lit cells land on it. */
+const CELL_PX = 60;
+/** How far the burst reaches from the clicked cell, in cells. */
+const BURST_RADIUS = 2;
+/** Per-cell delay by ring, so the burst radiates instead of appearing at once. */
+const RIPPLE_MS = 45;
+/** Must match the `grid-cell-flip` duration in tailwind.config.js. */
+const FLIP_MS = 4800;
+
+type Cell = { col: number; row: number; delay: number };
+type Burst = { id: number; cells: Cell[] };
+
+function cellsAround(col: number, row: number): Cell[] {
+  const cells: Cell[] = [];
+
+  for (let dx = -BURST_RADIUS; dx <= BURST_RADIUS; dx += 1) {
+    for (let dy = -BURST_RADIUS; dy <= BURST_RADIUS; dy += 1) {
+      const distance = Math.hypot(dx, dy);
+      if (distance > BURST_RADIUS + 0.3) continue;
+      // Thin the outer ring so the burst reads as scattered, not as a stamped
+      // circle repeated identically on every click.
+      if (distance > BURST_RADIUS - 0.5 && Math.random() < 0.45) continue;
+
+      cells.push({ col: col + dx, row: row + dy, delay: Math.round(distance * RIPPLE_MS) });
+    }
+  }
+
+  return cells;
+}
 
 export default function Hero() {
-  const blurRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const nextBurstId = useRef(0);
+  const timers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const [bursts, setBursts] = useState<Burst[]>([]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      pending.forEach(clearTimeout);
+      pending.clear();
+    };
+  }, []);
+
+  const lightCells = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const bounds = gridRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+
+    const col = Math.floor((event.clientX - bounds.left) / CELL_PX);
+    const row = Math.floor((event.clientY - bounds.top) / CELL_PX);
+    const cells = cellsAround(col, row);
+    if (cells.length === 0) return;
+
+    const id = nextBurstId.current++;
+    setBursts((current) => [...current, { id, cells }]);
+
+    // Drop the burst once its slowest cell has finished, so repeated clicks
+    // never accumulate dead nodes.
+    const longest = Math.max(...cells.map((cell) => cell.delay));
+    const timer = setTimeout(() => {
+      setBursts((current) => current.filter((burst) => burst.id !== id));
+      timers.current.delete(timer);
+    }, FLIP_MS + longest + 100);
+    timers.current.add(timer);
+  }, []);
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
@@ -34,17 +96,42 @@ export default function Hero() {
         </Link>
       </div>
 
-
-      <div className="absolute inset-0 z-0 bg-black">
-
+      {/* Sits behind the copy at z-0, so clicks on the heading and button are
+          unaffected — only bare grid responds. */}
+      <div ref={gridRef} className="absolute inset-0 z-0 bg-black" onClick={lightCells}>
         <div
           className="absolute inset-0 opacity-40"
           style={{
             backgroundImage:
               "linear-gradient(rgba(255, 255, 255, 0.29) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+            backgroundSize: `${CELL_PX}px ${CELL_PX}px`,
           }}
         />
+
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          {/* Flattened deliberately. A nested map emits one child array per
+              burst, and React keys those arrays by position — so removing an
+              expired burst shifts the others up a slot and remounts their
+              cells, restarting animations that were still running. One flat
+              list of uniquely-keyed cells reconciles by key instead. */}
+          {bursts.flatMap((burst) =>
+            burst.cells.map((cell) => (
+              <span
+                key={`${burst.id}-${cell.col}-${cell.row}`}
+                className="absolute bg-[#E77421] animate-grid-cell-flip motion-reduce:animate-none"
+                style={{
+                  // Offset by the 1px rule so the grid lines stay legible
+                  // around each lit square instead of being painted over.
+                  left: cell.col * CELL_PX + 1,
+                  top: cell.row * CELL_PX + 1,
+                  width: CELL_PX - 1,
+                  height: CELL_PX - 1,
+                  animationDelay: `${cell.delay}ms`,
+                }}
+              />
+            )),
+          )}
+        </div>
       </div>
     </section>
   );

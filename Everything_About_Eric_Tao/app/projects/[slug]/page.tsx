@@ -6,11 +6,14 @@ import path from "node:path"
 import ReactMarkdown from "react-markdown"
 import { ArrowUpRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { projects } from "@/data/projects"
+import { accentOf, projects } from "@/data/projects"
 import { cn } from "@/lib/utils"
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }))
+  // Projects with a hand-built page own their path via a static segment. Next
+  // prefers that segment at runtime, but prerendering it from here too would
+  // produce two routes resolving to the same URL.
+  return projects.filter((project) => !project.hasCustomPage).map((project) => ({ slug: project.slug }))
 }
 
 async function loadProjectContent(contentPath: string) {
@@ -40,7 +43,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const hasGallery = galleryImages.length > 0
 
   return (
-    <div className="pb-12">
+    <div className="pb-12" style={{ ["--accent" as string]: accentOf(project) }}>
       <div className="container pt-8 sm:pt-12">
         <div className="mb-6">
           <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground">
@@ -72,7 +75,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   href={project.liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#E77421] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#E77421]/90"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
                 >
                   Visit live site
                   <ArrowUpRight className="h-4 w-4" />
@@ -127,15 +130,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             <div className="rounded-xl border border-border/70 bg-muted/30 p-4 sm:p-5">
               <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#E77421]/80">Category</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Category</p>
                   <p className="mt-1 text-foreground">{project.category}</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#E77421]/80">Duration</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Duration</p>
                   <p className="mt-1 text-foreground">{project.duration}</p>
                 </div>
                 <div className="sm:col-span-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#E77421]/80">Technologies</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Technologies</p>
                   <p className="mt-1 text-foreground">{project.technologies}</p>
                 </div>
               </div>

@@ -1,5 +1,13 @@
 export type ProjectCategory = "Frontend" | "UI/UX" | "Full-Stack"
 
+/** Site accent. Projects without their own colour are presented in this. */
+export const DEFAULT_ACCENT = "#E77421"
+
+/** The accent a project is presented in, wherever it appears. */
+export function accentOf(project: Pick<Project, "accent">) {
+  return project.accent ?? DEFAULT_ACCENT
+}
+
 export type Project = {
   id: number
   slug: string
@@ -16,11 +24,69 @@ export type Project = {
   contentPath: string
   /** Public URL of the deployed project, when there is one. */
   liveUrl?: string
+  /** Overrides DEFAULT_ACCENT so a project can carry its own brand colour. */
+  accent?: string
+  /**
+   * Set when the project has a hand-built page at /projects/<slug> instead of
+   * the generic [slug] route. Purely informational — Next already prefers the
+   * static segment — but it keeps the data honest about which is which.
+   */
+  hasCustomPage?: boolean
 }
 
 export const projects: Project[] = [
   {
     id: 1,
+    slug: "sentinel",
+    title: "SENTINEL",
+    description: "Top 20 at the UN Global Hackathon — mapping national trade law to ESCAP indicators",
+    category: "Full-Stack",
+    image: "/projects/sentinel-landing-grid.webp",
+    className: "w-[450px] h-[350px]",
+    detailedDescription:
+      "A Top 20 finalist at the UN Global Hackathon on AI for Digital Trade Regulatory Analysis. SENTINEL turns unstructured national legislation into mapped, citable evidence against the RDTII 2.1 methodology. Because the output is legal evidence, the engine is a deterministic-plus-probabilistic hybrid: regex slices the statute, a classifier routes chunks, an LLM extracts the feature and a quote, and the quote is then verified character-for-character against the source. Anything that fails verification is rejected rather than shown.",
+    technologies: "Python, FastAPI, Playwright, OCR, PostgreSQL + pgvector, React, TypeScript, Rust, Docker, Ollama / DeepSeek",
+    duration: "3 months",
+    features: [
+      "Top 20 at the UN Global Hackathon on AI for Digital Trade Regulatory Analysis",
+      "Automated discovery across official government legal portals, including scanned PDFs via OCR",
+      "Article-level mapping to 61 indicators across 12 pillars for 7 economies — a 1,246-row submission",
+      "96.2% of quotes located verbatim in source; unverifiable mappings are rejected, not shown",
+      "Blind cross-model score checking before results ship",
+    ],
+    additionalImages: [
+      "/projects/sentinel-workbench.webp",
+      "/projects/sentinel-memo.webp",
+      "/projects/sentinel-about.webp",
+    ],
+    contentPath: "/content/projects/sentinel-digital-trade-mapper.mdx",
+    accent: "#2f9e6b",
+    hasCustomPage: true,
+  },
+  {
+    id: 2,
+    slug: "filmoji",
+    title: "Filmoji",
+    description: "Emoji-to-movie recommendations built on a shared embedding space",
+    category: "Full-Stack",
+    image: "/projects/filmoji-hero.webp",
+    className: "w-[450px] h-[350px]",
+    detailedDescription:
+      "Pick an emoji, get a film. Filmoji embeds emojis and movies into the same 384-dimension vector space so 'closest movie to this mood' becomes a nearest-neighbour search rather than a set of hand-tuned rules. A quiz and a swipe deck build a personal taste vector that is blended into every later query, so results drift toward the individual user over time.",
+    technologies: "React 19, Vite, Spring Boot, FastAPI, sentence-transformers, PostgreSQL + pgvector, Firebase Auth, Docker Compose",
+    duration: "5 months",
+    features: [
+      "Multi-emoji queries blended into a single embedding, so 🚀 + 😂 differs from 🚀 alone",
+      "Onboarding quiz and Tinder-style swipe deck that seed a 384-dim taste profile",
+      "Incremental profile learning — every swipe nudges the stored vector and renormalises it",
+      "pgvector ivfflat cosine search over movie embeddings, blended 80/20 with the user profile",
+      "Four containerised services orchestrated by a single Docker Compose file",
+    ],
+    additionalImages: ["/projects/filmoji-emoji-grid.webp", "/projects/filmoji-grid-2.webp"],
+    contentPath: "/content/projects/filmoji.mdx",
+  },
+  {
+    id: 3,
     slug: "mobile-ui-framework",
     title: "Mobile UI Framework",
     description: "User interface architecture for food exchange application",
@@ -45,7 +111,7 @@ export const projects: Project[] = [
     contentPath: "/content/projects/mobile-ui-framework.mdx",
   },
   {
-    id: 2,
+    id: 4,
     slug: "design-lab-branding",
     title: "Design Lab Branding",
     description: "Logo design for creative studio",
@@ -66,7 +132,7 @@ export const projects: Project[] = [
     contentPath: "/content/projects/design-lab-branding.mdx",
   },
   {
-    id: 3,
+    id: 5,
     slug: "sustainable-marketplace-platform",
     title: "Sustainable Marketplace Platform",
     description: "Frontend development with firebase backend project with user authentication",
@@ -90,7 +156,7 @@ export const projects: Project[] = [
     contentPath: "/content/projects/sustainable-marketplace-platform.mdx",
   },
   {
-    id: 4,
+    id: 6,
     slug: "real-time-chatbox",
     title: "Real-time chatbox",
     description: "Real-time messaging interface aimed for supporting customer seller communications",
@@ -113,7 +179,7 @@ export const projects: Project[] = [
     contentPath: "/content/projects/real-time-chatbox.mdx",
   },
   {
-    id: 5,
+    id: 7,
     slug: "Arknights-Resource-Planner",
     title: "Arknights Resource Planner",
     description: "A resource planning tool for the game Arknights",
@@ -134,53 +200,5 @@ export const projects: Project[] = [
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Calculator/Result.jpg"],
     contentPath: "/content/projects/arknights-resource-planner.mdx",
     liveUrl: "https://arknights.ericdesign.uk/",
-  },
-  {
-    id: 6,
-    slug: "filmoji",
-    title: "Filmoji",
-    description: "Emoji-to-movie recommendations built on a shared embedding space",
-    category: "Full-Stack",
-    image: "/projects/filmoji-hero.webp",
-    className: "w-[450px] h-[350px]",
-    detailedDescription:
-      "Pick an emoji, get a film. Filmoji embeds emojis and movies into the same 384-dimension vector space so 'closest movie to this mood' becomes a nearest-neighbour search rather than a set of hand-tuned rules. A quiz and a swipe deck build a personal taste vector that is blended into every later query, so results drift toward the individual user over time.",
-    technologies: "React 19, Vite, Spring Boot, FastAPI, sentence-transformers, PostgreSQL + pgvector, Firebase Auth, Docker Compose",
-    duration: "5 months",
-    features: [
-      "Multi-emoji queries blended into a single embedding, so 🚀 + 😂 differs from 🚀 alone",
-      "Onboarding quiz and Tinder-style swipe deck that seed a 384-dim taste profile",
-      "Incremental profile learning — every swipe nudges the stored vector and renormalises it",
-      "pgvector ivfflat cosine search over movie embeddings, blended 80/20 with the user profile",
-      "Four containerised services orchestrated by a single Docker Compose file",
-    ],
-    additionalImages: ["/projects/filmoji-emoji-grid.webp", "/projects/filmoji-grid-2.webp"],
-    contentPath: "/content/projects/filmoji.mdx",
-  },
-  {
-    id: 7,
-    slug: "sentinel-digital-trade-mapper",
-    title: "SENTINEL",
-    description: "Top 20 at the UN Global Hackathon — mapping national trade law to ESCAP indicators",
-    category: "Full-Stack",
-    image: "/projects/sentinel-landing-grid.webp",
-    className: "w-[450px] h-[350px]",
-    detailedDescription:
-      "A Top 20 finalist at the UN Global Hackathon on AI for Digital Trade Regulatory Analysis. SENTINEL turns unstructured national legislation into mapped, citable evidence against the RDTII 2.1 methodology. Because the output is legal evidence, the engine is a deterministic-plus-probabilistic hybrid: regex slices the statute, a classifier routes chunks, an LLM extracts the feature and a quote, and the quote is then verified character-for-character against the source. Anything that fails verification is rejected rather than shown.",
-    technologies: "Python, FastAPI, Playwright, OCR, PostgreSQL + pgvector, React, TypeScript, Rust, Docker, Ollama / DeepSeek",
-    duration: "3 months",
-    features: [
-      "Top 20 at the UN Global Hackathon on AI for Digital Trade Regulatory Analysis",
-      "Automated discovery across official government legal portals, including scanned PDFs via OCR",
-      "Article-level mapping to 61 indicators across 12 pillars for 7 economies — a 1,246-row submission",
-      "96.2% of quotes located verbatim in source; unverifiable mappings are rejected, not shown",
-      "Blind cross-model score checking before results ship",
-    ],
-    additionalImages: [
-      "/projects/sentinel-workbench.webp",
-      "/projects/sentinel-memo.webp",
-      "/projects/sentinel-about.webp",
-    ],
-    contentPath: "/content/projects/sentinel-digital-trade-mapper.mdx",
   },
 ]
