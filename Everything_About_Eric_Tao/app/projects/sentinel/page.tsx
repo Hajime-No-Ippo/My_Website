@@ -18,8 +18,14 @@ export const metadata: Metadata = {
   description: project?.description,
 }
 
+// Statically scoped: Next traces `path.join(process.cwd(), <dynamic>)` as
+// filesystem access to the whole project and bundles every source file — the
+// public folder included — into the server output. Pinning the directory and
+// taking only the basename keeps the trace to content/projects, and blocks
+// path traversal for free.
+const CONTENT_DIR = path.join(process.cwd(), "content", "projects")
 async function loadWriteup(contentPath: string) {
-  const fullPath = path.join(process.cwd(), contentPath.replace(/^\/+/, ""))
+  const fullPath = path.join(CONTENT_DIR, path.basename(contentPath))
   const source = await readFile(fullPath, "utf8")
   return source.replace(/^---[\s\S]*?---\s*/, "")
 }
