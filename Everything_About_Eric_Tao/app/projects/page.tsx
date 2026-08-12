@@ -1,7 +1,8 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { projects } from "@/data/projects"
+import { projects, type Project } from "@/data/projects"
+import { CurtainLink, curtainFor } from "@/components/curtain"
 
 const page = () => {
   return (
@@ -44,19 +45,41 @@ const page = () => {
                 <h2 className="text-xl font-semibold font-saffron">{project.title}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
               </div>
+
               <div className="pt-2">
-                <Link
-                  href={`/projects/${project.slug}`}
-                  className="inline-flex items-center text-sm font-medium text-[#E77421] hover:text-[#E77421]/80"
-                >
-                  View project content →
-                </Link>
+                <ProjectLink project={project} />
               </div>
             </div>
           </article>
         ))}
       </div>
     </div>
+  )
+}
+
+/**
+ * One link per card. Projects with a registered curtain open through it; the
+ * rest navigate normally. Lives inside the map's scope by taking the project as
+ * a prop — `projects` is the array, so `slug` only exists on an element of it.
+ */
+function ProjectLink({ project }: { project: Project }) {
+  const href = `/projects/${project.slug}`
+  const visual = curtainFor(href)
+  const className = "inline-flex items-center text-sm font-medium text-[#E77421] hover:text-[#E77421]/80"
+  const label = "View project content →"
+
+  if (visual && project.accent) {
+    return (
+      <CurtainLink href={href} accent={project.accent} word={project.title} visual={visual} className={className}>
+        {label}
+      </CurtainLink>
+    )
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
   )
 }
 

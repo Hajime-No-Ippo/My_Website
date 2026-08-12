@@ -72,33 +72,11 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-      <div className="relative z-10 px-4 sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl font-saffron">
-          Hello, my name is{" "}
-          <span className="group relative inline-block py-2 font-bold italic text-[#E77421]">
-            <a href="/about">
-              Eric Tao
-            </a>
-            <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
-          </span>
-        </h1>
-        <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
-          New Grad Software Engineer & UX Designer
-        </p>
-        <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
-          Experience Life, Seek the adventure.
-        </p>
-        <Link href="/projects" passHref>
-          <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-white">
-            View My Work
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-        </Link>
-      </div>
-
-      {/* Sits behind the copy at z-0, so clicks on the heading and button are
-          unaffected — only bare grid responds. */}
-      <div ref={gridRef} className="absolute inset-0 z-0 bg-black" onClick={lightCells}>
+      {/* Painted first so the copy above needs no z-index. A z-index here would
+          open a stacking context and isolate mix-blend-difference on the name
+          from this grid, leaving it nothing to contrast against. Clicks on the
+          heading still land on the copy, which paints on top. */}
+      <div ref={gridRef} className="absolute inset-0 bg-black" onClick={lightCells}>
         <div
           className="absolute inset-0 opacity-40"
           style={{
@@ -133,6 +111,34 @@ export default function Hero() {
           )}
         </div>
       </div>
+
+      <div className="relative px-4 sm:px-6 lg:px-8">
+        <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl font-saffron">
+          Hello, my name is{" "}
+          <span className="group mix-blend-difference relative inline-block py-2 font-bold italic text-[#E77421] ">
+            {/* difference blend: |text - backdrop| per channel. Over black the
+                name keeps its orange; over a lit cell of that same orange it
+                resolves to black, so it stays legible without a stroke. */}
+            <a href="/about">
+              Eric Tao
+            </a>
+            <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+          </span>
+        </h1>
+        <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
+          New Grad Software Engineer & UX Designer
+        </p>
+        <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
+          Experience Life, Seek the adventure.
+        </p>
+        <Link href="/projects" passHref>
+          <Button size="lg" className="group bg-[#E77421] mix-blend-difference bg-blend-saturation hover:bg-[#E77421]/90 text-white">
+            View My Work
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
+      </div>
+
     </section>
   );
 }

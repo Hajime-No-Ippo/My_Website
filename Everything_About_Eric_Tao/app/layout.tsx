@@ -4,7 +4,7 @@ import { Playfair_Display as Saffron, Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { RouteCurtainProvider } from "@/components/route-curtain"
+import { RouteCurtainProvider } from "@/components/curtain"
 
 const saffron = Saffron({
   subsets: ["latin"],

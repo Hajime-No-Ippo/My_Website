@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { projects, type Project, type ProjectCategory } from "@/data/projects"
-import { CurtainLink } from "@/components/route-curtain"
+import { CurtainLink, curtainFor } from "@/components/curtain"
 import { cn } from "@/lib/utils"
 
 type Filter = "All" | ProjectCategory
@@ -150,9 +150,12 @@ function ProjectCard({ item, delayMs }: { item: Project; delayMs: number }) {
     </div>
   )
 
-  if (item.accent) {
+  // A route with no registered curtain simply navigates.
+  const visual = curtainFor(href)
+
+  if (visual && item.accent) {
     return (
-      <CurtainLink href={href} accent={item.accent} word={item.title} {...shared}>
+      <CurtainLink href={href} accent={item.accent} word={item.title} visual={visual} {...shared}>
         {body}
       </CurtainLink>
     )

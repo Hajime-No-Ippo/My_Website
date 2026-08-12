@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
 import BrandSpecimen from "@/components/artificial"
-import { CurtainOnArrival } from "@/components/route-curtain"
+import { CurtainOnArrival } from "@/components/curtain"
 import { accentOf, projects } from "@/data/projects"
 
 // Hand-built page. Next resolves this static segment ahead of /projects/[slug],

@@ -84,6 +84,7 @@ export const projects: Project[] = [
     ],
     additionalImages: ["/projects/filmoji-emoji-grid.webp", "/projects/filmoji-grid-2.webp"],
     contentPath: "/content/projects/filmoji.mdx",
+    accent: "#FEFEF0",
   },
   {
     id: 3,

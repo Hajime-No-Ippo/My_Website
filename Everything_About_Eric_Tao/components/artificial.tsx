@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, Fragment, useEffect, useRef, useState } from "react";
+import BallCursor from "@/components/ball-cursor";
 import "@fontsource/boldonse/400.css";
 
 // Standalone brand-logo display — a type-specimen panel (the reference layout).
@@ -112,6 +113,10 @@ export function BrandSpecimen() {
 
   return (
     <section className="relative w-full overflow-hidden text-white" style={BRAND_BG}>
+      {/* Takes over the pointer for this section only — it binds to its parent,
+          so the bounds of the specimen are the bounds of the effect. */}
+      <BallCursor />
+
       <div className="relative mx-auto flex min-h-[74vh] max-w-6xl items-center justify-center px-6 py-30">
         {/* corner labels — wide margin (labels only, no rule lines), raised
             (z-20) above the glyph restriction lines so the green text doesn't

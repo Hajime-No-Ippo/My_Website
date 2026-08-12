@@ -12,15 +12,9 @@ import {
 } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import "@fontsource/boldonse/400.css";
+import type { CurtainVisual } from "./types";
 /** Total budget. Must match the `curtain-veil` duration in tailwind.config.js. */
 const CURTAIN_MS = 2400;
-/** Horizontal bands that sweep in to build the field. */
-const BAND_COUNT = 4;
-/** Gap between consecutive bands landing. */
-const BAND_STAGGER_MS = 80;
-/** Last band lands at 5 × 120 + 900 = 1500ms; the wordmark follows it. */
-const WORD_DELAY_MS = 800;
 /**
  * When the route actually changes. The veil is fully opaque by now, so the swap
  * happens entirely out of sight — this is what makes it a transition rather
@@ -28,7 +22,14 @@ const WORD_DELAY_MS = 800;
  */
 const PUSH_AT_MS = 800;
 
-type CurtainLook = { accent: string; word: string };
+/**
+ * `emoji` switches the curtain from the sweeping bands to Filmoji's brick
+ * expand — a single tile growing to fill the screen, the same morph the emoji
+ * grid uses on click.
+ */
+/** `visual` swaps the field painted under the veil; the veil, scroll lock and
+ *  wordmark are the host's and stay the same for every project. */
+type CurtainLook = { accent: string; word: string; visual: CurtainVisual };
 type CurtainState = CurtainLook & { key: number };
 
 type CurtainApi = {
@@ -53,6 +54,11 @@ export function useRouteCurtain() {
  * standalone in tests.
  */
 function useOptionalCurtain() {
+  return useContext(CurtainContext);
+}
+
+/** Public non-throwing accessor, for consumers outside this module. */
+export function useOptionalRouteCurtain() {
   return useContext(CurtainContext);
 }
 
@@ -158,12 +164,12 @@ export function RouteCurtainProvider({ children }: { children: ReactNode }) {
   return (
     <CurtainContext.Provider value={api}>
       {children}
-      {curtain && <Curtain key={curtain.key} accent={curtain.accent} word={curtain.word} />}
+      {curtain && <Curtain key={curtain.key} accent={curtain.accent} word={curtain.word} visual={curtain.visual} />}
     </CurtainContext.Provider>
   );
 }
 
-function Curtain({ accent, word }: CurtainLook) {
+function Curtain({ accent, word, visual: Visual }: CurtainLook) {
   return (
     // pointer-events-auto so it genuinely blocks the page and the nav beneath;
     // the provider's document listeners supply the escape.
@@ -171,41 +177,8 @@ function Curtain({ accent, word }: CurtainLook) {
       aria-hidden="true"
       className="pointer-events-auto fixed inset-0 z-[100] animate-curtain-veil overflow-hidden"
     >
-      {/* Positioned rather than flexed, and each band is 1px taller than its
-          share so neighbours overlap. Flush edges land on fractional pixels at
-          most viewport heights (850/4 = 212.5), and two edges antialiased at
-          ~50% coverage composite to ~75%, not 100% — which paints a visible
-          hairline of the page showing through at every seam. */}
-      <div className="absolute inset-0">
-        {Array.from({ length: BAND_COUNT }, (_, index) => (
-          <span
-            key={index}
-            className="absolute inset-x-0 animate-curtain-band"
-            style={{
-              backgroundColor: accent,
-              top: `${(index * 100) / BAND_COUNT}%`,
-              height: `calc(${100 / BAND_COUNT}% + 1px)`,
-              animationDelay: `${index * BAND_STAGGER_MS}ms`,
-            }}
-          />
-        ))}
-      </div>
+      <Visual accent={accent} word={word} />
 
-      {/* Font set inline: globals.css forces font-saffron on h1-h6 and
-          font-inter on span/div, either of which would win over a class here. */}
-      <div className="absolute inset-0 flex items-center justify-center px-6">
-        <div
-          className="animate-curtain-word text-center text-black"
-          style={{
-            fontFamily: '"Boldonse", sans-serif',
-            fontSize: "clamp(2.5rem, 12vw, 11rem)",
-            lineHeight: 1,
-            animationDelay: `${WORD_DELAY_MS}ms`,
-          }}
-        >
-          {word}
-        </div>
-      </div>
     </div>
   );
 }
@@ -218,9 +191,10 @@ export function CurtainLink({
   href,
   accent,
   word,
+  visual,
   children,
   ...rest
-}: { href: string; accent: string; word: string; children: ReactNode } & Omit<
+}: { href: string; accent: string; word: string; visual: CurtainVisual; children: ReactNode } & Omit<
   React.ComponentPropsWithoutRef<typeof Link>,
   "href" | "onClick"
 >) {
@@ -234,22 +208,11 @@ export function CurtainLink({
         // Modified clicks belong to the browser — open-in-new-tab must survive.
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();
-        curtain.travelTo(href, { accent, word });
+        curtain.travelTo(href, { accent, word, visual });
       }}
       {...rest}
     >
       {children}
     </Link>
   );
-}
-
-/** Dropped into a destination page so a pasted URL still gets the curtain. */
-export function CurtainOnArrival({ href, accent, word }: { href: string } & CurtainLook) {
-  const curtain = useOptionalCurtain();
-
-  useEffect(() => {
-    curtain?.playOnArrival(href, { accent, word });
-  }, [href, accent, word, curtain]);
-
-  return null;
 }

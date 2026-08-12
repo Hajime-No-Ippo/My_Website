@@ -14,6 +14,14 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const
 
+/**
+ * Radial falloff for the backdrop blur, centred on the sheet's edge (100% 50%).
+ * Solid across the panel, then easing out so the blur has a radius rather than
+ * a boundary. Widen the second stop to reach further across the page.
+ */
+const BLUR_FALLOFF =
+  "radial-gradient(120% 90% at 100% 50%, #000 0%, #000 38%, rgba(0,0,0,0.55) 62%, transparent 88%)";
+
 // Sheet row cascade. The panel itself slides for 500ms, so the rows start
 // slightly into that slide and run head-to-tail while it is still arriving.
 const ROW_LEAD_IN_MS = 120
@@ -53,6 +61,14 @@ export default function Navbar() {
               the rows would both translate and the movement would compound. */}
           <SheetContent
             side="right"
+            // Backdrop blur strongest over the sheet and falling off by radius.
+            // The mask applies to the whole overlay, so the dim fades with the
+            // blur — a hard-edged blur circle would read as a bug.
+            overlayClassName="bg-black/40 backdrop-blur-md"
+            overlayStyle={{
+              maskImage: BLUR_FALLOFF,
+              WebkitMaskImage: BLUR_FALLOFF,
+            }}
             className="w-[min(20rem,85vw)] border-0 bg-transparent p-0 text-white shadow-none focus:outline-none data-[state=open]:duration-0 data-[state=closed]:duration-0"
           >
             <SheetTitle className="sr-only">Site navigation</SheetTitle>

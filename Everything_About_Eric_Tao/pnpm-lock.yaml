@@ -14,6 +14,9 @@ importers:
       '@fontsource/boldonse':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/michroma':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.68.0(react@18.3.1))
@@ -520,6 +523,9 @@ packages:
 
   '@fontsource/boldonse@5.3.0':
     resolution: {integrity: sha512-Dy2O05lppSeAN1IRWPAogRx0rE5UN2+/k3RDIyMtG92fhvnAR6C/EXbOjUIao10bkFCYhQiG71XZGvcbzTm3UA==}
+
+  '@fontsource/michroma@5.3.0':
+    resolution: {integrity: sha512-9sbGD7ek1hGvq0TmgNPFbuI3k7qwXVdZ+zCDsTHDGRIQqfYrpYWwEYcwH2fzOtvn8uiGqzAoJ72vuFE3v/hDdg==}
 
   '@hookform/resolvers@3.10.0':
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
@@ -4867,6 +4873,8 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@fontsource/boldonse@5.3.0': {}
+
+  '@fontsource/michroma@5.3.0': {}
 
   '@hookform/resolvers@3.10.0(react-hook-form@7.68.0(react@18.3.1))':
     dependencies:

@@ -91,3 +91,79 @@
   }
 }
 
+
+@layer components {
+  /* Frosted lens with spectral dispersion. Sizing and radius are deliberately
+     omitted — the consumer sets those, so the same class works on a 256px ball
+     and on a rectangular panel. */
+  .dispersion-glass {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    /* Unprefixed only. Authoring the -webkit- twin alongside it makes the CSS
+       transformer treat them as one property and keep just the last — leaving
+       only the prefixed form, which this Chrome ignores. Let the build prefix. */
+    /* Blur must stay small relative to the detail behind it. At 18px a 200px
+       letterform dissolves into flat colour and the lens has nothing to bend;
+       at 8px the shapes survive as distorted structure, which is what reads
+       as glass. Raise it only over busy imagery. */
+    backdrop-filter: blur(8px) saturate(140%) brightness(108%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Fresnel rim: a bright specular top edge and a darker refraction shadow
+       at the bottom are what read as curvature. Without them the disc looks
+       like a flat blurred hole rather than a lens. */
+    box-shadow:
+      inset 0 2px 3px rgba(255, 255, 255, 0.75),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.28),
+      0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Spectral light dispersion layer. */
+  .dispersion-glass::before {
+    content: "";
+    position: absolute;
+    /* Confined to the rim by the mask below. Chromatic dispersion is an edge
+       phenomenon — spread across the whole face it reads as a colour filter,
+       not glass. */
+    inset: 0;
+    mask-image: radial-gradient(closest-side, transparent 56%, #000 80%, #000 96%, transparent 100%);
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      rgba(255, 0, 128, 0.35),
+      rgba(255, 230, 0, 0.35),
+      rgba(0, 255, 200, 0.35),
+      rgba(0, 128, 255, 0.35),
+      rgba(180, 0, 255, 0.35)
+    );
+    mix-blend-mode: screen;
+    filter: blur(5px);
+    /* Was `pointer-events-none: none`, which is not a property and was dropped. */
+    pointer-events: none;
+  }
+
+  /* Prismatic chromatic fringing. */
+  .dispersion-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 255, 0.25) 0%,
+      transparent 50%,
+      rgba(255, 0, 128, 0.25) 100%
+    );
+    mix-blend-mode: color-dodge;
+    pointer-events: none;
+  }
+
+  /* Alternative: lensing plus Fresnel rim lighting, no spectral fringe. */
+  .refractive-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px) saturate(160%) contrast(110%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow:
+      inset 0 1px 2px rgba(255, 255, 255, 0.7),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+      0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+}
