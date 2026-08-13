@@ -111,6 +111,18 @@ module.exports = {
           "85%": { opacity: "1", transform: "perspective(300px) rotate3d(1, -1, 0, 0deg)" },
           "100%": { opacity: "0", transform: "perspective(300px) rotate3d(1, -1, 0, -90deg)" },
         },
+        // Diagnostic only (app/blend-test). rotate(45)/scaleY/rotate(-45)
+        // collapses the square along the "\" diagonal using a plain 2D matrix —
+        // deliberately no perspective() or rotate3d(), so this is the control
+        // for whether the 3D transform is what breaks blending on WebKit.
+        // Opacity is still animated here, matching grid-cell-flip, so the only
+        // variable between the two is 2D vs 3D.
+        "flip-2d": {
+          "0%": { opacity: "0", transform: "rotate(45deg) scaleY(0) rotate(-45deg)" },
+          "15%": { opacity: "1", transform: "rotate(45deg) scaleY(1) rotate(-45deg)" },
+          "85%": { opacity: "1", transform: "rotate(45deg) scaleY(1) rotate(-45deg)" },
+          "100%": { opacity: "0", transform: "rotate(45deg) scaleY(0) rotate(-45deg)" },
+        },
         // Route curtain, budgeted to 4800ms end to end. Generic: any project
         // with its own accent can play it, not just SENTINEL.
         // Bands use the same right-to-left clip as the nav rows; the veil holds
@@ -145,6 +157,10 @@ module.exports = {
         // stays hidden until its turn instead of flashing in first.
         "fade-in-up": "fade-in-up 0.3s ease-out both",
         "grid-cell-flip": "grid-cell-flip 3.6s ease-out both",
+        // Diagnostic only (app/blend-test) — same shape as grid-cell-flip but
+        // squashed along the diagonal with a 2D transform, so the cell never
+        // needs a 3D compositing layer. Delete with that route.
+        "flip-2d": "flip-2d 3.6s ease-out both",
         "curtain-band": "curtain-band 0.5s ease-out both",
         "curtain-word": "curtain-word 0.5s ease-out both",
         "curtain-veil": "curtain-veil 2.4s linear both",
