@@ -3,6 +3,7 @@ import Hero from "@/components/hero"
 
 const ProjectGallery = dynamic(() => import("@/components/project-gallery"))
 const Contact = dynamic(() => import("@/components/contact"))
+// const Illustration = dynamic(() => import("@/components/illustrates/illustrate"))
 
 export default function Home() {
   return (

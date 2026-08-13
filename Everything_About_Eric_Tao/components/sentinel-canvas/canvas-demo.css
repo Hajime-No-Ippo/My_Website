@@ -1,0 +1,68 @@
+/* Scoped chrome for the embedded SENTINEL workbench canvas.
+   Ported from rdtii-frontend/src/styles.css — only the rules the canvas
+   nodes actually reference, namespaced so they can't leak into the site. */
+
+/* Cursor feedback for the active tool */
+.sentinel-canvas.wb-hand .react-flow__pane {
+  cursor: grab;
+}
+.sentinel-canvas.wb-hand .react-flow__pane.dragging {
+  cursor: grabbing;
+}
+.sentinel-canvas.wb-select .react-flow__node .panel-header,
+.sentinel-canvas.wb-select .react-flow__node .wb-drag-strip {
+  cursor: grab;
+}
+.sentinel-canvas.wb-select .react-flow__node.dragging .panel-header,
+.sentinel-canvas.wb-select .react-flow__node.dragging .wb-drag-strip {
+  cursor: grabbing;
+}
+
+/* Markdown inside assistant chat bubbles */
+.sentinel-canvas .chat-md p {
+  margin: 0 0 0.5em;
+}
+.sentinel-canvas .chat-md p:last-child {
+  margin-bottom: 0;
+}
+.sentinel-canvas .chat-md h1,
+.sentinel-canvas .chat-md h2,
+.sentinel-canvas .chat-md h3,
+.sentinel-canvas .chat-md h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0.6em 0 0.3em;
+}
+.sentinel-canvas .chat-md ul,
+.sentinel-canvas .chat-md ol {
+  margin: 0.25em 0 0.5em;
+  padding-left: 1.25em;
+  list-style: disc;
+}
+.sentinel-canvas .chat-md li {
+  margin: 0.15em 0;
+}
+.sentinel-canvas .chat-md code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+.sentinel-canvas .chat-md blockquote {
+  margin: 0.4em 0;
+  padding: 0.3em 0.8em;
+  border-left: 3px solid #111827;
+  background: #f3f1ea;
+  font-style: italic;
+}
+.sentinel-canvas .chat-md strong {
+  font-weight: 700;
+}
+
+/* The site's dark theme must not restyle the canvas — it is a light artifact. */
+.sentinel-canvas .react-flow__attribution {
+  background: rgba(243, 241, 234, 0.8);
+}
+.sentinel-canvas .react-flow__attribution a {
+  color: #5a6573;
+}

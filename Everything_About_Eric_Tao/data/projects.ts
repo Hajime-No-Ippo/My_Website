@@ -85,6 +85,7 @@ export const projects: Project[] = [
     additionalImages: ["/projects/filmoji-emoji-grid.webp", "/projects/filmoji-grid-2.webp"],
     contentPath: "/content/projects/filmoji.mdx",
     accent: "#FEFEF0",
+    hasCustomPage: true,
   },
   {
     id: 3,
@@ -113,8 +114,8 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    slug: "design-lab-branding",
-    title: "Design Lab Branding",
+    slug: "modern-component-design",
+    title: "Modern Component Design",
     description: "Logo design for creative studio",
     category: "UI/UX",
     image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/WX20251212-203632.png",

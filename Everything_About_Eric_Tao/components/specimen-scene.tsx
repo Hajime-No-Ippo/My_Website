@@ -33,7 +33,7 @@ function dedupe(values: number[]) {
 }
 
 export default function SpecimenScene({
-  word = "Sentinel",
+  word = "Data Safety",
   fontSize = 1.7,
   color = "#ffffff",
 }: {

@@ -7,6 +7,7 @@ import path from "node:path"
 import ReactMarkdown from "react-markdown"
 import FluidLens from "@/components/fluid-lens"
 import SpecimenScene from "@/components/specimen-scene"
+import SentinelCanvas from "@/components/sentinel-canvas/SentinelCanvas"
 import { CurtainOnArrival } from "@/components/curtain"
 import { accentOf, projects } from "@/data/projects"
 
@@ -48,7 +49,7 @@ export default async function SentinelPage() {
       {/* The type specimen as scene content, refracted by a real glass lens.
           Everything inside the canvas is GPU-drawn, so the wordmark and its
           registration lines come from troika glyph bounds rather than DOM. */}
-      <FluidLens className="h-[90vh] w-full">
+      <FluidLens className="h-[80vh] w-full" material={{ ior: 1.09, chromaticAberration: 0.03, roughness: 0.05, thickness: 1.2, temporalDistortion: 0.2 }}>
         <SpecimenScene />
       </FluidLens>
 
@@ -74,6 +75,22 @@ export default async function SentinelPage() {
           </div>
         </dl>
       </div>
+
+      {/* The workbench canvas from the actual product, embedded live with one
+          canned mapping — not a screenshot. Full-bleed so the cards get room. */}
+      <section className="mt-12">
+        <div className="container">
+          <h2 className="font-saffron text-2xl font-semibold">The workbench, live</h2>
+          <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
+            SENTINEL&apos;s canvas migrated straight out of the product: drag the cards, wire the
+            nodes, leave a note, or reply in the session thread. The data is one canned mapping
+            (Singapore · Electronic Transactions Act 2010); the interaction is the real thing.
+          </p>
+        </div>
+        <div className="container mt-5">
+          <SentinelCanvas className="h-[72vh] min-h-[480px] w-full overflow-hidden border border-border/70" />
+        </div>
+      </section>
 
       <div className="container mt-12 grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-10">
