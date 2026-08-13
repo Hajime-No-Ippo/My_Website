@@ -76,7 +76,14 @@ function ProjectGallery() {
           observer.unobserve(entry.target)
         }
       },
-      { threshold: 0.15 },
+      // threshold must stay 0. It is a fraction of THIS element, and the grid
+      // is far taller than a phone viewport — 7 stacked cards run ~3500px, so
+      // the ratio tops out around 0.19 and a 0.15 threshold sits right on the
+      // edge, never firing at all on a shorter screen. The section then stayed
+      // at opacity 0 forever and the whole gallery read as missing.
+      // rootMargin gives the "scrolled into view" feel instead, and it is
+      // measured in pixels, so it cannot drift as projects are added.
+      { threshold: 0, rootMargin: "0px 0px -120px 0px" },
     )
 
     // Captured now: by cleanup time the ref may already point elsewhere.
