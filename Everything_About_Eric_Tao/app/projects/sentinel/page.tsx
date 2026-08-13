@@ -5,7 +5,8 @@ import { notFound } from "next/navigation"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
-import BrandSpecimen from "@/components/artificial"
+import FluidLens from "@/components/fluid-lens"
+import SpecimenScene from "@/components/specimen-scene"
 import { CurtainOnArrival } from "@/components/curtain"
 import { accentOf, projects } from "@/data/projects"
 
@@ -44,9 +45,12 @@ export default async function SentinelPage() {
           already drawn the curtain, and the provider skips a second run. */}
       <CurtainOnArrival href="/projects/sentinel" accent={accentOf(project)} word={project.title} />
 
-      {/* The live type specimen ported from the SENTINEL frontend stands in for
-          a hero image — the brand demonstrating itself rather than a screenshot. */}
-      <BrandSpecimen />
+      {/* The type specimen as scene content, refracted by a real glass lens.
+          Everything inside the canvas is GPU-drawn, so the wordmark and its
+          registration lines come from troika glyph bounds rather than DOM. */}
+      <FluidLens className="h-[90vh] w-full">
+        <SpecimenScene />
+      </FluidLens>
 
       <div className="container pt-10">
         <Link href="/projects" className="text-sm text-muted-foreground transition-colors hover:text-foreground">

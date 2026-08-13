@@ -157,25 +157,38 @@ export function RouteCurtainProvider({ children }: { children: ReactNode }) {
     };
   }, [curtain, dismiss]);
 
-  useEffect(() => clearTimers, [clearTimers]);
-
   const api = useMemo<CurtainApi>(() => ({ travelTo, playOnArrival }), [travelTo, playOnArrival]);
 
   return (
     <CurtainContext.Provider value={api}>
       {children}
-      {curtain && <Curtain key={curtain.key} accent={curtain.accent} word={curtain.word} visual={curtain.visual} />}
+      {curtain && (
+        <Curtain
+          key={curtain.key}
+          accent={curtain.accent}
+          word={curtain.word}
+          visual={curtain.visual}
+          onDone={() => setCurtain(null)}
+        />
+      )}
     </CurtainContext.Provider>
   );
 }
 
-function Curtain({ accent, word, visual: Visual }: CurtainLook) {
+function Curtain({ accent, word, visual: Visual, onDone }: CurtainLook & { onDone: () => void }) {
   return (
     // pointer-events-auto so it genuinely blocks the page and the nav beneath;
     // the provider's document listeners supply the escape.
     <div
       aria-hidden="true"
       className="pointer-events-auto fixed inset-0 z-[100] animate-curtain-veil overflow-hidden"
+      // Teardown rides the veil's own animation rather than a setTimeout. A
+      // timer can be cancelled out from under us — StrictMode's simulated
+      // unmount did exactly that, leaving an invisible pointer-events-auto
+      // overlay swallowing every click on the page.
+      onAnimationEnd={(event) => {
+        if (event.target === event.currentTarget) onDone();
+      }}
     >
       <Visual accent={accent} word={word} />
 
