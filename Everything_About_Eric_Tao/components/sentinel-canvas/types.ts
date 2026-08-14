@@ -42,3 +42,6 @@ export type WorkbenchCanvasSize = {
   width?: number;
   height?: number;
 };
+
+// The typed node union lives in SentinelCanvas.tsx (`DemoNode`) — defining it
+// here would make types.ts and the node component files import each other.

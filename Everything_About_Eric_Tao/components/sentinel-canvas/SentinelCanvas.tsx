@@ -3,7 +3,7 @@
 import "@xyflow/react/dist/style.css";
 import "./canvas-demo.css";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState, type RefObject } from "react";
 import {
   ReactFlow,
   Background,
@@ -11,6 +11,7 @@ import {
   MiniMap,
   addEdge,
   applyEdgeChanges,
+  applyNodeChanges,
   type Connection,
   type Edge,
   type EdgeChange,
@@ -34,8 +35,6 @@ import {
   DEMO_PANELS,
   DEMO_POSITIONS,
   DEMO_SESSIONS,
-  type DemoNote,
-  type DemoSession,
 } from "./demo-data";
 
 /**
@@ -43,85 +42,187 @@ import {
  * (UN-DigitalTrade-AI-Mapper, React 18 + Vite) and slimmed into an embeddable
  * demo: the node components are the originals; the backend paths (upload,
  * RAG ingest, layout sync) are replaced by canned data from demo-data.tsx.
- * Interaction — drag, wire, resize, notes, tidy, collision push-apart — is
- * the real thing.
+ *
+ * Render architecture — the original rebuilt every node object from derived
+ * state on each change, so one drag frame re-rendered every card (visible as
+ * flashing). This shell inverts that: the Node[] array IS the state, deltas
+ * arrive via applyNodeChanges, and node components are memo()-ed. Only a node
+ * whose position/data/selection actually changed gets a new identity, so
+ * dragging one card no longer re-renders the markdown, motion springs and
+ * previews in all the others.
+ *
+ * The invariant that makes it safe: callbacks embedded in node data are
+ * created once (at seed time) and reach the live handlers through a ref —
+ * they must only ever close over stable things (the ref, setState functions).
  *
  * Embed rules: the canvas never owns the page. Wheel scrolls the page (zoom
  * is pinch/controls only), and the shell fills whatever box the caller sizes.
  */
 
-const nodeTypes = { panel: PanelNode, note: NoteNode, file: FileNode, session: SessionNode };
+// memo() is half of the no-flash contract: it lets React skip a node's whole
+// subtree when its props are unchanged. The other half is below — node data
+// objects keep their identity unless their own content changed.
+const nodeTypes = {
+  panel: memo(PanelNode),
+  note: memo(NoteNode),
+  file: memo(FileNode),
+  session: memo(SessionNode),
+};
+
+type DemoNode =
+  | Node<PanelNodeData, "panel">
+  | Node<NoteNodeData, "note">
+  | Node<FileNodeData, "file">
+  | Node<SessionNodeData, "session">;
+
+/** The live handler set. Node data closures reach it through a ref so the
+ *  closures themselves never go stale and never need rebuilding. */
+type CanvasHandlers = {
+  resizeNode: (id: string, size: WorkbenchCanvasSize) => void;
+  resetNodeSize: (id: string) => void;
+  deleteNode: (id: string) => void;
+  patchNote: (id: string, patch: Partial<{ title: string; text: string }>) => void;
+  sendToSession: (id: string, question: string) => void;
+};
+
+function lazyHandlers(ref: RefObject<CanvasHandlers | null>): CanvasHandlers {
+  return {
+    resizeNode: (id, size) => ref.current?.resizeNode(id, size),
+    resetNodeSize: (id) => ref.current?.resetNodeSize(id),
+    deleteNode: (id) => ref.current?.deleteNode(id),
+    patchNote: (id, patch) => ref.current?.patchNote(id, patch),
+    sendToSession: (id, question) => ref.current?.sendToSession(id, question),
+  };
+}
+
+function makeNoteNode(
+  h: CanvasHandlers,
+  id: string,
+  position: XYPosition,
+  text: string,
+  startEditing = false,
+): DemoNode {
+  return {
+    id,
+    type: "note",
+    position,
+    data: {
+      title: "Note",
+      text,
+      startEditing,
+      onChange: (patch) => h.patchNote(id, patch),
+      onResize: (size) => h.resizeNode(id, size),
+      onDelete: () => h.deleteNode(id),
+    },
+  };
+}
+
+/** Seed the demo graph. Every callback goes through `h`, so the data objects
+ *  built here stay valid for the lifetime of the component. */
+function buildDemoNodes(h: CanvasHandlers): DemoNode[] {
+  return [
+    ...DEMO_PANELS.map(
+      (p): DemoNode => ({
+        id: p.id,
+        type: "panel",
+        dragHandle: ".wb-drag-strip, .panel-header",
+        position: DEMO_POSITIONS[p.id] ?? { x: 40, y: 40 },
+        data: {
+          title: p.title,
+          element: p.element ?? null,
+          width: p.width,
+          flat: p.flat,
+          onResize: (size) => h.resizeNode(p.id, size),
+          onDelete: () => h.deleteNode(p.id),
+        },
+      }),
+    ),
+    ...DEMO_NOTES.map((n) => makeNoteNode(h, n.id, DEMO_POSITIONS[n.id] ?? { x: 120, y: 120 }, n.text)),
+    ...DEMO_SESSIONS.map(
+      (s): DemoNode => ({
+        id: s.id,
+        type: "session",
+        dragHandle: ".panel-header",
+        position: DEMO_POSITIONS[s.id] ?? { x: 260, y: 260 },
+        data: {
+          title: s.title,
+          messages: s.messages,
+          files: s.files,
+          width: 400,
+          onSend: (question) => h.sendToSession(s.id, question),
+          onResize: (size) => h.resizeNode(s.id, size),
+          onDelete: () => h.deleteNode(s.id),
+        },
+      }),
+    ),
+    ...DEMO_FILES.map(
+      (f): DemoNode => ({
+        id: f.id,
+        type: "file",
+        position: DEMO_POSITIONS[f.id] ?? { x: 240, y: 240 },
+        data: {
+          fileName: f.fileName,
+          fileSize: f.fileSize,
+          previewUrl: f.previewUrl,
+          fileType: f.fileType,
+          ingestStatus: f.ingestStatus,
+          onResize: (size) => h.resizeNode(f.id, size),
+          onResetSize: () => h.resetNodeSize(f.id),
+          onDelete: () => h.deleteNode(f.id),
+        },
+      }),
+    ),
+  ];
+}
 
 const nodeW = (n: Node) => n.measured?.width ?? (typeof n.width === "number" ? n.width : 320);
 const nodeH = (n: Node) => n.measured?.height ?? (typeof n.height === "number" ? n.height : 160);
 
 export default function SentinelCanvas({ className }: { className?: string }) {
-  const flowRef = useRef<ReactFlowInstance | null>(null);
-  const [positions, setPositions] = useState<Record<string, WorkbenchCanvasPosition>>(DEMO_POSITIONS);
-  const [sizes, setSizes] = useState<Record<string, WorkbenchCanvasSize>>({});
-  const [removed, setRemoved] = useState<Record<string, boolean>>({});
-  const [edges, setEdges] = useState<Edge[]>(DEMO_EDGES);
-  const [notes, setNotes] = useState<DemoNote[]>(DEMO_NOTES);
-  const [sessions, setSessions] = useState<DemoSession[]>(DEMO_SESSIONS);
-  const [pendingSessions, setPendingSessions] = useState<Record<string, boolean>>({});
-  const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({});
-  const [mode, setMode] = useState<CanvasMode>("select");
+  const flowRef = useRef<ReactFlowInstance<DemoNode, Edge> | null>(null);
+  const handlersRef = useRef<CanvasHandlers | null>(null);
   const noteCounter = useRef(0);
   const cannedIndex = useRef(0);
 
-  const resizeNode = useCallback((id: string, size: WorkbenchCanvasSize) => {
-    setSizes((prev) => ({ ...prev, [id]: size }));
-  }, []);
-  const resetNodeSize = useCallback((id: string) => {
-    setSizes((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-  }, []);
-  const removeNode = useCallback((id: string) => {
-    setRemoved((prev) => ({ ...prev, [id]: true }));
-  }, []);
-  const updateNote = useCallback((id: string, patch: Partial<{ title: string; text: string }>) => {
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, ...patch } : n)));
+  const [nodes, setNodes] = useState<DemoNode[]>(() => buildDemoNodes(lazyHandlers(handlersRef)));
+  const [edges, setEdges] = useState<Edge[]>(DEMO_EDGES);
+  const [mode, setMode] = useState<CanvasMode>("select");
+
+  /** Patch one node's data immutably — only that node gets a new identity. */
+  const patchNodeData = useCallback((id: string, patch: Record<string, unknown>) => {
+    setNodes((ns) => ns.map((n) => (n.id === id ? ({ ...n, data: { ...n.data, ...patch } } as DemoNode) : n)));
   }, []);
 
-  const addNote = useCallback((position: XYPosition) => {
-    noteCounter.current += 1;
-    const id = `custom-note-${noteCounter.current}`;
-    setNotes((prev) => [...prev, { id, title: "Note", text: "" }]);
-    setPositions((prev) => ({ ...prev, [id]: position }));
-  }, []);
-
-  // The demo has no retrieval backend — replies come from a canned rota, with
-  // enough delay for the pending dots to read as a real round-trip.
-  const sendToSession = useCallback((sessionId: string, question: string) => {
-    const userMessage: ChatMessage = { role: "user", text: question };
-    setSessions((prev) => prev.map((s) => (s.id === sessionId ? { ...s, messages: [...s.messages, userMessage] } : s)));
-    setPendingSessions((prev) => ({ ...prev, [sessionId]: true }));
-    const reply = DEMO_CANNED_REPLIES[cannedIndex.current % DEMO_CANNED_REPLIES.length];
-    cannedIndex.current += 1;
-    window.setTimeout(() => {
-      setSessions((prev) => prev.map((s) => (s.id === sessionId ? { ...s, messages: [...s.messages, reply] } : s)));
-      setPendingSessions((prev) => ({ ...prev, [sessionId]: false }));
-    }, 1100);
-  }, []);
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      for (const change of changes) {
-        if (change.type === "position" && change.position) {
-          const position = change.position;
-          setPositions((prev) => ({ ...prev, [change.id]: position }));
-        } else if (change.type === "select") {
-          setSelectedIds((prev) => ({ ...prev, [change.id]: change.selected }));
-        } else if (change.type === "remove") {
-          removeNode(change.id);
-        }
-      }
+  // Reassigned every render so the closures always see fresh state; each
+  // implementation may only use setState functions and refs (all stable).
+  handlersRef.current = {
+    resizeNode: (id, size) => patchNodeData(id, { width: size.width, height: size.height }),
+    resetNodeSize: (id) => patchNodeData(id, { width: undefined, height: undefined }),
+    // deleteElements runs React Flow's full deletion flow, so wires attached
+    // to the deleted node fall away with it.
+    deleteNode: (id) => void flowRef.current?.deleteElements({ nodes: [{ id }] }),
+    patchNote: (id, patch) => patchNodeData(id, patch),
+    sendToSession: (id, question) => {
+      const push = (message: ChatMessage, pending: boolean) =>
+        setNodes((ns) =>
+          ns.map((n) =>
+            n.id === id && n.type === "session"
+              ? { ...n, data: { ...n.data, messages: [...n.data.messages, message], pending } }
+              : n,
+          ),
+        );
+      push({ role: "user", text: question }, true);
+      // No retrieval backend in the demo — canned rota, with enough delay for
+      // the pending dots to read as a real round-trip.
+      const reply = DEMO_CANNED_REPLIES[cannedIndex.current % DEMO_CANNED_REPLIES.length];
+      cannedIndex.current += 1;
+      window.setTimeout(() => push(reply, false), 1100);
     },
-    [removeNode],
-  );
+  };
+
+  const onNodesChange = useCallback((changes: NodeChange<DemoNode>[]) => {
+    setNodes((ns) => applyNodeChanges(changes, ns));
+  }, []);
 
   const onEdgesChange = useCallback((changes: EdgeChange[]) => {
     setEdges((es) => applyEdgeChanges(changes, es));
@@ -131,87 +232,30 @@ export default function SentinelCanvas({ className }: { className?: string }) {
     setEdges((es) => addEdge(connection, es));
   }, []);
 
-  const nodes = useMemo<Node[]>(
-    () =>
-      [
-        ...DEMO_PANELS.filter((p) => !removed[p.id]).map((p) => ({
-          id: p.id,
-          type: "panel",
-          dragHandle: ".wb-drag-strip, .panel-header",
-          position: positions[p.id] ?? { x: 40, y: 40 },
-          data: {
-            title: p.title,
-            element: p.element,
-            width: sizes[p.id]?.width ?? p.width,
-            height: sizes[p.id]?.height,
-            flat: p.flat,
-            onResize: (size: WorkbenchCanvasSize) => resizeNode(p.id, size),
-            onDelete: () => removeNode(p.id),
-          } satisfies PanelNodeData,
-        })),
-        ...notes
-          .filter((n) => !removed[n.id])
-          .map((n) => ({
-            id: n.id,
-            type: "note",
-            position: positions[n.id] ?? { x: 120, y: 120 },
-            data: {
-              title: n.title,
-              text: n.text,
-              onChange: (patch: Partial<{ title: string; text: string }>) => updateNote(n.id, patch),
-              width: sizes[n.id]?.width,
-              height: sizes[n.id]?.height,
-              onResize: (size: WorkbenchCanvasSize) => resizeNode(n.id, size),
-              onDelete: () => removeNode(n.id),
-            } satisfies NoteNodeData,
-          })),
-        ...sessions
-          .filter((s) => !removed[s.id])
-          .map((s) => ({
-            id: s.id,
-            type: "session",
-            dragHandle: ".panel-header",
-            position: positions[s.id] ?? { x: 260, y: 260 },
-            data: {
-              title: s.title,
-              messages: s.messages,
-              pending: !!pendingSessions[s.id],
-              onSend: (question: string) => sendToSession(s.id, question),
-              files: s.files,
-              width: sizes[s.id]?.width ?? 400,
-              height: sizes[s.id]?.height,
-              onResize: (size: WorkbenchCanvasSize) => resizeNode(s.id, size),
-              onDelete: () => removeNode(s.id),
-            } satisfies SessionNodeData,
-          })),
-        ...DEMO_FILES.filter((f) => !removed[f.id]).map((f) => ({
-          id: f.id,
-          type: "file",
-          position: positions[f.id] ?? { x: 240, y: 240 },
-          data: {
-            fileName: f.fileName,
-            fileSize: f.fileSize,
-            previewUrl: f.previewUrl,
-            fileType: f.fileType,
-            ingestStatus: f.ingestStatus,
-            width: sizes[f.id]?.width,
-            height: sizes[f.id]?.height,
-            onResize: (size: WorkbenchCanvasSize) => resizeNode(f.id, size),
-            onResetSize: () => resetNodeSize(f.id),
-            onDelete: () => removeNode(f.id),
-          } satisfies FileNodeData,
-        })),
-      ].map((n) => ({ ...n, selected: !!selectedIds[n.id] })),
-    [notes, sessions, pendingSessions, positions, sizes, removed, selectedIds, resizeNode, resetNodeSize, removeNode, updateNote, sendToSession],
-  );
+  const addNote = useCallback((position: XYPosition) => {
+    noteCounter.current += 1;
+    const id = `custom-note-${noteCounter.current}`;
+    // Selected + already in edit mode: the user asked for a note, so it opens
+    // ready to type rather than needing a double-click first.
+    setNodes((ns) => [
+      ...ns.map((n) => (n.selected ? { ...n, selected: false } : n)),
+      { ...makeNoteNode(lazyHandlers(handlersRef), id, position, "", true), selected: true },
+    ]);
+  }, []);
 
-  // Swiss wiring: sharp right-angle edges, black ink, dashed flow on every wire.
+  // Swiss wiring: sharp right-angle edges, black ink, dashed flow on every
+  // wire. Keyed on node *ids* rather than the nodes array, so drag frames
+  // (which change node identities but not membership) reuse the same edges.
+  const nodeIdsKey = nodes
+    .map((n) => n.id)
+    .sort()
+    .join("|");
   const renderedEdges = useMemo<Edge[]>(() => {
-    const visible = new Set(nodes.map((n) => n.id));
+    const visible = new Set(nodeIdsKey.split("|"));
     return edges
       .filter((e) => visible.has(e.source) && visible.has(e.target))
       .map((e): Edge => ({ ...e, type: "step", animated: true, style: { stroke: "#111827", strokeWidth: 1.5, ...e.style } }));
-  }, [edges, nodes]);
+  }, [edges, nodeIdsKey]);
 
   // ── Hard no-overlap invariant (ported) ──────────────────────────────────
   // On drag-stop the moved node stays put; every other card is pushed out of
@@ -255,23 +299,25 @@ export default function SentinelCanvas({ className }: { className?: string }) {
       if (!any) break;
     }
     if (!changed) return;
-    setPositions((prev) => {
-      const next = { ...prev };
-      for (const r of rects) next[r.id] = { x: r.x, y: r.y };
-      return next;
-    });
+    const moved = new Map(rects.map((r) => [r.id, { x: r.x, y: r.y }]));
+    setNodes((ns) =>
+      ns.map((n) => {
+        const p = moved.get(n.id);
+        return p && (p.x !== n.position.x || p.y !== n.position.y) ? { ...n, position: p } : n;
+      }),
+    );
   }, []);
 
   // Tidy: connected chains share a row in pipeline order; loose cards follow.
-  const ROLE_RANK: [RegExp, number][] = [
-    [/^discovery/, 0],
-    [/^file-/, 1],
-    [/^source/, 2],
-    [/^session-/, 3],
-    [/^audit/, 4],
-  ];
-  const roleOf = (id: string) => ROLE_RANK.find(([re]) => re.test(id))?.[1] ?? 6;
   const tidyLayout = useCallback(() => {
+    const ROLE_RANK: [RegExp, number][] = [
+      [/^discovery/, 0],
+      [/^file-/, 1],
+      [/^source/, 2],
+      [/^session-/, 3],
+      [/^audit/, 4],
+    ];
+    const roleOf = (id: string) => ROLE_RANK.find(([re]) => re.test(id))?.[1] ?? 6;
     const live = flowRef.current?.getNodes() ?? [];
     if (!live.length) return;
     const adjacency: Record<string, string[]> = {};
@@ -302,7 +348,7 @@ export default function SentinelCanvas({ className }: { className?: string }) {
     components.sort((a, b) => b.length - a.length);
     const byId = new Map(live.map((n) => [n.id, n]));
     const GAP = 60;
-    const next: Record<string, WorkbenchCanvasPosition> = {};
+    const next = new Map<string, WorkbenchCanvasPosition>();
     let y = 40;
     for (const comp of components) {
       comp.sort((a, b) => roleOf(a) - roleOf(b) || a.localeCompare(b));
@@ -311,30 +357,28 @@ export default function SentinelCanvas({ className }: { className?: string }) {
       for (const id of comp) {
         const node = byId.get(id);
         if (!node) continue;
-        next[id] = { x, y };
+        next.set(id, { x, y });
         x += nodeW(node) + GAP;
         rowHeight = Math.max(rowHeight, nodeH(node));
       }
       y += rowHeight + GAP;
     }
-    setPositions((prev) => ({ ...prev, ...next }));
+    setNodes((ns) =>
+      ns.map((n) => {
+        const p = next.get(n.id);
+        return p && (p.x !== n.position.x || p.y !== n.position.y) ? { ...n, position: p } : n;
+      }),
+    );
     requestAnimationFrame(() => {
       void flowRef.current?.fitView({ padding: 0.12, maxZoom: 1 });
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- ROLE_RANK/roleOf are render-stable constants
   }, [edges]);
 
   const handleReset = useCallback(() => {
-    setPositions(DEMO_POSITIONS);
-    setSizes({});
-    setRemoved({});
-    setEdges(DEMO_EDGES);
-    setNotes(DEMO_NOTES);
-    setSessions(DEMO_SESSIONS);
-    setPendingSessions({});
-    setSelectedIds({});
     noteCounter.current = 0;
     cannedIndex.current = 0;
+    setNodes(buildDemoNodes(lazyHandlers(handlersRef)));
+    setEdges(DEMO_EDGES);
     requestAnimationFrame(() => {
       void flowRef.current?.fitView({ padding: 0.12, maxZoom: 1 });
     });
@@ -351,7 +395,7 @@ export default function SentinelCanvas({ className }: { className?: string }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onInit={(instance: ReactFlowInstance) => {
+        onInit={(instance) => {
           flowRef.current = instance;
         }}
         onNodeDragStop={(_event, node) => resolveCollisions(node.id)}
@@ -367,6 +411,11 @@ export default function SentinelCanvas({ className }: { className?: string }) {
         zoomOnScroll={false}
         panOnScroll={false}
         preventScrolling={false}
+        // Double-click is the note's edit gesture. d3-zoom listens natively on
+        // the pane — an ancestor of every node — so a node's React handler
+        // cannot stop it from firing; the only reliable fix is to turn it off.
+        // No loss here: scroll-zoom is already off for embed reasons.
+        zoomOnDoubleClick={false}
       >
         <Background variant={BackgroundVariant.Dots} gap={28} size={3} color="#c2c8d0" bgColor="#f3f1ea" />
         <MiniMap pannable zoomable maskColor="rgba(0,0,0,0.4)" />
