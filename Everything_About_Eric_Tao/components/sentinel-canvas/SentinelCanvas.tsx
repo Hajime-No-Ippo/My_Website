@@ -26,6 +26,7 @@ import { NoteNode, type NoteNodeData } from "./NoteNode";
 import { FileNode, type FileNodeData } from "./FileNode";
 import { SessionNode, type SessionNodeData } from "./SessionNode";
 import { CanvasToolbar } from "./CanvasToolbar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { CanvasMode, ChatMessage, WorkbenchCanvasPosition, WorkbenchCanvasSize } from "./types";
 import {
   DEMO_CANNED_REPLIES,
@@ -385,6 +386,11 @@ export default function SentinelCanvas({ className }: { className?: string }) {
   }, []);
 
   const handMode = mode === "hand";
+  // The dock is a horizontal row of labelled controls — it overflows a phone
+  // viewport and covers the canvas it is meant to act on. Desktop only.
+  // Breakpoint is the hook's 768px; canvas-demo.css hides it below the same
+  // width so it never paints in the gap before this effect-driven flag flips.
+  const isMobile = useIsMobile();
 
   return (
     <div className={`sentinel-canvas ${handMode ? "wb-hand" : "wb-select"} ${className ?? ""}`} style={{ position: "relative" }}>
@@ -419,13 +425,15 @@ export default function SentinelCanvas({ className }: { className?: string }) {
       >
         <Background variant={BackgroundVariant.Dots} gap={28} size={3} color="#c2c8d0" bgColor="#f3f1ea" />
         <MiniMap pannable zoomable maskColor="rgba(0,0,0,0.4)" />
-        <CanvasToolbar
-          mode={mode}
-          onSetMode={setMode}
-          onAddPanel={addNote}
-          onTidy={tidyLayout}
-          onReset={handleReset}
-        />
+        {!isMobile && (
+          <CanvasToolbar
+            mode={mode}
+            onSetMode={setMode}
+            onAddPanel={addNote}
+            onTidy={tidyLayout}
+            onReset={handleReset}
+          />
+        )}
       </ReactFlow>
     </div>
   );

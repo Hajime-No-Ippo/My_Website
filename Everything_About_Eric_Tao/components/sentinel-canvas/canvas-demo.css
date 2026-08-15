@@ -59,6 +59,16 @@
   font-weight: 700;
 }
 
+/* The bottom-center dock is desktop-only. SentinelCanvas stops rendering it
+   below 768px, but that flag comes from an effect, so the server-rendered
+   markup still contains the dock for one paint — this keeps it off screen
+   until React removes it. Breakpoint must match hooks/use-mobile.tsx. */
+@media (max-width: 767px) {
+  .sentinel-canvas .react-flow__panel.bottom.center {
+    display: none;
+  }
+}
+
 /* The site's dark theme must not restyle the canvas — it is a light artifact. */
 .sentinel-canvas .react-flow__attribution {
   background: rgba(243, 241, 234, 0.8);
