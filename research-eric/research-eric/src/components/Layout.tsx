@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <div className="wrap">
           <nav className="site-nav">
             <NavLink to="/blog">My Blog</NavLink>
-            <a href="https://portfolio.ericdesign.uk" target="_blank" rel="noreferrer">
+            <a href="https://dev.ericdesign.uk" target="_blank" rel="noreferrer">
               Portfolio
             </a>
             <ThemeToggle />
