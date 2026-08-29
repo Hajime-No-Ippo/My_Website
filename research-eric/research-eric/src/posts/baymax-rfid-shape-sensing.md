@@ -1,7 +1,7 @@
 ---
 title: Baymax — RFID shape sensing for soft robots
 date: '2026-08-29'
-summary: My research idea for a Baymax-like air-based soft robot that senses its own shape change with passive RFID tags.
+summary: My research idea for a Baymax-like air-based soft robot that senses its own shape change with passive RFID tags — and the open question of whether a dense RF array can reconstruct deformation, not just read tags.
 ---
 
 I keep coming back to one project idea: a Baymax-like air-based soft robot that can
@@ -27,6 +27,12 @@ called **SATR**. It recovers information from up to **4 simultaneous tag respons
 with a **5.1x throughput improvement** over conventional collision-avoidance methods.
 For Baymax this is the gating piece — shape sensing only works if every tag across
 the body can be read at once rather than one at a time.
+
+But there is an important distinction to hold onto: **collision recovery and shape
+sensing are different problems.** You can solve RFID anti-collision perfectly and
+still have a sensing system too slow for robotic touch or control. SATR solves the
+communication bottleneck ("who transmitted what"); it does not by itself tell you
+where an element sits or how the body under it moved.
 
 ## The sensing stack
 
@@ -63,13 +69,33 @@ metal and conductive nanocomposites for the conductive paths, and machine knitti
 
 ## The open question
 
-Reading the whole body at once is what everything downstream depends on — shape
-reconstruction, posture, contact sensing. That is exactly the gap SATR fills. The open
-design choice is where the strain information lives: surface RFID tags, sensors cast
-into the pneumatic actuators, or a hybrid.
+The deeper idea here is to stop treating collisions as waste and let the RF signals
+collide on purpose. SATR operates on the **raw I/Q waveform** and learns the structure
+of overlapping responses, treating collision recovery as a **set-prediction problem**
+(the tags have no meaningful order, so A+B+C and C+A+B are the same event). That matters
+for a skin, because a 20×20 array of RFID elements doesn't want to be read one at a
+time — it wants to be read as one dense, deliberately colliding field.
 
-Next on my list: review the full SATR paper for implementation detail, design a tag
-placement strategy, and prototype a single shape-sensing cell before anything gets
-integrated with the air system.
+That shift suggests a lean research hypothesis:
+
+> Can the RF response of a dense passive RFID / resonant array encode enough **spatial**
+> information to reconstruct the deformation of an inflatable surface — rather than just
+> identify its tags?
+
+I'm thinking of this as a three-layer stack:
+
+1. **RF acquisition** — passive RFID / resonant sensors, one reader, raw I/Q.
+2. **RF decoding** — a SATR-style transformer recover individual sensor responses
+   from the collided waveform.
+3. **Physical reconstruction** — the actual research problem: responses + known sensor
+   geometry + inflatable-body physics → deformation field → contact map → shape.
+
+For the third layer, a neural field / FNO / GNN over the sensor responses looks like the
+natural fit, since the body is too soft to model analytically.
+
+This is the point where the idea stops being an application of RFID and becomes a real
+open research question. Next on my list: review the full SATR paper for implementation
+detail, design a tag placement strategy, and prototype a single shape-sensing cell
+before anything gets integrated with the air system.
 
 — Eric
