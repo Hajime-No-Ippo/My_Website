@@ -94,8 +94,16 @@ For the third layer, a neural field / FNO / GNN over the sensor responses looks 
 natural fit, since the body is too soft to model analytically.
 
 This is the point where the idea stops being an application of RFID and becomes a real
-open research question. Next on my list: review the full SATR paper for implementation
-detail, design a tag placement strategy, and prototype a single shape-sensing cell
-before anything gets integrated with the air system.
+open research question.
+
+Next up, I'm going to validate the sensing side in simulation before touching hardware:
+
+- **openEMS** — run full-wave electromagnetic simulations to verify RFID detection under
+  the deformation cases I care about: stretch, bending, and a dense multi-tag array, and
+  how reader placement and tag geometry shift the resonant response.
+- **Isaac (NVIDIA Isaac Sim / Isaac Lab)** — build the robot side on a basic robotics
+  library: model a soft/articulated body, test shape and force perception loops, and
+  hook RFID-derived readings into the simulated control before anything is integrated
+  with a real air system.
 
 — Eric
