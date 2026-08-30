@@ -1,70 +1,70 @@
 ---
-title: Math — Cauchy 泛函方程：定义函数形态的四个规则
+title: Math — Cauchy's functional equations: four rules that pin down a function
 date: '2026-08-30'
-summary: 柯西泛函方程的四条经典规则——中点、加法、乘法、指数——运算性质如何锁定函数的具体形态。
+summary: The four classic forms of Cauchy's functional equations — midpoint, additive, logarithmic, exponential — and how each operational property locks in the shape of the function.
 ---
 
-这四个公式属于数学竞赛和微积分中非常经典的**柯西泛函方程（Cauchy's Functional Equations）**及其变体。它们的核心思想是：函数的"运算性质"决定了函数的"具体形式"。
+These four equations are classics from math competitions and calculus: **Cauchy's functional equations** and their variants. The core idea is simple: a function's *operational property* determines its *specific form*.
 
-下面逐一拆解这四个公式的直观含义和应用场景。
+Here is each rule, what it means intuitively, and where it shows up.
 
-## 1. 中点公式（Midpoint Rule）
+## 1. Midpoint rule
 
 ```
 f((x+y)/2) = (f(x) + f(y)) / 2  ⟹  f(x) = ax + b
 ```
 
-**直观理解**：自变量取中点时，函数值也刚好取中点。这说明函数的图像既没有向上弯曲，也没有向下弯曲，是一条绝对的直线。
+**Intuition**: when the input takes the midpoint, the output takes the midpoint too. The graph neither bends up nor bends down — it is a perfectly straight line.
 
-**几何意义**：任何两点连线的中点都在函数图像上，这是线性函数（`ax + b`）独有的性质。
+**Geometry**: the midpoint of any two points on the graph still lies on the graph. That is a property *unique* to linear functions (`ax + b`).
 
-**适用场景**：题目中出现中点、平均值或平滑线性关系时。
+**Where it appears**: problems involving midpoints, averages, or smooth linear relationships.
 
-## 2. 加法公式（Additive Rule）
+## 2. Additive rule (Cauchy's original)
 
 ```
 f(x + y) = f(x) + f(y)  ⟹  f(x) = ax
 ```
 
-**直观理解**：输入相加等于输出相加。这是最基础的柯西泛函方程。
+**Intuition**: inputs add, so outputs add. This is the most basic Cauchy functional equation.
 
-**关键区别**：对比第 1 个公式，这里没有常数项 `b`，因为当 `x = 0, y = 0` 时，`f(0) = f(0) + f(0)`，所以 `f(0) = 0`。因此它代表一条**过原点**的直线。
+**Key difference from rule 1**: there is no constant term `b` here. Set `x = 0, y = 0` and you get `f(0) = f(0) + f(0)`, so `f(0) = 0`. The line must pass **through the origin**.
 
-**实际例子**：正比例关系——"买 `x` 公斤苹果花了 `f(x)` 元，买 `y` 公斤花了 `f(y)` 元，一共买 `x + y` 公斤花的钱就是 `f(x) + f(y)`"。
+**Real-world example**: direct proportionality — "`x` kg of apples costs `f(x)`, `y` kg costs `f(y)`, so `x + y` kg together costs exactly `f(x) + f(y)`".
 
-## 3. 乘法输入公式（Logarithmic Rule）
+## 3. Logarithmic rule
 
 ```
 f(xy) = f(x) + f(y)  ⟹  f(x) = a·ln(x)
 ```
 
-**直观理解**：输入做乘法，输出变成加法。
+**Intuition**: inputs multiply, outputs add.
 
-**对应性质**：这正是对数函数最核心的性质，例如 `ln(xy) = ln(x) + ln(y)`。对数能够把复杂的"乘法运算"降维变成简单的"加法运算"。
+**The underlying property**: this is the defining identity of logarithms, e.g. `ln(xy) = ln(x) + ln(y)`. A logarithm *flattens multiplication into addition*.
 
-**实际例子**：计算复合利息的年限、声学中的分贝计算、信息的熵计算等。
+**Real-world examples**: compound-interest years, decibels in acoustics, information entropy.
 
-## 4. 指数公式（Exponential Rule）
+## 4. Exponential rule
 
 ```
 f(x + y) = f(x)·f(y)  ⟹  f(x) = c^x
 ```
 
-**直观理解**：输入做加法，输出变成乘法。
+**Intuition**: inputs add, outputs multiply.
 
-**对应性质**：这正是指数函数最核心的性质，例如 `c^(x+y) = c^x · c^y`。自变量每增加固定值，函数值就会翻倍或按比例暴涨。
+**The underlying property**: this is the defining identity of exponentials, e.g. `c^(x+y) = c^x · c^y`. Adding a fixed amount to the input doubles or scales the output.
 
-**实际例子**：细胞分裂、放射性元素衰变、细菌滋生、人口增长模型等。
+**Real-world examples**: cell division, radioactive decay, bacterial growth, population models.
 
-**一个符号约定**：这里写成 `c^x`（也可以写作 `e^{kx}` 或 `B·a^x`）而不是第 2、3 条里的 `a`。原因在于前面的 `a` 已经用来代表斜率/系数（`f(x) = ax`、`f(x) = a·ln(x)`），而这里 `c` 是底数，处于指数的底位置，性质不同——分开写可以避免混淆。
+**A note on notation**: the result is written `c^x` (equivalently `e^{kx}` or `B·a^x`) rather than reusing `a` from the rules above. There, `a` was the slope of a line (`f(x) = ax`, `f(x) = a·ln(x)`); here `c` is a *base* sitting in the exponent position. Different roles, different letters — keeps things unambiguous.
 
-## 总结速记表
+## Cheat sheet
 
-| 公式形式 | 输入操作 | 输出操作 | 对应函数类型 | 函数表达式 |
+| Equation form | Input operation | Output operation | Function type | Result |
 | --- | --- | --- | --- | --- |
-| 中点 | 取平均 `(x+y)/2` | 取平均 `(f(x)+f(y))/2` | 任意直线 | `f(x) = ax + b` |
-| 加法 | 加法 `x+y` | 加法 `f(x)+f(y)` | 过原点直线 | `f(x) = ax` |
-| 乘法 | 乘法 `xy` | 加法 `f(x)+f(y)` | 对数函数 | `f(x) = a·ln(x)` |
-| 指数 | 加法 `x+y` | 乘法 `f(x)f(y)` | 指数函数 | `f(x) = c^x` |
+| Midpoint | average `(x+y)/2` | average `(f(x)+f(y))/2` | any line | `f(x) = ax + b` |
+| Additive | add `x+y` | add `f(x)+f(y)` | line through origin | `f(x) = ax` |
+| Logarithmic | multiply `xy` | add `f(x)+f(y)` | logarithm | `f(x) = a·ln(x)` |
+| Exponential | add `x+y` | multiply `f(x)f(y)` | exponential | `f(x) = c^x` |
 
-在做微积分或函数题时，只要看到题目给出的特征等式符合这四种结构之一，就可以直接联想出对应的函数模型，从而快速破题。
+Next time a calculus or function problem hands you a functional equation, check it against these four patterns first — matching one of them tells you the function model immediately, and the problem usually cracks open from there.
