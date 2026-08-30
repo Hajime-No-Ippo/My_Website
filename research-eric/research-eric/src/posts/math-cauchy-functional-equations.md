@@ -1,5 +1,5 @@
 ---
-title: Math — Cauchy's functional equations: four rules that pin down a function
+title: "Math — Cauchy's functional equations: four rules that pin down a function"
 date: '2026-08-30'
 summary: The four classic forms of Cauchy's functional equations — midpoint, additive, logarithmic, exponential — and how each operational property locks in the shape of the function.
 ---
