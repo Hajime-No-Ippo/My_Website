@@ -525,9 +525,11 @@ main {
 @keyframes page-fade-out {
   from {
     opacity: 1;
+    filter: blur(0);
   }
   to {
     opacity: 0;
+    filter: blur(100px);
   }
 }
 
