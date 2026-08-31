@@ -35,9 +35,9 @@ export default function WordFade({
   children,
   className = '',
   delay = 0,
-  totalMs = 6000,
-  minInterval = 8,
-  maxInterval = 30,
+  totalMs = 3000,
+  minInterval = 5,
+  maxInterval = 14,
 }: WordFadeProps) {
   const ref = useRef<HTMLDivElement | null>(null)
 
@@ -87,6 +87,21 @@ export default function WordFade({
 
     // New route, start from the top so the cascade is seen in full.
     window.scrollTo(0, 0)
+
+    // Once even the last word has had time to animate, drop the animation
+    // styles entirely so every word is guaranteed a sharp final state even
+    // if the browser interrupted or dropped a frame mid-fade.
+    const animMs = 260
+    window.setTimeout(() => {
+      if (root.dataset.wfSettled) return
+      root.dataset.wfSettled = '1'
+      for (const w of root.querySelectorAll<HTMLElement>('.wordfade__word')) {
+        w.style.animation = 'none'
+        w.style.opacity = ''
+        w.style.transform = ''
+        w.style.filter = ''
+      }
+    }, delay + index * interval + animMs)
   }, [delay, totalMs, minInterval, maxInterval])
 
   return (
