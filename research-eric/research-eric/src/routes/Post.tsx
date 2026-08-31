@@ -10,21 +10,23 @@ export default function Post() {
   if (!post) return <NotFound />
 
   return (
-    <article>
-      <Link to="/blog" className="back-link">
-        ← Writing
-      </Link>
+    <WordFade>
+      <article>
+        <Link to="/blog" className="back-link">
+          ← Writing
+        </Link>
 
-      <header className="post-header">
-        <WordFade as="h1" text={post.title} />
-        <time className="post-date" dateTime={post.date}>
-          {formatDate(post.date)}
-        </time>
-      </header>
+        <header className="post-header">
+          <h1>{post.title}</h1>
+          <time className="post-date" dateTime={post.date}>
+            {formatDate(post.date)}
+          </time>
+        </header>
 
-      {/* Markdown is converted to HTML at build time by plugins/markdown.ts,
-          so this never renders untrusted input. */}
-      <div className="prose" dangerouslySetInnerHTML={{ __html: post.html }} />
-    </article>
+        {/* Markdown is converted to HTML at build time by plugins/markdown.ts,
+            so this never renders untrusted input. */}
+        <div className="prose" dangerouslySetInnerHTML={{ __html: post.html }} />
+      </article>
+    </WordFade>
   )
 }

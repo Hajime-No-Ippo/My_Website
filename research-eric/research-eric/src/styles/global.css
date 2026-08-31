@@ -492,8 +492,8 @@ main {
 
 /* --------------------------- word fade entrance --------------------------- */
 
-/* Each word starts hidden and fades up into place on a staggered delay.
-   Only applies once JS is live (html.js) so no-JS pages never show blank text. */
+/* Every text node under a .wordfade wrapper is split into per-word spans by
+   WordFade.tsx, each fading up into place on a staggered delay. */
 @keyframes wordfade-in {
   from {
     opacity: 0;
@@ -507,21 +507,16 @@ main {
   }
 }
 
-html.js .wordfade__word {
+.wordfade__word {
   display: inline-block;
   opacity: 0;
   transform: translateY(0.45em);
   filter: blur(6px);
   animation: wordfade-in 0.55s ease-out forwards;
-  margin-inline-end: 0.25em;
-}
-
-html.js .wordfade__word:last-child {
-  margin-inline-end: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.js .wordfade__word {
+  .wordfade__word {
     animation: none;
     opacity: 1;
     transform: none;

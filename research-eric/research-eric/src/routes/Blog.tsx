@@ -4,30 +4,17 @@ import { posts } from '../posts.ts'
 
 export default function Blog() {
   return (
-    <>
+    <WordFade>
       <section className="intro">
-        <WordFade as="h1" text="Eric Tao" />
-        <WordFade
-          as="p"
-          text="I’m an researcher and writer. I work on AI&ML and anti-hallucination at Maynooth University, helping improve model behavior. Previously, I worked on VLM & fine-tune on stable diffustion. I’ve been coding for 3 years."
-          delay={120}
-          interval={32}
-        />
-        <WordFade
-          as="p"
-          text="My life’s work is to make technology easy to access and more trust-worthy. I’m a young man at his 23 and a massive music fan."
-          delay={900}
-          interval={32}
-        />
-        <WordFade
-          as="p"
-          text="Sorry I may use translating tools in my post, I hope I can write more feeling in English."
-          delay={1650}
-          interval={32}
-        />
+        <h1>Eric Tao</h1>
+        <p>
+          I’m an researcher and writer. I work on AI&ML and anti-hallucination at Maynooth University, helping improve model behavior. Previously, I worked on VLM & fine-tune on stable diffustion. I’ve been coding for 3 years.
+        </p>
+        <p>My life’s work is to make technology easy to access and more trust-worthy. I’m a young man at his 23 and a massive music fan.</p>
+        <p>Sorry I may use translating tools in my post, I hope I can write more feeling in English.</p>
       </section>
 
       <PostList items={posts} />
-    </>
+    </WordFade>
   )
 }
