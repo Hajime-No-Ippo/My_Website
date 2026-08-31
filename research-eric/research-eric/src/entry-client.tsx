@@ -9,6 +9,10 @@ import '@fontsource/inria-serif/400-italic.css'
 import '@fontsource/inria-serif/700.css'
 import './styles/global.css'
 
+// Marks that JS is live. Word-fade entrance animations (opacity 0 from the
+// start) only apply under this class so no-JS / pre-hydration pages stay legible.
+document.documentElement.classList.add('js')
+
 hydrateRoot(
   document.getElementById('root')!,
   <StrictMode>

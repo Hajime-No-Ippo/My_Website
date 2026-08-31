@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import NotFound from './NotFound.tsx'
+import WordFade from '../components/WordFade.tsx'
 import { formatDate, getPost } from '../posts.ts'
 
 export default function Post() {
@@ -15,7 +16,7 @@ export default function Post() {
       </Link>
 
       <header className="post-header">
-        <h1>{post.title}</h1>
+        <WordFade as="h1" text={post.title} />
         <time className="post-date" dateTime={post.date}>
           {formatDate(post.date)}
         </time>
