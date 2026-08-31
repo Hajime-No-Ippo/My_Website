@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
-/** How long the page fade in / out takes, in ms. Keep in sync with the
-    animation below. */
-export const PAGE_FADE_MS = 600
+/** How long the page fade out takes before navigation proceeds, in ms.
+    Keep this short — it is a quick blink, not the main effect.
+    Fade-in duration lives in the CSS animation below. */
+export const PAGE_FADE_MS = 200
 
 export const PAGE_FADE_LEAVE_EVENT = 'page-fade:leave'
 
