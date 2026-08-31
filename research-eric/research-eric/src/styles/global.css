@@ -513,8 +513,27 @@ main {
   }
 }
 
+/* Fade-out: added by PageFade on the `page-fade:leave` event. It swaps the
+   (completed, forwards-filled) fade-in animation for a fade-out animation —
+   the only way to visibly animate the element's opacity back down, since the
+   finished fade-in animation would otherwise keep overriding any inline
+   opacity we set. Duration mirrors PAGE_FADE_MS (1s). */
+.page-fade-leave {
+  animation: page-fade-out 1s ease forwards;
+}
+
+@keyframes page-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .page-fade {
+  .page-fade,
+  .page-fade-leave {
     animation: none;
     opacity: 1;
     transform: none;

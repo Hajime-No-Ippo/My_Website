@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
-/** How long the page fade out takes before navigation proceeds, in ms.
-    Keep this short — it is a quick blink, not the main effect.
-    Fade-in duration lives in the CSS animation below. */
-export const PAGE_FADE_MS = 200
+/** How long the page fade-out runs before navigation proceeds, in ms.
+    The fade-in duration lives in the CSS animation below.
+    NOTE: an inline opacity transition cannot fade this element out — the
+    completed `page-fade-in` animation (fill-mode forwards) overrides inline
+    styles in the cascade. The fade-out must therefore also be a CSS animation
+    that replaces it (see `.page-fade-leave` in global.css). */
+export const PAGE_FADE_MS = 1000
 
 export const PAGE_FADE_LEAVE_EVENT = 'page-fade:leave'
 
@@ -34,8 +37,7 @@ export default function PageFade({
     const el = ref.current
     if (!el) return
     const onLeave = () => {
-      el.style.transition = `opacity ${PAGE_FADE_MS}ms ease`
-      el.style.opacity = '0'
+      el.classList.add('page-fade-leave')
     }
     window.addEventListener(PAGE_FADE_LEAVE_EVENT, onLeave)
     return () => window.removeEventListener(PAGE_FADE_LEAVE_EVENT, onLeave)
