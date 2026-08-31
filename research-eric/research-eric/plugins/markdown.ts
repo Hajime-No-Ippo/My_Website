@@ -33,7 +33,13 @@ export function markdown(): Plugin {
 
       const raw = await readFile(file, 'utf8')
       const { data, content } = matter(raw)
-      const html = await marked.parse(content)
+      const parsed = await marked.parse(content)
+
+      // Tables are the only source of <table> tags; putting each in a
+      // scrolled wrapper keeps wide tables from overflowing the page.
+      const html = parsed
+        .replace(/<table>/g, '<div class="table-scroll">\n<table>')
+        .replace(/<\/table>/g, '</table>\n</div>')
 
       const post = {
         slug: basename(file, '.md'),
