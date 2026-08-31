@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
-import WordFade from '../components/WordFade.tsx'
+import PageFade from '../components/PageFade.tsx'
 
 export default function NotFound() {
   return (
-    <WordFade>
+    <PageFade>
       <section className="notfound">
         <h1>Not found</h1>
       <p>
         That page does not exist. Try the <Link to="/blog">writing index</Link>.
       </p>
       </section>
-    </WordFade>
+    </PageFade>
   )
 }

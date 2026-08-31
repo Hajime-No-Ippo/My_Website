@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import NotFound from './NotFound.tsx'
-import WordFade from '../components/WordFade.tsx'
+import PageFade from '../components/PageFade.tsx'
 import { formatDate, getPost } from '../posts.ts'
 
 export default function Post() {
@@ -10,7 +10,7 @@ export default function Post() {
   if (!post) return <NotFound />
 
   return (
-    <WordFade>
+    <PageFade>
       <article>
         <Link to="/blog" className="back-link">
           ← Writing
@@ -27,6 +27,6 @@ export default function Post() {
             so this never renders untrusted input. */}
         <div className="prose" dangerouslySetInnerHTML={{ __html: post.html }} />
       </article>
-    </WordFade>
+    </PageFade>
   )
 }

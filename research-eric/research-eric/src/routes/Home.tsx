@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 import PostList from '../components/PostList.tsx'
-import WordFade from '../components/WordFade.tsx'
+import PageFade from '../components/PageFade.tsx'
 import { posts } from '../posts.ts'
 
 export default function Home() {
   const recent = posts.slice(0, 5)
 
   return (
-    <WordFade>
+    <PageFade>
       {/* Replace this intro with your own — it is placeholder copy. */}
       <section className="intro">
         <h1>Eric Tao</h1>
@@ -25,6 +25,6 @@ export default function Home() {
           <Link to="/blog">All {posts.length} posts →</Link>
         </p>
       )}
-    </WordFade>
+    </PageFade>
   )
 }

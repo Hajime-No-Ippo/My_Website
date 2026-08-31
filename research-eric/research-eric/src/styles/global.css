@@ -490,34 +490,29 @@ main {
   font-weight: 700;
 }
 
-/* --------------------------- word fade entrance --------------------------- */
+/* ------------------------------ page fade --------------------------------- */
 
-/* Every text node under a .wordfade wrapper is split into per-word spans by
-   WordFade.tsx, each fading up into place on a staggered delay. The base
-   word state is already sharp (opacity 1, no blur); the animation's backwards
-   fill hides words until their turn, and JS strips the animation once the
-   cascade is done so nothing can be left mid-fade. */
-@keyframes wordfade-in {
+/* Each route is wrapped in a .page-fade div: it fades in on mount (CSS
+   animation) and fades out before navigation (App.tsx sets inline opacity 0
+   on the page-fade:leave event). Whole page, single unit. */
+.page-fade {
+  opacity: 0;
+  animation: page-fade-in 0.28s ease-out forwards;
+}
+
+@keyframes page-fade-in {
   from {
     opacity: 0;
-    transform: translateY(0.35em);
-    filter: blur(2px);
   }
   to {
     opacity: 1;
-    transform: none;
-    filter: none;
   }
 }
 
-.wordfade__word {
-  display: inline-block;
-  animation: wordfade-in 0.25s ease-out both;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .wordfade__word {
+  .page-fade {
     animation: none;
+    opacity: 1;
   }
 }
 

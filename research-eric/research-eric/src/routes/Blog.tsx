@@ -1,10 +1,10 @@
 import PostList from '../components/PostList.tsx'
-import WordFade from '../components/WordFade.tsx'
+import PageFade from '../components/PageFade.tsx'
 import { posts } from '../posts.ts'
 
 export default function Blog() {
   return (
-    <WordFade>
+    <PageFade>
       <section className="intro">
         <h1>Eric Tao</h1>
         <p>
@@ -15,6 +15,6 @@ export default function Blog() {
       </section>
 
       <PostList items={posts} />
-    </WordFade>
+    </PageFade>
   )
 }
