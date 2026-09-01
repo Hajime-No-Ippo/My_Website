@@ -1,5 +1,5 @@
 ---
-title: Society — Who Gets to Be Nerdy?
+title: Thoughts — Who Gets to Be Nerdy?
 date: '2026-09-01'
 summary: A reflection on racial stereotypes, learning, and why curiosity belongs to a generation rather than a nationality.
 ---
