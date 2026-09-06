@@ -1,4 +1,4 @@
-export type ProjectCategory = "Frontend" | "UI/UX" | "Full-Stack"
+export type ProjectCategory = "Research" | "UI/UX" | "Full-Stack"
 
 /** Site accent. Projects without their own colour are presented in this. */
 export const DEFAULT_ACCENT = "#E77421"
@@ -92,7 +92,7 @@ export const projects: Project[] = [
     slug: "mobile-ui-framework",
     title: "Mobile UI Framework",
     description: "User interface architecture for food exchange application",
-    category: "Frontend",
+    category: "Research",
     image: "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/iFoodie/WX20251212-203605.png",
     className: "w-[400px] h-[250px]",
     detailedDescription:
