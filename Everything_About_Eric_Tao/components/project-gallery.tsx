@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ChevronRight } from "lucide-react"
 import { accentOf, projects, textOn, type Project, type ProjectCategory } from "@/data/projects"
 import { CurtainLink, curtainFor } from "@/components/curtain"
 import { cn } from "@/lib/utils"
@@ -125,12 +125,15 @@ function ProjectGallery() {
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "border-b border-white/25 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline md:border-none md:py-0",
+                  "flex items-center justify-between border-b border-white/25 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline md:inline md:border-none md:py-0",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
               >
                 {category === "All" ? "All Works" : category}
+                {/* iOS-settings-style row chevron — mobile stacked list only,
+                    hidden once the nav reverts to the inline wrapped row. */}
+                <ChevronRight aria-hidden="true" className="h-5 w-5 md:hidden" />
               </button>
             ))}
           </nav>
