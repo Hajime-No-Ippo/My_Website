@@ -213,7 +213,20 @@ function ProjectCard({ item, index, delayMs }: { item: Project; index: number; d
           // description inside would just win fights within the panel's own
           // context, while the image cell (later in the DOM) still painted
           // over the panel as a whole. Elevating the panel itself fixes it.
-          "relative z-10 flex aspect-square flex-col justify-start gap-6 p-5 sm:aspect-[5/4] sm:gap-8 sm:p-8",
+          // CSS overflow-x and overflow-y can't be set independently
+          // visible/hidden (setting either to non-visible forces the other
+          // to compute as `auto`, which still clips), so this panel has to
+          // stay overflow:visible on both axes for the description's
+          // horizontal bleed to work. The only way to stop that visible
+          // overflow spilling downward into a gap between this panel and its
+          // shorter aspect-ratio'd image sibling is to give the panel enough
+          // height that even its worst case — a 3-line title plus the
+          // 2-line hover description — never needs to exceed the box in the
+          // first place. Two ratios, not one: mobile is 2 columns (narrower
+          // cards, so more text-wrap at the same font size) and needed its
+          // own taller minimum — verified empirically per breakpoint across
+          // all 7 projects, not just estimated from font metrics.
+          "relative z-10 flex aspect-[3/5] flex-col justify-start gap-6 p-5 sm:aspect-[10/11] sm:gap-8 sm:p-8",
           panelCell,
           animation.className,
         )}
@@ -267,8 +280,16 @@ function ProjectCard({ item, index, delayMs }: { item: Project; index: number; d
         />
       </div>
 
+      {/* Same two ratios as the panel (see its comment) — matching, fixed
+          aspect-ratio boxes on both sides is what actually keeps them in
+          sync; relying on grid stretch to match a variable-height sibling
+          turned out not to work here (tried it: dropping this cell's own
+          sizing and leaning on stretch alone made the image collapse to
+          nothing, because next/image's `fill` needs its parent to already
+          have a resolved, non-auto height — stretch didn't reliably supply
+          one before the image tried to size itself against it). */}
       <div
-        className={cn("relative aspect-square overflow-hidden bg-white/5 sm:aspect-[5/4]", imageCell, animation.className)}
+        className={cn("relative aspect-[3/5] overflow-hidden bg-white/5 sm:aspect-[10/11]", imageCell, animation.className)}
         style={animation.style}
       >
         <Image
