@@ -114,13 +114,18 @@ function ProjectGallery() {
           {/* Same size as the contact section's title — one "brand title"
               scale shared across the site's section headings. */}
           <h2 className="text-3xl font-normal text-white sm:text-4xl lg:text-5xl">Project Gallery</h2>
-          <nav className="flex flex-wrap gap-x-8 gap-y-2 text-lg uppercase tracking-[0.2em] sm:text-xl">
+          {/* Below md, flex-wrap packed two-ish-per-line at uneven widths —
+              one category's width didn't line up with the next, reading as
+              broken rather than intentional. Stacked, one per row with its
+              own divider (same idea as a plain link list) instead; reverts
+              to the wrapped inline row from md up, where there's room. */}
+          <nav className="flex flex-col text-lg uppercase tracking-[0.2em] sm:text-xl md:flex-row md:flex-wrap md:gap-x-8 md:gap-y-2">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "no-underline transition-colors hover:text-[#E77421] hover:no-underline",
+                  "border-b border-white/25 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline md:border-none md:py-0",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
