@@ -37,21 +37,25 @@ export default function About() {
       </motion.div>
 
       <div className="mt-12 border-l border-t border-white/25 sm:mt-16">
+        {/* Title left, content right from here down — was heading-then-
+            paragraph stacked in one column, which read cramped and small.
+            md:grid-cols-[1fr_2fr]: title gets a third, content gets the
+            rest, so the (now much bigger) body text has real room. */}
         {SECTIONS.map((section, index) => (
           <motion.section
             key={section.heading}
-            className="border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14"
+            className="grid grid-cols-1 gap-3 border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 md:grid-cols-[1fr_2fr] md:gap-10 lg:px-14"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
           >
             <h2 className="text-2xl font-normal sm:text-3xl">{section.heading}</h2>
-            <p className="mt-3 max-w-2xl text-base text-white/70 sm:text-lg">{section.body}</p>
+            <p className="text-xl text-white/70 sm:text-2xl">{section.body}</p>
           </motion.section>
         ))}
 
         <motion.section
-          className="border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14"
+          className="grid grid-cols-1 gap-3 border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 md:grid-cols-[1fr_2fr] md:gap-10 lg:px-14"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 * (SECTIONS.length + 1) }}
@@ -59,7 +63,7 @@ export default function About() {
           <h2 className="text-2xl font-normal sm:text-3xl">If you&apos;re curious about my research</h2>
           <a
             href="https://blog.ericdesign.uk/"
-            className="mt-3 inline-block text-base text-[#E77421] underline-offset-4 hover:underline sm:text-lg"
+            className="inline-block w-fit text-xl text-[#E77421] underline-offset-4 hover:underline sm:text-2xl"
           >
             https://blog.ericdesign.uk/
           </a>
