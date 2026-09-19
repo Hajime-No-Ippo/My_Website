@@ -1,75 +1,70 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion } from "framer-motion"
 
+const SECTIONS = [
+  {
+    heading: "Not only developer but also designer",
+    body: "I have a dual background in Art & Design and Computer Science. This allows me to bridge the gap between user experience and engineering. I build full-stack applications and also design the interfaces people interact with. My work combines system thinking, UX reasoning, and modern web development.",
+  },
+  {
+    heading: "My Further Study",
+    body: "I'm further studying CNN / RNN artificial intelligence and fine-tuning local large language models.",
+  },
+]
+
 export default function About() {
- return (
- <section id="about" className="py-12 md:py-24">
- <div className="container max-w-7xl px-4 sm:px-6">
- <motion.h2
- className="mb-6 text-center text-3xl font-bold sm:text-4xl"
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ duration: 0.5 }}
- >
- About Me
- </motion.h2>
- <div className="flex justify-center">
- <motion.div
- className="max-w-3xl w-full"
- initial={{ opacity: 0, y: 20 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ duration: 0.5, delay: 0.2 }}
- >
- <div>
- <Card className="h-full flex flex-col border-none shadow-none">
- <CardHeader>
- <CardTitle className="text-2xl font-bold sm:text-2xl">Hi, I am Eric Tao</CardTitle>
- <CardDescription className="text-base font-inter sm:text-lg">
- <p className="text-muted-foreground">
- I am a Software Development student at Maynooth University.
- I combine my background in Art & Design with software engineering to create applications with
- both strong technical foundation and excellent user experience.
+  return (
+    // Same Swiss/full-bleed convention as the contact section: black ground,
+    // a big title on its own, content stacked below as bordered rows instead
+    // of one card — the container owns the top/left edge, each row owns its
+    // own bottom, so the whole page is really the same divide-line language
+    // used everywhere else on the site.
+    <div className="bg-black text-white">
+      <motion.div
+        className="px-6 pt-16 sm:px-10 sm:pt-20 lg:px-14"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <p className="text-sm uppercase tracking-[0.2em] text-[#E77421]">About</p>
+        <h1 className="mt-4 text-4xl font-normal leading-tight sm:text-5xl lg:text-6xl">Hi, I am Eric Tao</h1>
+        <p className="mt-4 max-w-2xl text-lg text-white/70 sm:text-xl">
+          I am a Software Development student at Maynooth University. I combine my background in Art &amp; Design
+          with software engineering to create applications with both a strong technical foundation and an excellent
+          user experience.
+        </p>
+      </motion.div>
 
- </p>
- </CardDescription>
- </CardHeader>
- <CardContent className="flex-grow flex flex-col justify-between">
- <div className="space-y-3">
- <h3 className="text-xl font-semibold sm:text-2xl">Not only developer but also designer</h3>
+      <div className="mt-12 border-l border-t border-white/25 sm:mt-16">
+        {SECTIONS.map((section, index) => (
+          <motion.section
+            key={section.heading}
+            className="border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
+          >
+            <h2 className="text-2xl font-normal sm:text-3xl">{section.heading}</h2>
+            <p className="mt-3 max-w-2xl text-base text-white/70 sm:text-lg">{section.body}</p>
+          </motion.section>
+        ))}
 
- <p className="text-sm text-muted-foreground sm:text-base">
- I have a dual background in Art & Design and Computer Science.
- This allows me to bridge the gap between user experience and engineering.
-
- I build full-stack applications and also design the interfaces people
- interact with. My work combines system thinking, UX reasoning, and
- modern web development.
- </p>
- </div>
- <div className="space-y-3">
- <h3 className="text-xl font-semibold sm:text-2xl">My Further Study</h3>
- <p className="text-sm text-muted-foreground sm:text-base">
- I&apos;m further studying on CNN / RNN artificial Intelligience and fine-turning on local large-language model.
- </p>
- </div>
- <div className="mt-4">
- <h3 className="text-xl font-semibold sm:text-2xl">If you&apos;re curious about my Research</h3>
- <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground sm:text-base">
- <li>
- <a href="https://blog.ericdesign.uk/" className="hover:underline italic">
- https://blog.ericdesign.uk/
- </a>
- </li>
- </ul>
- </div>
- </CardContent>
- </Card>
- </div>
- </motion.div>
- </div>
- </div>
- </section>
- )
+        <motion.section
+          className="border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 * (SECTIONS.length + 1) }}
+        >
+          <h2 className="text-2xl font-normal sm:text-3xl">If you&apos;re curious about my research</h2>
+          <a
+            href="https://blog.ericdesign.uk/"
+            className="mt-3 inline-block text-base text-[#E77421] underline-offset-4 hover:underline sm:text-lg"
+          >
+            https://blog.ericdesign.uk/
+          </a>
+        </motion.section>
+      </div>
+    </div>
+  )
 }
