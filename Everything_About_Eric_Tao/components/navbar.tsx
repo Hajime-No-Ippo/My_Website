@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
@@ -42,9 +43,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-black text-white backdrop-blur supports-[backdrop-filter]:bg-black/60">
       <div className="container flex h-14 items-center justify-between gap-4">
         <Link href="/" className="flex items-center md:mr-6">
-          <p className="relative inline-block text-base font-bold sm:text-lg">
-            ERIC  <span className="text-[#E77421]">TAO</span>
-          </p>
+          <Image src="/Logo.svg" alt="Eric Tao" width={60} height={60} className="h-8 w-8 sm:h-9 sm:w-9" priority />
         </Link>
 
         {/* One nav at every width — the sheet is the navigation, not just the
