@@ -1,2 +1,8 @@
 .next/
 node_modules/
+
+# Seperate repository, seperate git inside the folder
+personal-cloud/
+
+# Shame on MacOS
+.DS_Store

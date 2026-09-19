@@ -81,7 +81,9 @@
   h4,
   h5,
   h6 {
-    @apply font-saffron;
+    /* Inter Light by default; a class-level font-bold/font-semibold on a
+       given heading still wins — class selectors outrank this tag rule. */
+    @apply font-inter font-light;
   }
   p,
   span,

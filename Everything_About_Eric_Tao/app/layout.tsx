@@ -1,17 +1,10 @@
 
 import type { Metadata } from "next"
-import { Playfair_Display as Saffron, Inter } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { RouteCurtainProvider } from "@/components/curtain"
-
-const saffron = Saffron({
-  subsets: ["latin"],
-  variable: "--font-saffron",
-  weight: ["400", "700"],
-  display: "swap",
-})
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-    <body className={`dark ${saffron.variable} ${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
+    <body className={`dark ${inter.variable} font-sans antialiased min-h-screen flex flex-col`}>
       {/* Mounted once here so the curtain outlives client-side navigation —
           anything rendered inside a page could only cover its own arrival. */}
       <RouteCurtainProvider>

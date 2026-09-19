@@ -8,6 +8,14 @@ export function accentOf(project: Pick<Project, "accent">) {
   return project.accent ?? DEFAULT_ACCENT
 }
 
+/** Black or white — whichever reads legibly on top of the given hex accent. */
+export function textOn(hex: string) {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  // Perceptual luminance (ITU-R BT.709); >0.6 reads as "light" enough for black text.
+  const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+  return luminance > 0.6 ? "#000000" : "#FFFFFF"
+}
+
 export type Project = {
   id: number
   slug: string
@@ -111,6 +119,7 @@ export const projects: Project[] = [
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/PLATES-rVTHgVnTltSIQgQsMfLfKyYkD7vJUI.png",
     ],
     contentPath: "/content/projects/mobile-ui-framework.mdx",
+    accent: "#FF5C3D",
   },
   {
     id: 4,
@@ -132,6 +141,7 @@ export const projects: Project[] = [
     ],
     additionalImages: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
     contentPath: "/content/projects/design-lab-branding.mdx",
+    accent: "#6C4CE0",
   },
   {
     id: 5,
@@ -156,6 +166,7 @@ export const projects: Project[] = [
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/SustainableMarket/WechatIMG423.jpg",
     ],
     contentPath: "/content/projects/sustainable-marketplace-platform.mdx",
+    accent: "#2F8FE0",
   },
   {
     id: 6,
@@ -179,6 +190,7 @@ export const projects: Project[] = [
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Chatbox/Enhanced.png",
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Chatbox/Handshake.jpg"],
     contentPath: "/content/projects/real-time-chatbox.mdx",
+    accent: "#E84CA0",
   },
   {
     id: 7,
@@ -202,5 +214,6 @@ export const projects: Project[] = [
       "https://ndszsepzvtrxsmzg.public.blob.vercel-storage.com/Calculator/Result.jpg"],
     contentPath: "/content/projects/arknights-resource-planner.mdx",
     liveUrl: "https://arknights.ericdesign.uk/",
+    accent: "#2DD4BF",
   },
 ]

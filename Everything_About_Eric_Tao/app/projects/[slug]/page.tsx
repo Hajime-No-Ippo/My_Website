@@ -1,12 +1,11 @@
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import ReactMarkdown from "react-markdown"
 import { ArrowUpRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { accentOf, projects } from "@/data/projects"
+import { accentOf, projects, textOn } from "@/data/projects"
 import { cn } from "@/lib/utils"
 
 export function generateStaticParams() {
@@ -47,61 +46,79 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const galleryImages = project.additionalImages.filter((image) => !image.startsWith("/placeholder"))
   const hasGallery = galleryImages.length > 0
 
-  return (
-    <div className="pb-12" style={{ ["--accent" as string]: accentOf(project) }}>
-      <div className="container pt-8 sm:pt-12">
-        <div className="mb-6">
-          <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground">
-            ← Back to projects
-          </Link>
-        </div>
-      </div>
+  const accent = accentOf(project)
+  const onAccent = textOn(accent)
 
-      <div className="relative overflow-hidden">
-        <div className="relative flex min-h-[60vh] sm:min-h-[70vh] lg:min-h-[75vh]">
+  return (
+    // Same Swiss/full-bleed grid language as the project gallery: black
+    // ground, square corners, a colour panel carrying the project's own
+    // accent paired with its hero image.
+    <div className="bg-black pb-16 text-white">
+      <div className="grid grid-cols-1 border-l border-t border-white/25 lg:grid-cols-2">
+        <div
+          className="flex flex-col justify-center gap-4 border-b border-r border-white/25 p-6 sm:p-10 lg:p-14"
+          style={{ backgroundColor: accent, color: onAccent }}
+        >
+          <p className="text-xs uppercase tracking-[0.2em]" style={{ color: `${onAccent}99` }}>
+            {project.category}
+          </p>
+          <h1 className="text-3xl font-normal leading-tight sm:text-4xl lg:text-5xl">{project.title}</h1>
+          <p className="max-w-md text-base leading-relaxed sm:text-lg" style={{ color: `${onAccent}cc` }}>
+            {project.description}
+          </p>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group mt-2 inline-flex w-fit items-center gap-2 text-sm font-medium"
+            >
+              Visit live site
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          )}
+        </div>
+
+        <div className="relative min-h-[18rem] border-b border-r border-white/25 sm:min-h-[24rem] lg:min-h-0">
           <Image
             src={project.image || "/placeholder.svg"}
             alt={project.title}
             fill
-            sizes="100vw"
-            className="absolute inset-0 object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
             priority
           />
-          {/* Heavy enough to keep the overlaid title legible over hero art that
-              carries its own large type. */}
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="relative z-10 flex w-full items-end p-6 sm:p-10 text-white">
-            <div className="max-w-2xl">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/70">{project.category}</p>
-              <h1 className="mt-3 text-3xl sm:text-4xl font-bold font-saffron">{project.title}</h1>
-              <p className="mt-3 text-sm sm:text-base text-white/80">{project.description}</p>
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
-                >
-                  Visit live site
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="container mt-8 sm:mt-10">
+      {/* Full-bleed, same convention as the hero grid above — no `container`
+          here — with noticeably bigger type than a typical meta strip. */}
+      <div className="grid grid-cols-1 border-l border-t border-white/25 sm:grid-cols-3">
+        <div className="border-b border-r border-white/25 p-6 sm:p-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/45">Category</p>
+          <p className="mt-2 text-2xl text-white sm:text-3xl">{project.category}</p>
+        </div>
+        <div className="border-b border-r border-white/25 p-6 sm:p-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/45">Duration</p>
+          <p className="mt-2 text-2xl text-white sm:text-3xl">{project.duration}</p>
+        </div>
+        <div className="border-b border-r border-white/25 p-6 sm:p-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/45">Technologies</p>
+          <p className="mt-2 text-2xl text-white sm:text-3xl">{project.technologies}</p>
+        </div>
+      </div>
+
+      <div className="container mt-10 sm:mt-14">
         <div className={cn("grid gap-10 lg:gap-14", hasGallery && "lg:grid-cols-[0.9fr_1.1fr]")}>
-          <div className="order-2 space-y-6 lg:order-1 lg:pr-4">
+          <div className="order-2 space-y-4 lg:order-1">
             {hasGallery && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 border-l border-t border-white/25 sm:grid-cols-2">
                 {galleryImages.map((image, index) => (
                   <Dialog key={image + index}>
                     <DialogTrigger asChild>
                       <button
                         type="button"
-                        className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/70 text-left"
+                        className="group relative aspect-[4/3] overflow-hidden border-b border-r border-white/25 text-left"
                         aria-label={`Open ${project.title} preview ${index + 1}`}
                       >
                         <Image
@@ -109,12 +126,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                           alt={`${project.title} preview ${index + 1}`}
                           fill
                           sizes="(max-width: 1024px) 50vw, 25vw"
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="object-cover"
                         />
                         <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                       </button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-4xl w-full p-0 overflow-hidden">
+                    <DialogContent className="w-full max-w-4xl overflow-hidden rounded-none border-white/25 bg-black p-0">
                       <DialogTitle className="sr-only">{`${project.title} preview ${index + 1}`}</DialogTitle>
                       <div className="relative aspect-[4/3] w-full">
                         <Image
@@ -131,32 +148,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             )}
           </div>
 
-          <div className={cn("order-1 space-y-6 lg:order-2", hasGallery && "lg:border-l lg:border-border/60 lg:pl-8")}>
-            <div className="rounded-xl border border-border/70 bg-muted/30 p-4 sm:p-5">
-              <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Category</p>
-                  <p className="mt-1 text-foreground">{project.category}</p>
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Duration</p>
-                  <p className="mt-1 text-foreground">{project.duration}</p>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]/80">Technologies</p>
-                  <p className="mt-1 text-foreground">{project.technologies}</p>
-                </div>
-              </div>
+          <div className={cn("order-1 space-y-8 lg:order-2", hasGallery && "lg:border-l lg:border-white/25 lg:pl-10")}>
+            <div>
+              <h2 className="text-xl font-normal text-white sm:text-2xl">Project Overview</h2>
+              <p className="mt-2 text-white/70">{project.detailedDescription}</p>
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold font-saffron">Project Overview</h2>
-              <p className="mt-2 text-sm text-muted-foreground sm:text-base">{project.detailedDescription}</p>
-            </div>
-
-            <div>
-              <h2 className="text-lg font-semibold font-saffron">Key Features</h2>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground sm:text-base">
+              <h2 className="text-xl font-normal text-white sm:text-2xl">Key Features</h2>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-white/70">
                 {project.features.map((feature) => (
                   <li key={feature}>{feature}</li>
                 ))}
@@ -164,10 +164,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold font-saffron">Project Writeup</h2>
-              <div className="rounded-xl border border-border/70 bg-muted/40 p-4 text-sm text-muted-foreground">
+              <h2 className="text-xl font-normal text-white sm:text-2xl">Project Writeup</h2>
+              <div className="border border-white/25 p-4 text-white/70">
                 {mdxSource ? (
-                  <div className="space-y-4 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-foreground [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_p]:leading-relaxed">
+                  <div className="space-y-4 [&_h2]:text-lg [&_h2]:font-normal [&_h2]:text-white [&_h3]:text-base [&_h3]:font-normal [&_h3]:text-white [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5">
                     <ReactMarkdown>{mdxSource}</ReactMarkdown>
                   </div>
                 ) : (

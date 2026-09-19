@@ -5,6 +5,7 @@ export const runtime = "nodejs"
 type ContactPayload = {
   name: string
   email: string
+  phone?: string
   message: string
 }
 
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as Partial<ContactPayload>
     const name = body.name?.toString().trim() ?? ""
     const email = body.email?.toString().trim() ?? ""
+    const phone = body.phone?.toString().trim() ?? ""
     const message = body.message?.toString().trim() ?? ""
 
     if (!name || !email || !message) {
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
       from,
       replyTo: email,
       subject: `New contact form message from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+      text: `Name: ${name}\nEmail: ${email}${phone ? `\nPhone: ${phone}` : ""}\n\n${message}`,
     })
 
     return Response.json({ ok: true })

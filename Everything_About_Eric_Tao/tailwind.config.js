@@ -68,7 +68,6 @@ module.exports = {
         full: "0",
       },
       fontFamily: {
-        saffron: ["var(--font-saffron)", "Times New Roman", "Times", "serif"],
         inter: ["var(--font-inter)"],
         sans: ["var(--font-inter)"],
       },

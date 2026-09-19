@@ -1,86 +1,126 @@
-import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { projects, type Project } from "@/data/projects"
+import { ArrowRight } from "lucide-react"
+import { accentOf, projects, textOn, type Project } from "@/data/projects"
 import { CurtainLink, curtainFor } from "@/components/curtain"
 
-const page = () => {
+export default function ProjectsPage() {
   return (
-    <div className="container py-12">
-      <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-gradient-to-br from-black via-background to-[#0f0f0f] p-6 md:p-10 shadow-2xl">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(231,116,33,0.25),_transparent_60%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-[#E77421]/80">Selected work</p>
-            <h2 className="mt-2 text-3xl md:text-4xl font-bold font-saffron">Projects & Experiments</h2>
-            <p className="mt-3 max-w-2xl text-muted-foreground">
-              Explore recent frontend, product, and full-stack builds. Filter by craft or search by keywords to jump
-              into specifics.
-            </p>
-          </div>
+    <div className="bg-black text-white">
+      {/* Sidebar + content, not a 3-column grid with a row-spanning header:
+          `grid-row: 1 / -1` on an item only reaches the grid's EXPLICIT rows.
+          This grid never declares `grid-template-rows` — its rows are all
+          auto-generated as project cards overflow — so `-1` resolved to
+          whatever row existed when the browser first laid the header out, not
+          the true last row. The header's box came out far shorter than the
+          project list, leaving column 1 open on later rows, so a project
+          card got auto-placed into "the title's" column — the exact bug
+          being fixed here. A flex sidebar has no such implicit-row pitfall:
+          the header is just sticky within its own flex item's height. */}
+      <div className="flex flex-col border-l border-t border-white/25 lg:flex-row">
+        {/* Static now — no cover photo, no hover reveal. lg:top-14 clears
+            the navbar's own h-14; still sticky, just no longer interactive
+            itself. The hover-flood language moved onto each project card
+            below instead. */}
+        <div
+          className="flex w-full flex-col justify-center border-b border-white/25 p-8 text-black sm:p-12 lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] lg:w-1/3 lg:self-start lg:border-b-0 lg:border-r lg:p-14"
+          style={{ backgroundColor: "#E77421" }}
+        >
+          <p className="text-sm uppercase tracking-[0.2em] text-black/70">Selected work</p>
+          <h1 className="mt-4 text-4xl font-normal leading-tight sm:text-5xl lg:text-6xl">
+            Projects &amp; Experiments
+          </h1>
+          {/* text-lg/2xl/3xl = 18/24/30px, exactly half the h1's 36/48/60px
+              at each breakpoint. */}
+          <p className="mt-4 max-w-sm text-lg text-black/80 sm:text-2xl lg:text-3xl">
+            Recent frontend, product, and full-stack builds — filter by craft on any one of them to see more like
+            it.
+          </p>
         </div>
-      </div>
 
-      <div className="grid mt-10 grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <article
-            key={project.id}
-            className="group overflow-hidden rounded-xl border border-border/70 bg-card shadow-lg transition-transform duration-200 hover:-translate-y-1"
-          >
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={project.image || "/placeholder.svg"}
-                alt={project.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition duration-500 ease-out group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <span className="absolute left-4 top-4 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">
-                {project.category}
-              </span>
-            </div>
-            <div className="space-y-3 p-5">
-              <div>
-                <h2 className="text-xl font-semibold font-saffron">{project.title}</h2>
-                <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
-              </div>
-
-              <div className="pt-2">
-                <ProjectLink project={project} />
-              </div>
-            </div>
-          </article>
-        ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       </div>
     </div>
   )
 }
 
-/**
- * One link per card. Projects with a registered curtain open through it; the
- * rest navigate normally. Lives inside the map's scope by taking the project as
- * a prop — `projects` is the array, so `slug` only exists on an element of it.
- */
-function ProjectLink({ project }: { project: Project }) {
+function ProjectCard({ project }: { project: Project }) {
   const href = `/projects/${project.slug}`
   const visual = curtainFor(href)
-  const className = "inline-flex items-center text-sm font-medium text-[#E77421] hover:text-[#E77421]/80"
-  const label = "View project content →"
+  const accent = accentOf(project)
+  const onAccent = textOn(accent)
+
+  // Image only by default — the same hover-flood language that used to live
+  // on the header (colour floods in, title/description/category reveal on
+  // top of it) now lives on each card instead, one per project.
+  const body = (
+    <div className="relative aspect-[4/3] overflow-hidden border-b border-r border-white/25 bg-white/5">
+      <Image
+        src={project.image || "/placeholder.svg"}
+        alt={project.title}
+        fill
+        sizes="(max-width: 1024px) 100vw, 33vw"
+        className="object-cover"
+      />
+      <div
+        className="absolute inset-0 flex flex-col p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{ backgroundColor: accent, color: onAccent }}
+      >
+        {/* Top-aligned, not bottom: title and description now share one
+            size, so title/description/category no longer read as a single
+            descending hierarchy — top-anchoring the text block and pinning
+            category to the opposite corner keeps them visually distinct. */}
+        <h2 className="text-2xl font-normal sm:text-3xl">{project.title}</h2>
+        <p className="mt-2 text-2xl font-normal sm:text-3xl" style={{ color: `${onAccent}cc` }}>
+          {project.description}
+        </p>
+        {/* Arrow only, no "View project" label — the link's own aria-label
+            already carries the accessible name. Oversized and bottom-left,
+            balancing the category pinned bottom-right on the same row. */}
+        <div className="mt-auto flex items-end justify-between">
+          {/* 4x the original 48/56px = 192/224px. The glyph itself isn't
+              centred in its own viewBox (empty space top/left of the
+              diagonal stroke) — the negative margin pulls the drawn arrow
+              flush to the edge, not just its bounding box. */}
+          {/* strokeLinejoin="round" keeps the arrowhead's own bend curved;
+              strokeLinecap="square" is the part that changes — the open
+              ends of the shaft and each chevron stroke now cut off flat
+              instead of Lucide's default rounded caps. */}
+          <ArrowRight
+            aria-hidden="true"
+            strokeWidth={0.5}
+            strokeLinecap="square"
+            strokeLinejoin="round"
+            className="-ml-8 h-48 w-48 shrink-0 transition-transform group-hover:translate-x-2 sm:-ml-9 sm:h-56 sm:w-56"
+          />
+          <p className="text-base uppercase tracking-[0.2em]" style={{ color: `${onAccent}99` }}>
+            {project.category}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+
+  const shared = {
+    "aria-label": `${project.title} — ${project.description}`,
+    className: "group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E77421] focus-visible:ring-inset",
+  }
 
   if (visual && project.accent) {
     return (
-      <CurtainLink href={href} accent={project.accent} word={project.title} visual={visual} className={className}>
-        {label}
+      <CurtainLink href={href} accent={project.accent} word={project.title} visual={visual} {...shared}>
+        {body}
       </CurtainLink>
     )
   }
 
   return (
-    <Link href={href} className={className}>
-      {label}
+    <Link href={href} {...shared}>
+      {body}
     </Link>
   )
 }
-
-export default page
