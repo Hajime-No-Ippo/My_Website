@@ -5,9 +5,9 @@ import "@fontsource/boldonse/400.css";
 
 /** Bands sweep in right to left, staggered head to tail, then the wordmark lands. */
 const BAND_COUNT = 4;
-const BAND_STAGGER_MS = 80;
-/** Waits for the last band: (BAND_COUNT-1) × stagger + the 0.5s band sweep. */
-const WORD_DELAY_MS = 800;
+const BAND_STAGGER_MS = 50;
+/** Waits for the last band: (BAND_COUNT-1) × stagger + the 0.3s band sweep. */
+const WORD_DELAY_MS = 450;
 
 export default function BandCurtain({ accent, word }: CurtainVisualProps) {
  return (

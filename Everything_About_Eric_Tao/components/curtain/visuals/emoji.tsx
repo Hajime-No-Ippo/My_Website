@@ -27,7 +27,11 @@ export default function EmojiCurtain({ accent, word }: CurtainVisualProps) {
       <motion.div
         initial={START}
         animate={{ width: "100vw", height: "100vh" }}
-        transition={{ type: "spring", stiffness: 280, damping: 30 }}
+        // Stiffness and damping both scaled by ~1.67x (their ratio, and so
+        // the same overshoot character, held fixed) to settle in the same
+        // proportion faster as the rest of the curtain — see CURTAIN_MS in
+        // provider.tsx for the budget this is timed against.
+        transition={{ type: "spring", stiffness: 800, damping: 50 }}
         style={{ backgroundColor: accent }}
         className="flex flex-col items-center justify-center gap-6 overflow-hidden"
       >
@@ -37,7 +41,7 @@ export default function EmojiCurtain({ accent, word }: CurtainVisualProps) {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.42, duration: 0.4, ease: "easeOut" }}
+          transition={{ delay: 0.25, duration: 0.24, ease: "easeOut" }}
           className="select-none text-center"
           style={{
             fontFamily: '"Michroma", system-ui, sans-serif',

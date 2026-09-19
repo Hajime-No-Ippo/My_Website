@@ -14,13 +14,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { CurtainVisual } from "./types";
 /** Total budget. Must match the `curtain-veil` duration in tailwind.config.js. */
-const CURTAIN_MS = 2400;
+const CURTAIN_MS = 1440;
 /**
  * When the route actually changes. The veil is fully opaque by now, so the swap
  * happens entirely out of sight — this is what makes it a transition rather
- * than a curtain dropped over a page that already arrived.
+ * than a curtain dropped over a page that already arrived. Must match
+ * WORD_DELAY_MS in visuals/band.tsx — see its own comment for the math.
  */
-const PUSH_AT_MS = 800;
+const PUSH_AT_MS = 450;
 
 /**
  * `emoji` switches the curtain from the sweeping bands to Filmoji's brick

@@ -110,10 +110,11 @@ module.exports = {
           "85%": { opacity: "1", transform: "perspective(300px) rotate3d(1, -1, 0, 0deg)" },
           "100%": { opacity: "0", transform: "perspective(300px) rotate3d(1, -1, 0, -90deg)" },
         },
-        // Route curtain, budgeted to 4800ms end to end. Generic: any project
-        // with its own accent can play it, not just SENTINEL.
+        // Route curtain, budgeted to 1440ms end to end (was 2400ms — see
+        // CURTAIN_MS in curtain/provider.tsx). Generic: any project with its
+        // own accent can play it, not just SENTINEL.
         // Bands use the same right-to-left clip as the nav rows; the veil holds
-        // opaque until 83% (4000ms) then clears to reveal the page beneath.
+        // opaque until 83% (~1195ms) then clears to reveal the page beneath.
         "curtain-band": {
           "0%": { clipPath: "inset(0 0 0 100%)" },
           "100%": { clipPath: "inset(0 0 0 0)" },
@@ -144,9 +145,9 @@ module.exports = {
         // stays hidden until its turn instead of flashing in first.
         "fade-in-up": "fade-in-up 0.3s ease-out both",
         "grid-cell-flip": "grid-cell-flip 3.6s ease-out both",
-        "curtain-band": "curtain-band 0.5s ease-out both",
-        "curtain-word": "curtain-word 0.5s ease-out both",
-        "curtain-veil": "curtain-veil 2.4s linear both",
+        "curtain-band": "curtain-band 0.3s ease-out both",
+        "curtain-word": "curtain-word 0.3s ease-out both",
+        "curtain-veil": "curtain-veil 1.44s linear both",
         "nav-row-in": "nav-row-in 0.6s linear both",
         "nav-row-wipe": "nav-row-wipe 0.6s ease-out both",
       },
