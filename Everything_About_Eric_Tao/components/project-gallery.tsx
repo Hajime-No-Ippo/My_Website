@@ -117,15 +117,20 @@ function ProjectGallery() {
           {/* Below md, flex-wrap packed two-ish-per-line at uneven widths —
               one category's width didn't line up with the next, reading as
               broken rather than intentional. Stacked, one per row with its
-              own divider (same idea as a plain link list) instead; reverts
-              to the wrapped inline row from md up, where there's room. */}
-          <nav className="flex flex-col text-lg uppercase tracking-[0.2em] sm:text-xl md:flex-row md:flex-wrap md:gap-x-8 md:gap-y-2">
+              own divider (same idea as a plain list) instead; reverts to the
+              wrapped inline row from md up, where there's room.
+              -mx-6/-mx-10 cancels the header's own px-6/px-10 padding so
+              each row's divider runs truly edge-to-edge — like the grid
+              below — instead of stopping at the padded text column; the
+              buttons get that same padding back themselves so the text
+              still lines up under the title above. */}
+          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:mx-0 md:flex-row md:flex-wrap md:gap-x-8 md:gap-y-2">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "flex items-center justify-between border-b border-white/25 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline md:inline md:border-none md:py-0",
+                  "flex items-center justify-between border-b border-white/25 px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10 md:border-none md:inline md:p-0",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
