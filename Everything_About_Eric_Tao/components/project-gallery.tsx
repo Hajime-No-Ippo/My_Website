@@ -130,7 +130,7 @@ function ProjectGallery() {
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "flex items-center justify-between border-b border-white/25 px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10 md:border-none md:inline md:p-0",
+                  "flex items-center justify-between border-t border-b border-white/25 px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10 md:border-none md:inline md:p-0",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
