@@ -18,12 +18,12 @@ export default function ProjectsPage() {
           being fixed here. A flex sidebar has no such implicit-row pitfall:
           the header is just sticky within its own flex item's height. */}
       <div className="flex flex-col border-l border-t border-white/25 lg:flex-row">
-        {/* Static now — no cover photo, no hover reveal. lg:top-14 clears
-            the navbar's own h-14; still sticky, just no longer interactive
-            itself. The hover-flood language moved onto each project card
-            below instead. */}
+        {/* Static now — no cover photo, no hover reveal. lg:top-28 clears
+            the navbar's own height (NAVBAR_HEIGHT in navbar.tsx — keep these
+            in sync); still sticky, just no longer interactive itself. The
+            hover-flood language moved onto each project card below instead. */}
         <div
-          className="flex w-full flex-col justify-center border-b border-white/25 p-8 text-black sm:p-12 lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] lg:w-1/3 lg:self-start lg:border-b-0 lg:border-r lg:p-14"
+          className="flex w-full flex-col justify-center border-b border-white/25 p-8 text-black sm:p-12 lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] lg:w-1/3 lg:self-start lg:border-b-0 lg:border-r lg:p-14"
           style={{ backgroundColor: "#E77421" }}
         >
           <p className="text-sm uppercase tracking-[0.2em] text-black/70">Selected work</p>

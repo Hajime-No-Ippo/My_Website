@@ -110,34 +110,69 @@ function ProjectGallery() {
           a further mb-10 below the row, noticeably taller than the gap
           between contact and the footer right after it. */}
       <div className="px-6 pt-8 sm:px-10 sm:pt-10 lg:px-14">
-        <div className="flex flex-col justify-between gap-6 pb-6 md:flex-row md:items-center">
+        {/* Below md, flex-wrap packed two-ish-per-line at uneven widths —
+            one category's width didn't line up with the next, reading as
+            broken rather than intentional. Stacked, one per row with its
+            own divider (same idea as a plain list) instead. From md up,
+            same 6-column grid the navbar uses: title takes the left 2
+            columns, and the 4 categories fall into the remaining 4 on the
+            right, one per column, via plain grid auto-flow — `nav` itself
+            goes `display: contents` so its buttons become direct grid
+            items instead of a nested flex row. */}
+        {/* No md:items-center here — grid's default stretch is what lets
+            each category button's left/right border reach the row's true
+            top/bottom edges below, instead of just wrapping its own text
+            height. Both the title and each button re-centre their own
+            content internally instead (md:flex md:items-center each). */}
+        <div className="flex flex-col justify-between gap-6 pb-6 md:grid md:grid-cols-6 md:gap-0">
           {/* Same size as the contact section's title — one "brand title"
               scale shared across the site's section headings. */}
-          <h2 className="text-3xl font-normal text-white sm:text-4xl lg:text-5xl">Project Gallery</h2>
-          {/* Below md, flex-wrap packed two-ish-per-line at uneven widths —
-              one category's width didn't line up with the next, reading as
-              broken rather than intentional. Stacked, one per row with its
-              own divider (same idea as a plain list) instead; reverts to the
-              wrapped inline row from md up, where there's room.
-              -mx-6/-mx-10 cancels the header's own px-6/px-10 padding so
-              each row's divider runs truly edge-to-edge — like the grid
-              below — instead of stopping at the padded text column; the
-              buttons get that same padding back themselves so the text
-              still lines up under the title above. */}
-          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:mx-0 md:flex-row md:flex-wrap md:gap-x-8 md:gap-y-2">
+          <h2 className="text-3xl font-normal text-white sm:text-4xl lg:text-5xl md:col-span-2 md:flex md:items-center">
+            Project Gallery
+          </h2>
+          {/* -mx-6/-mx-10 cancels the header's own px-6/px-10 padding so
+              each mobile row's divider runs truly edge-to-edge — like the
+              grid below — instead of stopping at the padded text column;
+              the buttons get that same padding back themselves so the text
+              still lines up under the title above. Irrelevant from md up,
+              where this is display: contents. */}
+          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:contents ">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "flex items-center justify-between border-t border-b border-white/25 px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10 md:border-none md:inline md:p-0",
+                  "relative flex items-center justify-between border-t border-b border-white/25 border-l px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10",
+                  // md:border-t-0/md:border-b-0 drop the mobile row dividers;
+                  // md:border-l/md:border-r add the left/right ones instead.
+                  // Nothing sets a height here — the grid's own default
+                  // stretch (no items-center on the parent, see above) makes
+                  // this button fill the full row height, so these lines
+                  // reach the row's true top/bottom edges instead of just
+                  // wrapping the text.
+                  "md:justify-center md:border-l md:border-r md:border-t-0 md:border-b-0 md:p-0 md:text-lg",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
               >
+                {/* Extends the button's own border-l/r through the header's
+                    surrounding padding (pt-8/sm:pt-10 above this row, pb-6
+                    below it) to the section's true top/bottom edges.
+                    position: absolute is the point — unlike a negative
+                    margin, it bleeds outside the button's own box without
+                    pulling on this row's height or the next section's
+                    position (that's what caused the overlap last time). */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 hidden w-px bg-white/25 md:-top-10 md:-bottom-6 md:block"
+                />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 hidden w-px bg-white/25 md:-top-10 md:-bottom-6 md:block"
+                />
                 {category === "All" ? "All Works" : category}
                 {/* iOS-settings-style row chevron — mobile stacked list only,
-                    hidden once the nav reverts to the inline wrapped row. */}
+                    hidden once the nav reverts to the grid. */}
                 <ChevronRight aria-hidden="true" className="h-5 w-5 md:hidden" />
               </button>
             ))}

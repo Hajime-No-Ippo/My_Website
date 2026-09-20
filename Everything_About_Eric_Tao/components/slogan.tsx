@@ -34,7 +34,7 @@ function shuffledIndices(length: number) {
   const order = Array.from({ length }, (_, i) => i)
   for (let i = order.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[order[i], order[j]] = [order[j], order[i]]
+      ;[order[i], order[j]] = [order[j], order[i]]
   }
   return order
 }
@@ -111,7 +111,7 @@ export default function Slogan() {
   }, [isVisible])
 
   return (
-    <section ref={sectionRef} className="bg-black py-20 sm:py-28">
+    <section ref={sectionRef} className="bg-black py-40 sm:py-38">
       {/* Fixed height, sized for the longest-wrapping language at each
           breakpoint, with the text vertically centered inside it — a
           language swap changes line count (CJK wraps far tighter than the

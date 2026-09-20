@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Registered so the browser can animate these directly — a plain custom
+   property snaps between values instead of transitioning, since it carries
+   no type the transition engine can interpolate. Used by the logo's
+   cursor-follow "liquid fill" hover (components/about.tsx): --logo-fill is
+   the blob's radius (grows in on hover, shrinks out on leave), --mx/--my are
+   its centre (eased so the blob trails the pointer instead of snapping to it
+   on every mousemove).  */
+@property --logo-fill {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+@property --mx {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --my {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

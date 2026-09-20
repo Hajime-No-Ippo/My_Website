@@ -3,7 +3,6 @@ import Link from "next/link"
 const NAV_LINKS = [
   { href: "/about", label: "About" },
   { href: "https://blog.ericdesign.uk", label: "Blogs" },
-  { href: "/skills", label: "Experience" },
   { href: "/projects", label: "Projects" },
   { href: "/contact", label: "Contact" },
 ]
@@ -14,6 +13,7 @@ const SOCIAL_LINKS = [
   { href: "https://www.instagram.com/eric_chenmingtao/", label: "Instagram" },
   { href: "https://x.com/MingTaylor26665", label: "Twitter" },
   { href: "https://open.spotify.com/user/31hqhp6mrkqj7vjentb26qxfrs4q", label: "Spotify" },
+  { href: "https://huggingface.co/Eric-Yyvuw", label: "Hugging Face" },
 ]
 
 export function Footer() {
@@ -67,19 +67,26 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="container flex flex-col items-center justify-between gap-4 border-t border-white/25 py-6 md:flex-row">
-        <p className="text-center text-sm leading-loose md:text-left">
-          Write by Claude, Pasted by{"  "}
-          <Link href="/" className="group">
-            <span className="relative inline-block py-2 text-sm font-medium text-[#E77421]">
-              @Eric Tao
-              <span className="absolute left-0 -bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
-            </span>
-          </Link>
-        </p>
-        <p className="text-center text-sm md:text-left">
-          &copy; {new Date().getFullYear()} Eric Tao. All rights reserved.
-        </p>
+      {/* border-t lives on this full-width wrapper, and the row below uses
+          the same px-6/sm:px-10/lg:px-14 padding as every other full-bleed
+          section (navbar included) instead of `container` — `container`
+          caps out and centers past 1400px, which put this row's edges out
+          of alignment with the rest of the site on wide screens. */}
+      <div className="border-t border-white/25">
+        <div className="flex flex-col items-center justify-between gap-4 px-6 py-6 sm:px-10 md:flex-row lg:px-14">
+          <p className="text-center text-sm leading-loose md:text-left">
+            Write by Claude, Pasted by{"  "}
+            <Link href="/" className="group">
+              <span className="relative inline-block py-2 text-sm font-medium text-[#E77421]">
+                @Eric Tao
+                <span className="absolute left-0 -bottom-0 h-px w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
+              </span>
+            </Link>
+          </p>
+          <p className="text-center text-sm md:text-left">
+            &copy; {new Date().getFullYear()} Eric Tao. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   )
