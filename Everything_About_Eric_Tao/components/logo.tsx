@@ -1,0 +1,26 @@
+import type { CSSProperties } from "react"
+
+/**
+ * Inline (not next/image) so `currentColor` works — callers control fill via
+ * text-color classes, including `group-hover:text-[#E77421]`, which a raster
+ * <Image src="/Logo.svg" /> can't respond to.
+ */
+export function Logo({
+  className,
+  strokeWidth = 1,
+  style,
+}: {
+  className?: string
+  strokeWidth?: number
+  style?: CSSProperties
+}) {
+  return (
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} style={style}>
+      <path
+        d="M5.95659 53V37.9002H6.95615V53H5.95659ZM5.95659 53V52.043H15.4418V53H5.95659ZM5.95659 45.918V44.961H13.5277V45.918H5.95659ZM5.95659 38.8573V37.9002H15.4418V38.8573H5.95659ZM22.6408 53V37.9002H23.6403V53H22.6408ZM17.8663 38.8573V37.9002H28.4148V38.8573H17.8663Z"
+        fill="currentColor"
+      />
+      <rect x="0.5" y="0.5" width="59" height="59" stroke="currentColor" strokeWidth={strokeWidth} />
+    </svg>
+  )
+}
