@@ -19,8 +19,3 @@ pnpm dev
 ```
 
 Then open http://localhost:3000.
-
-## Notes
-
-- Deployment is triggered automatically on push to `master`.
-- `personal-cloud/` is a separate, standalone project and not part of this repo (see [my-cloud](https://github.com/Hajime-No-Ippo/my-cloud)).
