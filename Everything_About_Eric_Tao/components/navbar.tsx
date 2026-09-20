@@ -76,7 +76,13 @@ export default function Navbar() {
           <Logo className="h-14 w-14 text-white sm:h-16 sm:w-16" />
         </Link>
 
-        <div className="flex items-center justify-center overflow-hidden border-t border-l border-r border-white/25 px-1">
+        {/* invisible (not hidden): this is a grid item in an always-6-column
+            row, so display:none here would remove it from layout entirely,
+            leaving column 6 unfilled and pulling the hamburger one column
+            short of the true right edge. visibility:hidden keeps its track
+            reserved (and drops its border along with it) without disturbing
+            anything else's position — the column just reads as empty space. */}
+        <div className="invisible flex items-center justify-center overflow-hidden border-t border-l border-r border-white/25 px-1 md:visible">
           {/* Column is only ~1/6 of the viewport — at text-3xl and forced
               onto one line, "Contact Me" was far wider than that and bled
               sideways into the logo's column. Below xl: let it wrap onto two

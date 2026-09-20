@@ -11,18 +11,13 @@ function trackLogoCursor(event: MouseEvent<HTMLDivElement>) {
   event.currentTarget.style.setProperty("--my", `${((event.clientY - rect.top) / rect.height) * 100}%`)
 }
 
-const SECTIONS = [
-  {
-    heading: "Not only developer but also designer",
-    body: "I have a dual background in Art & Design and Computer Science. This allows me to bridge the gap between user experience and engineering. I build full-stack applications and also design the interfaces people interact with. My work combines system thinking, UX reasoning, and modern web development.",
-  },
-  {
-    heading: "My Further Study",
-    body: "I'm further studying CNN / RNN artificial intelligence and fine-tuning local large language models.",
-  },
-]
+type AboutSection = { heading: string; body: string }
 
-export default function About() {
+// Content lives in content/about/sections.txt (loaded by app/about/page.tsx,
+// a server component — this one can't read the filesystem itself, it's
+// "use client" for the logo's hover tracking below). Edit that text file to
+// change the copy; no need to touch this component at all.
+export default function About({ sections }: { sections: AboutSection[] }) {
   return (
     // Same Swiss/full-bleed convention as the contact section: black ground,
     // a big title on its own, content stacked below as bordered rows instead
@@ -90,7 +85,7 @@ export default function About() {
             paragraph stacked in one column, which read cramped and small.
             md:grid-cols-[1fr_2fr]: title gets a third, content gets the
             rest, so the (now much bigger) body text has real room. */}
-        {SECTIONS.map((section, index) => (
+        {sections.map((section, index) => (
           <motion.section
             key={section.heading}
             className="grid grid-cols-1 gap-3 border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 md:grid-cols-[1fr_2fr] md:gap-10 lg:px-14"
@@ -107,7 +102,7 @@ export default function About() {
           className="grid grid-cols-1 gap-3 border-b border-r border-white/25 px-6 py-10 sm:px-10 sm:py-12 md:grid-cols-[1fr_2fr] md:gap-10 lg:px-14"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 * (SECTIONS.length + 1) }}
+          transition={{ duration: 0.5, delay: 0.1 * (sections.length + 1) }}
         >
           <h2 className="text-2xl font-normal sm:text-3xl">If you&apos;re curious about my research</h2>
           <a

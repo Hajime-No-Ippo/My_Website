@@ -1,0 +1,7 @@
+
+About my learning roadmap
+I have a dual background in Art & Design and Computer Science. This allows me to bridge the gap between user experience and engineering. I build full-stack applications and also design the interfaces people interact with. My work combines system thinking, UX reasoning, and modern web development.
+
+
+My Further Study
+I'm further studying CNN / RNN artificial intelligence and fine-tuning local large language models. I had open a topic on if we can using RFID sensors to sensoring the outer level of the robotic, to maintain their completion.
