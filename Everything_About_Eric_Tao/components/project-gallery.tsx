@@ -119,12 +119,15 @@ function ProjectGallery() {
             right, one per column, via plain grid auto-flow — `nav` itself
             goes `display: contents` so its buttons become direct grid
             items instead of a nested flex row. */}
-        {/* No md:items-center here — grid's default stretch is what lets
-            each category button's left/right border reach the row's true
-            top/bottom edges below, instead of just wrapping its own text
-            height. Both the title and each button re-centre their own
-            content internally instead (md:flex md:items-center each). */}
-        <div className="flex flex-col justify-between gap-6 pb-6 md:grid md:grid-cols-6 md:gap-0">
+        {/* md:items-stretch, explicit rather than relying on the default:
+            align-items' initial value ("normal") is SPECCED to behave as
+            stretch for a grid container, but that didn't hold up here in
+            practice (measured nav/each button stuck at their own ~48px
+            content height instead of the row's 72px) — spelling it out
+            gets the actual stretch this layout depends on: nav (and h2)
+            filling the row's full height, and in turn each category button
+            filling nav's own nested-grid height (see nav's own comment). */}
+        <div className="flex flex-col justify-between gap-6 pb-6 md:grid md:grid-cols-6 md:items-stretch md:gap-0">
           {/* Same size as the contact section's title — one "brand title"
               scale shared across the site's section headings. */}
           <h2 className="text-3xl font-normal text-white sm:text-4xl lg:text-5xl md:col-span-2 md:flex md:items-center">
@@ -134,30 +137,62 @@ function ProjectGallery() {
               each mobile row's divider runs truly edge-to-edge — like the
               grid below — instead of stopping at the padded text column;
               the buttons get that same padding back themselves so the text
-              still lines up under the title above. Irrelevant from md up,
-              where this is display: contents. */}
-          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:contents ">
+              still lines up under the title above.
+              From md up this is its own real nested grid (col-span-4 of the
+              outer 6, split into 4 of its own), not display: contents —
+              contents was tried first so the buttons would auto-flow as
+              direct items of the outer grid, but a button-through-contents
+              grandchild's height:100% doesn't reliably resolve against the
+              outer row (measured: stayed at its own ~48px content height
+              instead of the row's 72px). A real nested grid stretches
+              normally at both levels — the outer grid stretches nav to the
+              row's height, nav's own grid then stretches each button to
+              nav's height — so the hover background-fill actually covers
+              the full cell instead of just wrapping the text. */}
+          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:col-span-4 md:grid md:grid-cols-4 md:items-stretch md:mx-0">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 aria-pressed={filter === category}
                 className={cn(
-                  "relative flex items-center justify-between border-t border-b border-white/25 border-l px-6 py-3 text-left no-underline transition-colors hover:text-[#E77421] hover:no-underline sm:px-10",
-                  // md:border-t-0/md:border-b-0 drop the mobile row dividers;
-                  // md:border-l/md:border-r add the left/right ones instead.
-                  // Nothing sets a height here — the grid's own default
-                  // stretch (no items-center on the parent, see above) makes
-                  // this button fill the full row height, so these lines
-                  // reach the row's true top/bottom edges instead of just
-                  // wrapping the text.
-                  "md:justify-center md:border-l md:border-r md:border-t-0 md:border-b-0 md:p-0 md:text-lg",
+                  "group relative flex items-center justify-between border-t border-b border-white/25 border-l px-6 py-3 text-left no-underline transition-colors hover:text-black hover:no-underline sm:px-10",
+                  // md:border-*-0 drops all four mobile-row borders — from
+                  // md: up, the two decorative spans below draw the left/right
+                  // lines instead (and reach further than a real border could,
+                  // through the header's padding to the section's true edges).
+                  // Having both was the bug: a real border-l/r here plus the
+                  // span on top of it drew two 1px lines a hair out of
+                  // alignment, reading as a doubled/gapped divider. No
+                  // explicit height needed here any more — nav's own real
+                  // grid (see its comment) stretches this button to fill it.
+                  "md:justify-center md:border-0 md:p-0 md:text-lg",
                   filter === category ? "text-[#E77421]" : "text-white/55",
                 )}
                 onClick={() => setFilter(category)}
               >
+                {/* Hover fill — a separate span, not hover:bg-* directly on
+                    the button, and extended by the SAME -top-10/-bottom-6 as
+                    the divide-line spans below. The button's own box is only
+                    ~48px (its own text height); the divide lines reach a full
+                    112px through the header's padding, so a fill bounded by
+                    the button itself left a ~40px gap above and ~24px below
+                    where the lines were drawn but nothing was filled — this
+                    is that bug. group-hover (not hover) because this span
+                    itself has no size to be hovered; the button does. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-transparent transition-colors group-hover:bg-[#E77421] md:-top-10 md:-bottom-6"
+                />
                 {/* Extends the button's own border-l/r through the header's
-                    surrounding padding (pt-8/sm:pt-10 above this row, pb-6
-                    below it) to the section's true top/bottom edges.
+                    surrounding padding (pt-8/sm:pt-10 above, pb-6 below) to
+                    the section's true top/bottom edges. Note: the project
+                    grid right below runs its own independent
+                    grid-cols-2/lg:grid-cols-4, whose column lines land
+                    nowhere near these (measured: only the midpoint
+                    coincides, the rest differ by hundreds of px at desktop
+                    widths) — so this line reaching the seam won't continue
+                    into a matching line below it, by design of the two
+                    grids rather than a bug here.
                     position: absolute is the point — unlike a negative
                     margin, it bleeds outside the button's own box without
                     pulling on this row's height or the next section's
@@ -170,10 +205,10 @@ function ProjectGallery() {
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-y-0 right-0 hidden w-px bg-white/25 md:-top-10 md:-bottom-6 md:block"
                 />
-                {category === "All" ? "All Works" : category}
+                <span className="relative">{category === "All" ? "All Works" : category}</span>
                 {/* iOS-settings-style row chevron — mobile stacked list only,
                     hidden once the nav reverts to the grid. */}
-                <ChevronRight aria-hidden="true" className="h-5 w-5 md:hidden" />
+                <ChevronRight aria-hidden="true" className="relative h-5 w-5 md:hidden" />
               </button>
             ))}
           </nav>
@@ -187,14 +222,29 @@ function ProjectGallery() {
           cell owns its own right/bottom, so every seam is single-width and the
           outer frame closes at any width. */}
       <div key={filter} className="grid grid-cols-2 border-l border-t border-white/25 lg:grid-cols-4">
-        {filteredItems.map((item, index) => (
-          <ProjectCard
-            key={item.id}
-            item={item}
-            index={index}
-            delayMs={Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}
-          />
-        ))}
+        {filteredItems.map((item, index) =>
+          // First two of whatever's currently filtered get the /projects
+          // listing page's own showcase treatment (full-bleed cover photo,
+          // colour-overlay reveal on hover) instead of the panel+image pair
+          // every other card uses — col-span-2 so each still occupies a full
+          // pair's worth of grid width (2 cols at the base 2-col breakpoint,
+          // half the row at lg's 4), keeping the rest of the grid's auto-flow
+          // and pairing math (needsFillerPair below) working unchanged.
+          index < 2 ? (
+            <ShowcaseProjectCard
+              key={item.id}
+              item={item}
+              delayMs={Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}
+            />
+          ) : (
+            <ProjectCard
+              key={item.id}
+              item={item}
+              index={index}
+              delayMs={Math.min(index, MAX_STAGGERED_CARDS) * STAGGER_MS}
+            />
+          ),
+        )}
 
         {needsFillerPair && (
           <>
@@ -367,6 +417,80 @@ function ProjectCard({ item, index, delayMs }: { item: Project; index: number; d
 
   // A route with no registered curtain simply navigates.
   const visual = curtainFor(href)
+
+  if (visual && item.accent) {
+    return (
+      <CurtainLink href={href} accent={item.accent} word={item.title} visual={visual} {...shared}>
+        {body}
+      </CurtainLink>
+    )
+  }
+
+  return (
+    <Link href={href} {...shared}>
+      {body}
+    </Link>
+  )
+}
+
+/**
+ * The /projects listing page's own card treatment, ported over for whichever
+ * two projects currently lead the (possibly filtered) list: one full-bleed
+ * cover photo instead of the panel+image pair, with title/description/arrow/
+ * category revealed as a colour overlay on hover rather than always-visible
+ * panel text. col-span-2 (not a two-cell display:contents pair like
+ * ProjectCard) — same total grid width as a normal pair, but as one link.
+ */
+function ShowcaseProjectCard({ item, delayMs }: { item: Project; delayMs: number }) {
+  const href = `/projects/${item.slug}`
+  const accent = accentOf(item)
+  const onAccent = textOn(accent)
+  const visual = curtainFor(href)
+
+  const body = (
+    <div
+      className="relative aspect-[4/3] overflow-hidden border-b border-r border-white/25 bg-white/5 animate-fade-in-up motion-reduce:animate-none"
+      style={{ animationDelay: `${delayMs}ms` }}
+    >
+      <Image
+        src={item.image || "/placeholder.svg"}
+        alt={item.title}
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className="object-cover"
+      />
+      <div
+        className="absolute inset-0 flex flex-col p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:p-8"
+        style={{ backgroundColor: accent, color: onAccent }}
+      >
+        <h3 className="text-2xl font-normal sm:text-3xl">{item.title}</h3>
+        <p className="mt-2 text-2xl font-normal sm:text-3xl" style={{ color: `${onAccent}cc` }}>
+          {item.description}
+        </p>
+        <div className="mt-auto flex items-end justify-between">
+          {/* Same oversized/off-centred-glyph treatment as the /projects
+              page's own card — see its comment for why the negative margin
+              is needed (the glyph isn't centred in Lucide's own viewBox). */}
+          <ArrowRight
+            aria-hidden="true"
+            strokeWidth={0.5}
+            strokeLinecap="square"
+            strokeLinejoin="round"
+            className="-ml-8 h-48 w-48 shrink-0 transition-transform group-hover:translate-x-2 sm:-ml-9 sm:h-56 sm:w-56"
+          />
+          <p className="text-base uppercase tracking-[0.2em]" style={{ color: `${onAccent}99` }}>
+            {item.category}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+
+  const shared = {
+    "aria-label": `${item.title} — ${item.description}`,
+    className:
+      "group col-span-2 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E77421] focus-visible:ring-inset",
+  }
 
   if (visual && item.accent) {
     return (

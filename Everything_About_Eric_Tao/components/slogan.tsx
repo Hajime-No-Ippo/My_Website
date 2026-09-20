@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 // One line, six languages — the rotation below cycles through this array,
@@ -28,6 +29,22 @@ const SLOGANS: { text: string }[] = [
 
 /** How long each language stays on screen before the next fades in. */
 const ROTATE_MS = 4800
+
+// Blur-in/out ported from research-eric's page-fade transition
+// (research-eric/research-eric/src/styles/global.css: page-fade-in /
+// page-fade-out keyframes) — same translateY+scale+blur+opacity recipe.
+// First tried at 0.3s/8px (matching fade-in-up's old speed exactly), but at
+// that size it read as a plain fade — bumped both the duration and the blur
+// radius so the effect is actually legible at a glance, not just measurable.
+const SLOGAN_TRANSITION_S = 0.6
+const SLOGAN_BLUR_PX = 50
+// [0.12, 1, 0.12, 1] (a prior edit here) has identical control points, which
+// front-loads nearly the whole curve into the first instant — blur shoots to
+// ~max almost immediately, then crawls for the rest of the duration, reading
+// as a snap rather than a curve. This is a standard symmetric ease-in-out:
+// slow to start, fastest through the middle, slow to settle — smooth for the
+// full 0.6s instead of mostly-done in the first fraction of it.
+const SLOGAN_EASE = [0.65, 0, 0.35, 1] as const
 
 /** Fisher-Yates — an unbiased shuffle of the play order, not just Math.random() sort. */
 function shuffledIndices(length: number) {
@@ -134,12 +151,26 @@ export default function Slogan() {
             isVisible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
           )}
         >
-          {/* Keyed on index: a language swap is a new DOM node, so the
-              fade-in-up entrance replays on every rotation for free instead
-              of needing separate swap-transition state. */}
-          <span key={index} className="inline-block animate-fade-in-up motion-reduce:animate-none">
-            {SLOGANS[index].text}
-          </span>
+          {/* mode="wait": the leaving language blurs out before the next
+              blurs in — not a crossfade. Keyed on index, so each rotation is
+              a new node and replays the transition for free.
+              Blur only now, no opacity/translateY/scale — those were tried
+              first (ported from research-eric's page-fade, which combines
+              all four), but fading opacity in step with the blur made the
+              blur itself unreadable: near-transparent blurry text and
+              near-transparent sharp text look the same. Text stays fully
+              opaque and in place throughout; only its sharpness changes. */}
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={index}
+              className="inline-block motion-reduce:transition-none"
+              initial={{ filter: `blur(${SLOGAN_BLUR_PX}px)` }}
+              animate={{ filter: "blur(0px)", transition: { duration: SLOGAN_TRANSITION_S, ease: SLOGAN_EASE } }}
+              exit={{ filter: `blur(${SLOGAN_BLUR_PX}px)`, transition: { duration: SLOGAN_TRANSITION_S, ease: SLOGAN_EASE } }}
+            >
+              {SLOGANS[index].text}
+            </motion.span>
+          </AnimatePresence>
         </p>
       </div>
     </section>
