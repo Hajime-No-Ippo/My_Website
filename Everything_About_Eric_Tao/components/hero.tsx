@@ -156,11 +156,17 @@ export default function Hero() {
  </div>
 
  {/* Layer 3: Body copy (z-20 stays above cells) */}
+ {/* text-lg sm:text-2xl md:text-3xl is exactly half the h1's own
+ text-4xl sm:text-5xl md:text-6xl (18/24/30 vs 36/48/60) at every
+ breakpoint — these two lines previously had two different,
+ unrelated sizes of their own (text-xl sm:text-2xl, and just text-xl
+ since sm:text-md isn't a real Tailwind scale step) instead of one
+ shared relationship to the title. */}
  <div className="relative z-20 px-4 sm:px-6 lg:px-8">
- <p className="mb-6 max-w-2xl mx-auto text-xl sm:text-2xl font-inter">
+ <p className="mb-6 max-w-2xl mx-auto text-lg sm:text-2xl md:text-3xl font-inter">
  New Grad Software Engineer &amp; UX Designer
  </p>
- <p className="mb-6 max-w-2xl mx-auto text-xl text-muted-foreground sm:text-md font-inter">
+ <p className="mb-6 max-w-2xl mx-auto text-lg text-muted-foreground sm:text-2xl md:text-3xl font-inter">
  Experience Life, Seek the adventure.
  </p>
  </div>

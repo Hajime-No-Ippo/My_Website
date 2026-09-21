@@ -21,9 +21,16 @@ export default function ProjectsPage() {
         {/* Static now — no cover photo, no hover reveal. lg:top-28 clears
             the navbar's own height (NAVBAR_HEIGHT in navbar.tsx — keep these
             in sync); still sticky, just no longer interactive itself. The
-            hover-flood language moved onto each project card below instead. */}
+            hover-flood language moved onto each project card below instead.
+            lg:w-[calc(33.3333%+18.667px)], not a plain w-1/3: the navbar's
+            own 6-column grid is inset by its lg:px-14 (56px) edge padding, so
+            its 2nd/3rd column boundary sits at 56px + (viewport-112px)/3 —
+            algebraically that's exactly viewport/3 + 56/3 (18.667px), a
+            constant offset from a plain 1/3 split at every viewport width.
+            Without it this sidebar's right edge (a plain 33.333%) drifted
+            ~18.7px left of the navbar's own divider directly above it. */}
         <div
-          className="flex w-full flex-col justify-center border-b border-white/25 p-8 text-black sm:p-12 lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] lg:w-1/3 lg:self-start lg:border-b-0 lg:border-r lg:p-14"
+          className="flex w-full flex-col justify-center border-b border-white/25 p-8 text-black sm:p-12 lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] lg:w-[calc(33.3333%+18.667px)] lg:self-start lg:border-b-0 lg:border-r lg:p-14"
           style={{ backgroundColor: "#E77421" }}
         >
           <p className="text-sm uppercase tracking-[0.2em] text-black/70">Selected work</p>
@@ -38,7 +45,10 @@ export default function ProjectsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3">
+        {/* lg:w-[calc(66.6667%-18.667px)]: the exact complement of the
+            sidebar's own adjusted width above, so the two together still sum
+            to a full 100% — see that div's comment for the derivation. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-[calc(66.6667%-18.667px)]">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
