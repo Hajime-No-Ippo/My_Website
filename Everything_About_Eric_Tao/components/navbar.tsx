@@ -48,12 +48,23 @@ export default function Navbar() {
     // backdrop never renders over this bar — without it, the overlay's later
     // portal position in the DOM lets it win the stacking tie at equal z.
     <header className="sticky top-0 z-[60] w-full border-b bg-black text-white backdrop-blur supports-[backdrop-filter]:bg-black/60">
-      {/* 6 equal columns. Only column 2 carries a divider for now (its own
-          border-l, stretched full-height by the grid's default
-          align-items: stretch) — columns 3-5 are bare spacers reserved for
-          future nav items. */}
-      <div className={cn("grid grid-cols-6 items-stretch px-6 sm:px-10 lg:px-14", NAVBAR_HEIGHT)}>
-        <Link href="/" className="hidden items-center gap-3 overflow-hidden md:flex">
+      {/* 6 equal columns, no outer padding on the grid itself — this is what
+          makes its column boundaries land at true 1/6, 2/6, 3/6... of the
+          viewport, matching every other unpadded full-bleed grid on the site
+          (footer's 3-column split, the /projects sidebar+content split).
+          Padding the grid itself (the previous approach) insets those
+          boundaries by the padding amount, which then has to be reverse-
+          engineered back into every OTHER section that needs to line up
+          with this one — three separate calc() patches, all downstream of
+          one avoidable choice here. The visual inset for the logo and the
+          hamburger is real, it just lives on those two cells' own padding
+          now (pl-6.../pr-6...) instead of on the grid, so it never touches
+          the column math at all.
+          Only column 2 carries a divider for now (its own border-l,
+          stretched full-height by the grid's default align-items: stretch)
+          — columns 3-5 are bare spacers reserved for future nav items. */}
+      <div className={cn("grid grid-cols-6 items-stretch", NAVBAR_HEIGHT)}>
+        <Link href="/" className="hidden items-center gap-3 overflow-hidden pl-6 sm:pl-10 md:flex lg:pl-14">
           <Logo className="h-14 w-14 shrink-0 text-white sm:h-16 sm:w-16" />
           {/* shrink-0: flex would otherwise squeeze this to fit the logo,
               and with nowrap forcing each line to stay on one line, that
@@ -72,7 +83,7 @@ export default function Navbar() {
             &amp; UX Designer
           </p>
         </Link>
-        <Link href="/" className="flex items-center md:hidden">
+        <Link href="/" className="flex items-center pl-6 sm:pl-10 md:hidden lg:pl-14">
           <Logo className="h-14 w-14 text-white sm:h-16 sm:w-16" />
         </Link>
 
@@ -104,8 +115,9 @@ export default function Navbar() {
         <div />
 
         {/* One nav at every width — the sheet is the navigation, not just the
-            small-screen fallback. */}
-        <div className="flex items-center justify-end">
+            small-screen fallback. pr-6.../lg:pr-14 replaces the grid's own
+            former padding for this edge — see the grid container's comment. */}
+        <div className="flex items-center justify-end pr-6 sm:pr-10 lg:pr-14">
           <Sheet open={open} onOpenChange={setOpen}>
             {/* Radix hides/disables everything outside the dialog's own tree
               while it's open (pointer-events: none, aria-hidden) — so this
