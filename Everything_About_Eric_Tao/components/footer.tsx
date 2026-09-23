@@ -20,8 +20,18 @@ export function Footer() {
   return (
     <footer className="border-t border-white/25 bg-black text-white">
       {/* Full-bleed 3-column split, same convention as the gallery/contact
-          sections — container-less, each cell owns its own dividing border. */}
-      <div className="grid grid-cols-1 sm:grid-cols-3">
+          sections — container-less, each cell owns its own dividing border.
+          sm:grid-cols-[...] instead of a plain sm:grid-cols-3: this grid has
+          no outer padding of its own (each cell pads itself internally), so
+          a plain 3-way equal split put its own column boundaries at raw
+          33.333%/66.667% of the full viewport — while the navbar's columns
+          are inset by its own lg:px-14 (56px), landing its column 2/3
+          boundary at 56px + (viewport-112px)/3, i.e. exactly 33.333% + 56/3
+          (18.667px). Same fixed offset, same fix as app/projects/page.tsx's
+          sidebar width: widen column 1 by that constant and split the
+          remaining width evenly between columns 2 and 3, so this grid's
+          first divider lands exactly under the navbar's own. */}
+      <div className="grid grid-cols-1 sm:grid-cols-[calc(33.3333%+18.667px)_calc(33.3333%-9.333px)_calc(33.3333%-9.333px)]">
         <div className="border-b border-white/25 px-6 pb-12 pt-8 sm:border-b-0 sm:border-r sm:px-10 sm:pb-16 sm:pt-10">
           <p className="text-4xl font-normal leading-tight sm:text-5xl">
             Eric Tao
