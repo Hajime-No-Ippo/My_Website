@@ -60,21 +60,41 @@ export default function Contact() {
   return (
     <>
       {/* Full-bleed split, same convention as the project gallery: no
-          `container` here, so the right column's own grid runs edge to edge. */}
-      <section id="contact" className="bg-black py-16 md:py-24">
+          `container` here, so the right column's own grid runs edge to edge.
+          No py-* here any more — it left visible empty black space between
+          this section's bordered box and the photo/map blocks flanking it
+          on the contact page, reading as a gap between the three. */}
+      <section id="contact" className="bg-black">
         {/* Top and bottom borders live on this outer wrapper, spanning BOTH
           columns full-width — they were on the form alone before, so the
           line only ran under the right half and the box read as unenclosed
           (no top edge on desktop, no seam closing the left column at all). */}
         <div className="grid grid-cols-1 border-b border-t border-white/25 lg:grid-cols-2">
+          {/* Success/error feedback both live here now, not as a line under
+              the form that pushed the button down when it appeared — the
+              whole left panel floods a colour and the title itself swaps to
+              the message, the same "flood the block" language the project
+              gallery/cards use on hover elsewhere on the site. */}
           <motion.div
-            className="flex items-start px-6 py-12 sm:px-10 lg:py-16"
+            className={cn(
+              "flex items-start px-6 py-12 transition-colors duration-500 sm:px-10 lg:py-16",
+              status === "success" && "bg-[#E77421]",
+              status === "error" && "bg-red-600",
+              status !== "success" && status !== "error" && "bg-black",
+            )}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-left text-3xl font-normal text-white sm:text-4xl lg:text-5xl">
-              Feel free to reach out to me!
+            <h2
+              className={cn(
+                "text-left text-3xl font-normal transition-colors duration-500 sm:text-4xl lg:text-5xl",
+                status === "success" ? "text-black" : "text-white",
+              )}
+            >
+              {status === "success" && "Thanks — your message was sent!"}
+              {status === "error" && "Sorry, something went wrong. Please try again."}
+              {status !== "success" && status !== "error" && "Feel free to reach out to me!"}
             </h2>
           </motion.div>
 
@@ -150,16 +170,6 @@ export default function Contact() {
               <span className="relative">Submit</span>
             </button>
 
-            {status === "success" && (
-              <p className="border-b border-r border-white/25 bg-black px-6 py-3 text-sm text-emerald-400">
-                Thanks — your message was sent.
-              </p>
-            )}
-            {status === "error" && (
-              <p className="border-b border-r border-white/25 bg-black px-6 py-3 text-sm text-red-400">
-                Sorry, something went wrong. Please try again.
-              </p>
-            )}
           </motion.form>
         </div>
       </section>

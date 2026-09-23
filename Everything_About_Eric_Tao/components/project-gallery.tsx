@@ -104,12 +104,16 @@ function ProjectGallery() {
       {/* Full-bleed like every other section header on the site now (contact,
           the /projects listing) — was `container`-constrained while the grid
           right below it already ran edge to edge, so the title read
-          noticeably narrower than everything around it. px-6/10/14 instead
-          of `container`'s own centred max-width. */}
-      {/* pt-8/sm:pt-10 matches the footer's own top padding — was pt-16 plus
-          a further mb-10 below the row, noticeably taller than the gap
-          between contact and the footer right after it. */}
-      <div className="px-6 pt-8 sm:px-10 sm:pt-10 lg:px-14">
+          noticeably narrower than everything around it.
+          No horizontal padding on this wrapper any more (only the vertical
+          pt-8/sm:pt-10, still matching the footer's own top padding) — the
+          navbar's own grid is unpadded too (see its comment in navbar.tsx),
+          so its column boundaries land at true fractions of the viewport.
+          Padding this wrapper insets THIS grid's own boundaries instead,
+          which is exactly what drifted this header's divider away from the
+          navbar's — the edge inset now lives on h2 (left) and nav (right)
+          below instead, so it never touches the column math. */}
+      <div className="pt-8 sm:pt-10">
         {/* Below md, flex-wrap packed two-ish-per-line at uneven widths —
             one category's width didn't line up with the next, reading as
             broken rather than intentional. Stacked, one per row with its
@@ -129,15 +133,21 @@ function ProjectGallery() {
             filling nav's own nested-grid height (see nav's own comment). */}
         <div className="flex flex-col justify-between gap-6 pb-6 md:grid md:grid-cols-6 md:items-stretch md:gap-0">
           {/* Same size as the contact section's title — one "brand title"
-              scale shared across the site's section headings. */}
-          <h2 className="text-3xl font-normal text-white sm:text-4xl lg:text-5xl md:col-span-2 md:flex md:items-center">
+              scale shared across the site's section headings.
+              px-6 sm:px-10 replaces the wrapper's old padding for this cell
+              — both sides while h2 is alone on its own row (below md),
+              md:pr-0 drops the right side once nav sits beside it instead
+              (that edge is now an internal divider, not a true edge). */}
+          <h2 className="px-6 text-3xl font-normal text-white sm:px-10 sm:text-4xl md:col-span-2 md:flex md:items-center md:pr-0 lg:pl-14 lg:text-5xl">
             Project Gallery
           </h2>
-          {/* -mx-6/-mx-10 cancels the header's own px-6/px-10 padding so
-              each mobile row's divider runs truly edge-to-edge — like the
-              grid below — instead of stopping at the padded text column;
-              the buttons get that same padding back themselves so the text
-              still lines up under the title above.
+          {/* No more -mx-6/-mx-10: those cancelled the wrapper's own former
+              px-6/px-10 so each mobile row's divider ran edge-to-edge past
+              it — with the wrapper unpadded now there's nothing left to
+              cancel. md:pr-10/lg:pr-14 is this cell's own edge inset
+              instead (mirroring h2's pl- above), scoped to md: and up since
+              below that nav is still the stacked list, not the row this
+              padding is meant for.
               From md up this is its own real nested grid (col-span-4 of the
               outer 6, split into 4 of its own), not display: contents —
               contents was tried first so the buttons would auto-flow as
@@ -149,7 +159,7 @@ function ProjectGallery() {
               row's height, nav's own grid then stretches each button to
               nav's height — so the hover background-fill actually covers
               the full cell instead of just wrapping the text. */}
-          <nav className="-mx-6 flex flex-col text-lg uppercase tracking-[0.2em] sm:-mx-10 sm:text-xl md:col-span-4 md:grid md:grid-cols-4 md:items-stretch md:mx-0">
+          <nav className="flex flex-col text-lg uppercase tracking-[0.2em] sm:text-xl md:col-span-4 md:grid md:grid-cols-4 md:items-stretch md:pr-10 lg:pr-14">
             {CATEGORIES.map((category) => (
               <button
                 key={category}

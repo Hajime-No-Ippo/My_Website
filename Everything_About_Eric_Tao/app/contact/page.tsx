@@ -31,12 +31,19 @@ export default function ContactPage() {
           which is fine for "roughly render Dublin" rather than a precise pin.
           pointer-events-none: it's decorative, not a real interactive map —
           without it, scrolling the page while the cursor happens to be over
-          it gets captured as map zoom instead. */}
+          it gets captured as map zoom instead.
+          The +/- zoom control OSM draws top-left is baked into the embedded
+          page itself — cross-origin, so there's no CSS reach into it to hide
+          just that element. Oversizing the iframe and shifting it up-left
+          (inside an overflow-hidden box the intended visible size) pushes
+          that corner outside the crop instead; pointer-events is already
+          none, so the control being technically still there and unclickable
+          doesn't matter, only that it isn't visible. */}
       <div className="relative h-[45vh] w-full overflow-hidden sm:h-[55vh]">
         <iframe
           title="Map showing Dublin, Ireland"
           src="https://www.openstreetmap.org/export/embed.html?bbox=-6.40%2C53.28%2C-6.05%2C53.42&layer=mapnik&marker=53.3498%2C-6.2603"
-          className="h-full w-full border-0 pointer-events-none grayscale invert contrast-[.85]"
+          className="pointer-events-none absolute -left-16 -top-16 h-[calc(100%+4rem)] w-[calc(100%+4rem)] border-0 grayscale invert contrast-[.85]"
           loading="lazy"
         />
       </div>
