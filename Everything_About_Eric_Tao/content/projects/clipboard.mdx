@@ -1,0 +1,25 @@
+---
+title: Clipboard
+summary: A shared text clipboard, synced instantly across devices by a six-character code.
+---
+
+## Overview
+Open a clipboard with a six-character code, paste something in, and it appears
+instantly on every other device using that code. No account, no install —
+entries expire on their own.
+
+## Implementation
+- A Cloudflare Worker serves the React SPA and the API from one deployment.
+- A Durable Object holds each clipboard's SQLite-backed entries and its live
+  WebSocket connections — one instance per code.
+- Writes go over HTTP; live pushes come back over a hibernatable WebSocket, so
+  an idle open tab doesn't pin the object in memory or accrue duration charges.
+- The server broadcasts to every connected socket, including the one that just
+  posted — the client folds messages in idempotently by id so the device that
+  typed them doesn't see a flickering duplicate.
+
+## Notes
+- Six characters from a 31-character alphabet (no ambiguous I/L/O/0/1) is
+  roughly 10⁹ possible codes — fine against guessing a specific one, weak
+  against bulk enumeration, so this stays a shared surface, not a private one.
+- Text only, no file upload; entries cap at 256 KB, 50 per board.
