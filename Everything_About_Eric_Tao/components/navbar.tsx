@@ -65,17 +65,15 @@ export default function Navbar() {
           — columns 3-5 are bare spacers reserved for future nav items. */}
       <div className={cn("grid grid-cols-6 items-stretch", NAVBAR_HEIGHT)}>
         <Link href="/" className="hidden items-center gap-3 overflow-hidden pl-6 sm:pl-10 md:flex lg:pl-14">
-          <Logo className="h-14 w-14 shrink-0 text-white sm:h-16 sm:w-16" />
+          <Logo className="h-10 w-10 shrink-0 text-white sm:h-12 sm:w-12" />
           {/* shrink-0: flex would otherwise squeeze this to fit the logo,
               and with nowrap forcing each line to stay on one line, that
               squeeze just clips "Software Engineer" instead of shrinking the
-              text — better to let it sit at its natural width. text-base
-              (not -lg): at -lg, "Software Engineer" ran ~6px past this
-              column's own width and got clipped by overflow-hidden. mr-3
-              gives it a little breathing room before the next column's
-              divider. Hidden below md: the column is nowhere near wide
-              enough there — logo-only, same as before this was added. */}
-          <p className="mr-3 shrink-0 whitespace-nowrap text-base font-extralight leading-tight text-white">
+              text — better to let it sit at its natural width. mr-3 gives
+              it a little breathing room before the next column's divider.
+              Hidden below md: the column is nowhere near wide enough there
+              — logo-only, same as before this was added. */}
+          <p className="mr-3 shrink-0 whitespace-nowrap text-sm font-extralight leading-tight text-white">
             Eric Tao
             <br />
             Software Engineer
@@ -84,7 +82,7 @@ export default function Navbar() {
           </p>
         </Link>
         <Link href="/" className="flex items-center pl-6 sm:pl-10 md:hidden lg:pl-14">
-          <Logo className="h-14 w-14 text-white sm:h-16 sm:w-16" />
+          <Logo className="h-10 w-10 text-white sm:h-12 sm:w-12" />
         </Link>
 
         {/* invisible (not hidden): this is a grid item in an always-6-column
