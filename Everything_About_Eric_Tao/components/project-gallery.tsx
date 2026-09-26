@@ -144,10 +144,22 @@ function ProjectGallery() {
           {/* No more -mx-6/-mx-10: those cancelled the wrapper's own former
               px-6/px-10 so each mobile row's divider ran edge-to-edge past
               it — with the wrapper unpadded now there's nothing left to
-              cancel. md:pr-10/lg:pr-14 is this cell's own edge inset
-              instead (mirroring h2's pl- above), scoped to md: and up since
-              below that nav is still the stacked list, not the row this
-              padding is meant for.
+              cancel.
+              No right-edge padding on nav either (md:pr-10/lg:pr-14 was
+              tried here to mirror h2's own pl- above) — nav is ALSO the
+              grid that divides itself into the 4 buttons below, so padding
+              nav shrank that content box before quartering it, shifting
+              every internal boundary by a constant amount. That's what put
+              "All Works"'s own right edge ~14px off the content grid's
+              pair boundary directly beneath it, at a viewport where 2/6 and
+              1/2 should've coincided exactly. Unnecessary anyway: each
+              button centres its own text (md:justify-center below), so
+              there was never a real risk of a label crowding the true edge.
+              Un-padded, nav's 4 buttons split its col-span-4 into four
+              clean 1/6-of-viewport slices — 33.3/50/66.7/83.3% — which
+              lines up with BOTH the content grid's own 50% pair boundary
+              and the navbar's own column 5/6 mark (where its hamburger
+              cell starts), for free, with no offset anywhere.
               From md up this is its own real nested grid (col-span-4 of the
               outer 6, split into 4 of its own), not display: contents —
               contents was tried first so the buttons would auto-flow as
@@ -159,7 +171,7 @@ function ProjectGallery() {
               row's height, nav's own grid then stretches each button to
               nav's height — so the hover background-fill actually covers
               the full cell instead of just wrapping the text. */}
-          <nav className="flex flex-col text-lg uppercase tracking-[0.2em] sm:text-xl md:col-span-4 md:grid md:grid-cols-4 md:items-stretch md:pr-10 lg:pr-14">
+          <nav className="flex flex-col text-lg uppercase tracking-[0.2em] sm:text-xl md:col-span-4 md:grid md:grid-cols-4 md:items-stretch">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
