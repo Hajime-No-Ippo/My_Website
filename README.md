@@ -6,7 +6,7 @@ Live at: **https://blog.ericdesign.uk/**
 
 ## What's in here
 
-- **`Everything_About_Eric_Tao/`** — the main site. A Next.js app with the portfolio, blog posts, and project pages (includes the flip-book deck viewer).
+- **`Everything_About_Eric_Tao/`** — the main site. A Next.js app with the portfolio, blog posts, and project pages.
 - **`research-eric/`** — a smaller research/writing site, kept separate from the main app.
 - **`ShowCase_Content/`** — standalone project demos and experiments shown off on the site (e.g. Arknights Resource Planner, iFoodie, RustLLM).
 
