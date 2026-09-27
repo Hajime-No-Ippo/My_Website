@@ -22,6 +22,8 @@ So where does that leave humanity's children? Where have the children made of fl
 
 When the medium for the transmission of civilization shifts from biological to mechanical, is sex reduced to mere entertainment? This question makes me constantly ponder the purpose of our civilization's evolution. After we created and invented computers, artificial intelligence, the internet, and the digital society to improve our lives, life seems to have improved, but it seems the meaning of machines has become replacing our jobs. Artificial intelligence replaces thinking, robots learn to perform repetitive tasks, and all information can be digitized and preserved. Does that mean that in the future, everyone can achieve the perpetuity of human civilization simply by working together as miners making semiconductors?
 
-But maybe that's exactly what scares me. Every generation before us had a clear answer: children are made of flesh, that's just how it is. Now for the first time, there's an alternative — and it's getting better every day.
+But human existence thrives on material diversity — robots need only electricity and chips. Is diversity itself something we want to keep passing down to future generations?
 
-So I'll leave the question where it started. When you picture your future, do you see a child made of flesh, or one made of iron? And if you chose the iron one — would you still love it the same way?
+If humanity's survival becomes mere survival for its own sake, do tools then matter more than the problems they were meant to solve?
+
+I think everyone has their own answer. The diversity of life comes down to each person's own choice.
