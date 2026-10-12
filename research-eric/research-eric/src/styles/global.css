@@ -313,6 +313,13 @@ main {
   margin: 0 0 0.5rem;
 }
 
+.post-header .post-subtitle {
+  margin: -0.25rem 0 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 .post-header .post-date {
   display: block;
   margin-bottom: 2.5rem;

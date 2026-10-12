@@ -18,6 +18,7 @@ export default function Post() {
 
         <header className="post-header">
           <h1>{post.title}</h1>
+          {post.subtitle && <p className="post-subtitle">{post.subtitle}</p>}
           <time className="post-date" dateTime={post.date}>
             {formatDate(post.date)}
           </time>

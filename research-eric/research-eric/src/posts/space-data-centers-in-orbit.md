@@ -1,5 +1,6 @@
 ---
-title: Space data centers — why now, and what is actually hard
+title: "Space data centers — the case for orbital compute"
+subtitle: "why now, and what is actually hard"
 date: '2026-10-12'
 summary: "Notes from fleshing out a data-centers-in-orbit idea with Gemini: the limitless-solar power case, the laser/ISL communication problems nobody has a protocol standard for yet, robot-maintainable modular design, and the companies already racing GPUs into orbit."
 ---
