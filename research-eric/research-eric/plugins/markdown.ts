@@ -44,7 +44,6 @@ export function markdown(): Plugin {
       const post = {
         slug: basename(file, '.md'),
         title: typeof data.title === 'string' ? data.title : basename(file, '.md'),
-        subtitle: typeof data.subtitle === 'string' ? data.subtitle : undefined,
         date: typeof data.date === 'string' ? data.date : '',
         summary: typeof data.summary === 'string' ? data.summary : '',
         html,

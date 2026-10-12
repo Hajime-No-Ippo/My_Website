@@ -1,6 +1,5 @@
 ---
-title: "Space data centers — the case for orbital compute"
-subtitle: "why now, and what is actually hard"
+title: Space data centers — why now, and what is actually hard
 date: '2026-10-12'
 summary: "Notes from fleshing out a data-centers-in-orbit idea with Gemini: the limitless-solar power case, the laser/ISL communication problems nobody has a protocol standard for yet, robot-maintainable modular design, and the companies already racing GPUs into orbit."
 ---
@@ -12,7 +11,7 @@ I spent a while fleshing out an idea with Gemini: putting data centers in orbit.
 The honest argument is **power**, not real estate.
 
 - **Limitless solar, 24/7.** Orbital panels never see clouds, night, or seasons, and they have no footprint limit the way a ground site does. The EU ASCEND study sized a 10 MW space datacenter at ~35,000 m² of panels — versus the ISS's ~7,500 m². Starcloud is planning toward 88,000 satellites and 20 GW of orbital compute.
-- **A scale comparison that puts it in perspective:** Starlink's entire ~10,000-satellite network produces on the order of **200 MW** of energy, while data centers currently under construction in the US alone exceed **25 GW**. Space is not a competitor to ground compute yet — it's a new resource pool.
+- **Scale context:** Starlink's entire ~10,000-satellite network produces on the order of **200 MW** of energy, while data centers currently under construction in the US alone exceed **25 GW**. Space is not a competitor to ground compute yet — it's a new resource pool.
 - **No water, no municipal stress.** Terrestrial facilities burn millions of litres of municipal water a day for cooling. Orbit uses none (the cooling story is more subtle — below).
 - **Data sovereignty.** That was ASCEND's original motivation: Europe processing/storing its own data in orbit under its own control, with net-zero ambitions (its target: shave ~10 TWh / 10% off European datacenter energy use).
 
@@ -33,11 +32,11 @@ Radio-frequency links are the wrong tool — too slow and too bandwidth-limited 
 2. **Distributed constellations & inter-satellite links (ISLs).** A "data center" isn't one satellite — it's a formation-flying swarm with a laser mesh in orbit, routing traffic across the cluster and down to optical ground stations placed in reliably clear-sky regions (high deserts).
 3. **Edge processing.** Don't send raw data down at all. Filter, train, and compress in orbit; beam down results. This sidesteps the downlink bottleneck entirely.
 
-**Where I'd add follow-ups:**
+**Where the protocol work needs to go:**
 
 - The **protocol stack doesn't exist yet.** Nobody owns "TCP/IP for a meshed LEO cluster." Space laser links drop when satellites slew, occlude, or pass over unlit ground stations — so we need reliable delivery over intermittent links (FEC + retransmission), routing inside an in-orbit mesh, and checkpoint/resume semantics for long training jobs under radiation. Disruption-Tolerant Networking (bundle protocol) ideas are the closest starting point, but they were built for deep-space hours, not LEO milliseconds.
-- **Latency math worth doing properly:** a LEO ISL mesh with a handful of hops plausibly gives Earth-like RTT for non-interactive workloads. That should be modelled before assuming "space = too far."
-- **Ground-station scheduling as a first-class problem:** burst windows, weather-dependent optical downlinks, and multi-station diversity are a real systems problem, not an afterthought.
+- **Latency modelling:** a LEO ISL mesh with a handful of hops plausibly gives Earth-like RTT for non-interactive workloads. That should be modelled before assuming "space = too far."
+- **Ground-station scheduling:** burst windows, weather-dependent optical downlinks, and multi-station diversity are a real systems problem, not an afterthought.
 
 ## Robot-maintainable space data centers
 
@@ -45,7 +44,7 @@ Nobody launches a technician to swap a dead GPU. The whole maintenance story lea
 
 The design consequence: break the data center into **ORUs — orbital replaceable units**. Compute blades and GPU trays become hot-swappable modules behind a robotic interface; the arm yanks a failed ORU and berths a spare, no full de-orbit. This mirrors how Starship-style "PEZ dispenser" deployment works — standardized modules dropped by a heavy lifter, then docked/assembled by robots.
 
-**Follow-ups I'd push:**
+**Where robotic servicing gets hard:**
 
 - A **standardized ORU docking/servicing interface** (what USB-C-ish connector do all racks share?) so any servicer can swap any vendor's module.
 - Honest limits: robots fix *units*, not *components on a board*. So redundancy and graceful degradation (fail-open storage, replicated state) are the real reliability story; a third copy on-orbit beats a robot with a soldering iron.
