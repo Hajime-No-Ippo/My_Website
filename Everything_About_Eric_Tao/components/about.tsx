@@ -47,32 +47,49 @@ export default function About({ sections }: { sections: AboutSection[] }) {
               on this cell only, so its border-l reaches the row's true
               top/bottom edges (shared with the border-t above and this
               row's own border-b) instead of stopping at the padding line. */}
-          <div
-            className="relative aspect-square md:-my-20 md:border-l md:border-white/25"
-            onMouseMove={trackLogoCursor}
-            onMouseEnter={(event) => event.currentTarget.style.setProperty("--logo-fill", "42%")}
-            onMouseLeave={(event) => event.currentTarget.style.setProperty("--logo-fill", "0%")}
-            style={{ "--mx": "50%", "--my": "50%", "--logo-fill": "0%" } as CSSProperties}
-          >
+          <div className="relative aspect-square md:-my-20 md:border-l md:border-white/25">
             <div className="flex h-full w-full items-center justify-center p-10 sm:p-12 lg:p-16">
-              <div className="relative h-full w-full">
+              {/* Cursor tracking lives on the logo box itself, not the tile.
+                  `--mx/--my` are consumed as percentages by the logo's mask,
+                  so they must be measured against the box the mask is painted
+                  on; measuring against the tile (which is larger by the
+                  padding) threw the fill's centre off by the padding offset —
+                  that mismatch was the "drift". */}
+              <div
+                className="relative h-full w-full"
+                onMouseMove={trackLogoCursor}
+                onMouseEnter={(event) => event.currentTarget.style.setProperty("--logo-fill", "42%")}
+                onMouseLeave={(event) => event.currentTarget.style.setProperty("--logo-fill", "0%")}
+                style={{ "--mx": "50%", "--my": "50%", "--logo-fill": "0%" } as CSSProperties}
+              >
                 <Logo strokeWidth={0.5} className="absolute inset-0 h-full w-full text-white" />
-                {/* Orange layer, revealed through a radial mask centred on the
-                    cursor. `--logo-fill` is registered in globals.css as an
-                    animatable <percentage>, so its stop can transition on
-                    hover in/out — a liquid fill following the pointer rather
-                    than a flat colour swap. */}
+                {/* Orange fill, revealed through a radial mask centred on the
+                    cursor. The Logo paints this as a ring+sphere overlay under
+                    a single wrapper mask, so hovering recolours the whole mark
+                    (ring and middle circle) to orange; at rest the base logo
+                    below shows the white ring and black sphere.
+                    `--logo-fill` is registered in globals.css as an animatable
+                    <percentage>, so its stop can transition on hover in/out —
+                    a liquid fill following the pointer rather than a flat
+                    colour swap.
+
+                    `--mx/--my` deliberately have NO transition: they're set on
+                    every mousemove, and any ease window means the blob is
+                    always chasing a target the pointer has already left (a
+                    sustained lag that reads as the fill "drifting" behind the
+                    cursor rather than sitting under it). Only the radius
+                    (`--logo-fill`) animates, so the fill grows/shrinks smoothly
+                    while its centre stays pinned to the pointer. */}
                 <Logo
                   strokeWidth={0.5}
                   className="absolute inset-0 h-full w-full text-[#E77421]"
                   style={
                     {
-                      transition:
-                        "--logo-fill 600ms cubic-bezier(0.22, 1, 0.36, 1), --mx 200ms ease-out, --my 200ms ease-out",
+                      transition: "--logo-fill 600ms cubic-bezier(0.22, 1, 0.36, 1)",
                       WebkitMaskImage:
-                        "radial-gradient(circle at var(--mx) var(--my), black 0%, black var(--logo-fill), transparent calc(var(--logo-fill) + 18%))",
+                        "radial-gradient(circle at var(--mx) var(--my), black calc(var(--logo-fill) - 18%), transparent var(--logo-fill))",
                       maskImage:
-                        "radial-gradient(circle at var(--mx) var(--my), black 0%, black var(--logo-fill), transparent calc(var(--logo-fill) + 18%))",
+                        "radial-gradient(circle at var(--mx) var(--my), black calc(var(--logo-fill) - 18%), transparent var(--logo-fill))",
                     } as CSSProperties
                   }
                 />

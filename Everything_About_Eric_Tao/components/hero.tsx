@@ -105,28 +105,40 @@ export default function Hero() {
 
  return (
  <section className="relative isolate min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
- {/* Background grid */}
- <div
- ref={gridRef}
- className="absolute inset-0 bg-black"
- onPointerMove={onPointerMove}
- onPointerLeave={onPointerLeave}
- >
- <div
- className="absolute inset-0 opacity-40"
- style={{
- backgroundImage:
- "linear-gradient(rgba(255, 255, 255, 0.29) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px)",
- backgroundSize: `${CELL_PX}px ${CELL_PX}px`,
- }}
- />
- </div>
+  {/* Background: hero video (black underlay while it loads) */}
+  <div
+   ref={gridRef}
+   className="absolute inset-0 bg-black"
+   onPointerMove={onPointerMove}
+   onPointerLeave={onPointerLeave}
+  >
+   <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    aria-hidden="true"
+    src="/hero.mp4"
+    className="absolute inset-0 h-full w-full object-cover motion-reduce:animate-none"
+   />
+   {/* 40% black filter over the video */}
+   <div className="absolute inset-0 bg-black/40" />
+   <div
+    className="absolute inset-0 opacity-40"
+    style={{
+     backgroundImage:
+      "linear-gradient(rgba(255, 255, 255, 0.29) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px)",
+     backgroundSize: `${CELL_PX}px ${CELL_PX}px`,
+    }}
+   />
+  </div>
 
  {/* Layer 1: Headline & Name (z-0 blends under cells, z-20 stays plain) */}
  <div className="relative px-4 sm:px-6 lg:px-8">
- <h1 className="mb-4 text-4xl font-bold sm:text-5xl md:text-6xl">
+  <h1 className="mb-4 text-6xl font-bold sm:text-7xl md:text-8xl">
  <span className="relative z-20">Hello, my name is </span>
- <span className="group relative z-0 inline-block py-2 font-bold italic text-[#E77421]">
+ <span className="group relative z-0 inline-block py-2 font-bold text-[#E77421]">
  <Link href="/about">Eric Tao</Link>
  <span className="absolute left-0 -bottom-0.5 h-0.5 w-full scale-x-0 transform origin-left bg-current transition-transform duration-200 ease-out group-hover:scale-x-100" />
  </span>
@@ -156,25 +168,21 @@ export default function Hero() {
  </div>
 
  {/* Layer 3: Body copy (z-20 stays above cells) */}
- {/* text-lg sm:text-2xl md:text-3xl is exactly half the h1's own
- text-4xl sm:text-5xl md:text-6xl (18/24/30 vs 36/48/60) at every
- breakpoint — these two lines previously had two different,
- unrelated sizes of their own (text-xl sm:text-2xl, and just text-xl
- since sm:text-md isn't a real Tailwind scale step) instead of one
- shared relationship to the title. */}
+ {/* text-3xl sm:text-4xl md:text-5xl is exactly half the h1's own
+  text-6xl sm:text-7xl md:text-8xl (30/36/48 vs 60/72/96) at every
+  breakpoint — this line previously had an unrelated size of its own
+  (text-xl sm:text-2xl) instead of one shared relationship to the
+  title. */}
  <div className="relative z-20 px-4 sm:px-6 lg:px-8">
- <p className="mb-6 max-w-2xl mx-auto text-lg sm:text-2xl md:text-3xl font-inter">
- New Grad Software Engineer &amp; UX Designer
- </p>
- <p className="mb-6 max-w-2xl mx-auto text-lg text-muted-foreground sm:text-2xl md:text-3xl font-inter">
- Experience Life, Seek the adventure.
- </p>
+  <p className="mb-6 max-w-2xl mx-auto text-3xl sm:text-4xl md:text-5xl font-inter">
+   New Grad Software Engineer &amp; UX Designer
+  </p>
  </div>
 
  {/* Layer 1: Button (z-0 blends under cells) */}
  <div className="relative z-0 px-4 sm:px-6 lg:px-8">
  <Link href="/projects">
- <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-white">
+  <Button size="lg" className="group bg-[#E77421] hover:bg-[#E77421]/90 text-xl text-white">
  View My Work
  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
