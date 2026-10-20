@@ -30,3 +30,37 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+---
+
+## Blog Post Workflow
+
+**Live site:** `blog.ericdesign.uk`
+**Repo:** `https://github.com/Hajime-No-Ippo/My_Website.git` (Cloudflare Pages auto-deploys on push)
+
+### Adding a new post
+
+1. Create a markdown file in `src/posts/` with a kebab-case filename:
+   ```
+   src/posts/my-new-post.md
+   ```
+
+2. Add frontmatter (`title`, `date`, `summary` are required):
+   ```markdown
+   ---
+   title: "My Post Title"
+   date: "2026-09-27"
+   summary: "A short description of the post."
+   ---
+
+   Your content here...
+   ```
+
+3. Commit and push — Cloudflare Pages auto-deploys:
+   ```bash
+   git add src/posts/my-new-post.md
+   git commit -m "Add blog post: My Post Title"
+   git push
+   ```
+
+Posts are auto-discovered by filename via `import.meta.glob('./posts/*.md')` in `src/posts.ts`. Newest posts appear first. The URL slug is derived from the filename (e.g., `my-new-post.md` → `/blog/my-new-post`).
