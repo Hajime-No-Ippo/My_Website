@@ -215,4 +215,27 @@ export const projects: Project[] = [
     liveUrl: "https://arknights.ericdesign.uk/",
     accent: "#2DD4BF",
   },
+  {
+    id: 8,
+    slug: "kweekly",
+    title: "KWeekly",
+    description: "Hackathon project from MongoDB vBall Hackathon 2026",
+    category: "Full-Stack",
+    image: "/projects/kweekly-poster.jpg",
+    className: "w-[450px] h-[350px]",
+    detailedDescription:
+      "KWeekly is a hackathon project built for the MongoDB vBall Hackathon 2026 (repo Ktoettotakoy/mongo-vball-hackathon-2026). It was showcased at Dublin AI Week, with footage from the event used to highlight the build in action.",
+    technologies: "MongoDB, Node.js, React, TypeScript",
+    duration: "Hackathon",
+    features: [
+      "Built for MongoDB vBall Hackathon 2026",
+      "Showcased at Dublin AI Week",
+      "Video demo from the Dublin AI Week showcase",
+    ],
+    additionalImages: ["/projects/kweekly-1.jpg", "/projects/kweekly-2.jpg", "/projects/kweekly-3.jpg", "/projects/kweekly-1.jpg", "/projects/kweekly-dublin-ai-week.mp4"],
+    contentPath: "/content/projects/kweekly.mdx",
+    liveUrl: "https://vbtrack-dashboard.shuaibtcm.workers.dev/",
+    accent: "#00ED64",
+    hasCustomPage: true,
+  },
 ]
